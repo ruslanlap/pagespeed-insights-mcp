@@ -1,0 +1,56 @@
+{
+  "name": "pagespeed-insights-mcp",
+  "version": "1.0.0",
+  "description": "MCP server for Google PageSpeed Insights API - analyze web performance with Claude",
+  "main": "dist/index.js",
+  "type": "module",
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsx src/index.ts",
+    "start": "node dist/index.js",
+    "prepublishOnly": "npm run build"
+  },
+  "bin": {
+    "pagespeed-insights-mcp": "dist/index.js"
+  },
+  "files": [
+    "dist",
+    "README.md",
+    "package.json"
+  ],
+  "keywords": [
+    "mcp",
+    "pagespeed",
+    "performance",
+    "web",
+    "google",
+    "lighthouse",
+    "claude",
+    "model-context-protocol",
+    "web-performance",
+    "seo",
+    "accessibility"
+  ],
+  "author": "PageSpeed Insights MCP Contributors",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ruslanlap/pagespeed-insights-mcp.git"
+  },
+  "homepage": "https://github.com/ruslanlap/pagespeed-insights-mcp#readme",
+  "bugs": {
+    "url": "https://github.com/ruslanlap/pagespeed-insights-mcp/issues"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^0.6.0",
+    "node-fetch": "^3.3.2"
+  },
+  "devDependencies": {
+    "@types/node": "^20.0.0",
+    "tsx": "^4.6.0",
+    "typescript": "^5.3.0"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}

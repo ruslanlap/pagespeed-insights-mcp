@@ -1,0 +1,21 @@
+{
+  "mcpServers": {
+    "Context7": {
+      "command": "npx",
+      "args": ["-y", "@upstash/context7-mcp"]
+    },
+    "pagespeed": {
+      "command": "npx",
+      "args": ["pagespeed-insights-mcp"],
+      "env": {
+        "GOOGLE_API_KEY": "here"
+      }
+    }
+  },
+  "mcp": {
+    "pagespeed": {
+      "run-pagespeed": "analyze_page_speed",
+      "get-performance-summary": "get_performance_summary"
+    }
+  }
+}

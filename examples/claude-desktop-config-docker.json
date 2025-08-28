@@ -1,0 +1,14 @@
+{
+  "mcpServers": {
+    "pagespeed-insights": {
+      "command": "docker",
+      "args": [
+        "run", 
+        "--rm", 
+        "-i",
+        "--env", "GOOGLE_API_KEY=your-google-api-key-here",
+        "pagespeed-insights-mcp"
+      ]
+    }
+  }
+}

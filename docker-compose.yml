@@ -1,0 +1,14 @@
+version: '3.8'
+
+services:
+  pagespeed-mcp:
+    build: .
+    container_name: pagespeed-insights-mcp
+    environment:
+      - GOOGLE_API_KEY=${GOOGLE_API_KEY}
+    stdin_open: true
+    tty: true
+    restart: unless-stopped
+    # Mount for communication with Claude Desktop
+    volumes:
+      - /tmp:/tmp

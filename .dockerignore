@@ -1,0 +1,11 @@
+node_modules
+src
+*.log
+.git
+.gitignore
+README.md
+tsconfig.json
+.env
+.DS_Store
+*.tsbuildinfo
+install.sh
