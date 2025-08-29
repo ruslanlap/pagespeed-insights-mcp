@@ -3,69 +3,69 @@
 [![npm version](https://badge.fury.io/js/pagespeed-insights-mcp.svg)](https://www.npmjs.com/package/pagespeed-insights-mcp)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-MCP сервер для Google PageSpeed Insights API, що дозволяє аналізувати продуктивність веб-сторінок безпосередньо через Claude.
+MCP server for Google PageSpeed Insights API that enables web page performance analysis directly through Claude.
 
-## ✨ Особливості
+## ✨ Features
 
-- 🚀 **Аналіз продуктивності** веб-сторінок за допомогою Google PageSpeed Insights
-- 📱 **Підтримка всіх платформ**: мобільних та десктопних пристроїв
-- 🔍 **Детальні звіти Lighthouse** з усіма метриками
-- 📊 **Спрощені звіти** з основними показниками продуктивності
-- 🌍 **Локалізація** - підтримка різних мов
-- ⚡ **Швидке встановлення** - одна команда для налаштування
-- 🐳 **Docker підтримка** для контейнеризованого розгортання
+- 🚀 **Performance Analysis** of web pages using Google PageSpeed Insights
+- 📱 **Multi-platform Support**: mobile and desktop devices
+- 🔍 **Detailed Lighthouse Reports** with comprehensive metrics
+- 📊 **Simplified Reports** with key performance indicators
+- 🌍 **Localization** - support for multiple languages
+- ⚡ **Quick Installation** - one command setup
+- 🐳 **Docker Support** for containerized deployment
 
-## 🚀 Швидке встановлення
+## 🚀 Quick Installation
 
-### Варіант 1: Автоматичне встановлення (рекомендовано)
+### Option 1: Automatic Installation (Recommended)
 
 ```bash
 curl -sSL https://raw.githubusercontent.com/ruslanlap/pagespeed-insights-mcp/main/install.sh | bash
 ```
 
-### Варіант 2: Через npm
+### Option 2: Via npm
 
 ```bash
-# Глобальне встановлення
+# Global installation
 npm install -g pagespeed-insights-mcp
 
-# Або використання без встановлення
+# Or use without installation
 npx pagespeed-insights-mcp
 ```
 
-### Варіант 3: Docker
+### Option 3: Docker
 
 ```bash
 docker build -t pagespeed-insights-mcp .
 docker run -e GOOGLE_API_KEY=your-key pagespeed-insights-mcp
 ```
 
-## 🔑 Отримання Google API ключа
+## 🔑 Getting Google API Key
 
-1. Перейдіть до [Google Cloud Console](https://console.cloud.google.com/)
-2. Створіть новий проект або оберіть існуючий
-3. Увімкніть PageSpeed Insights API:
-   - Перейдіть до "APIs & Services" → "Library"
-   - Знайдіть "PageSpeed Insights API" та увімкніть його
-4. Створіть API ключ:
-   - Перейдіть до "APIs & Services" → "Credentials"
-   - Натисніть "Create Credentials" → "API Key"
-   - Скопіюйте створений ключ
+1. Go to [Google Cloud Console](https://console.cloud.google.com/)
+2. Create a new project or select an existing one
+3. Enable PageSpeed Insights API:
+   - Navigate to "APIs & Services" → "Library"
+   - Search for "PageSpeed Insights API" and enable it
+4. Create an API key:
+   - Go to "APIs & Services" → "Credentials"
+   - Click "Create Credentials" → "API Key"
+   - Copy the generated key
 
-## ⚙️ Налаштування Claude Desktop
+## ⚙️ Claude Desktop Configuration
 
-### Автоматичне налаштування
-Якщо ви використали install.sh скрипт, конфігурація була створена автоматично.
+### Automatic Configuration
+If you used the install.sh script, the configuration was created automatically.
 
-### Ручне налаштування
+### Manual Configuration
 
-Додайте конфігурацію до файлу Claude Desktop:
+Add the configuration to your Claude Desktop file:
 
 **macOS:** `~/Library/Application Support/Claude/claude_desktop_config.json`  
 **Windows:** `%APPDATA%\Claude\claude_desktop_config.json`  
 **Linux:** `~/.config/claude/claude_desktop_config.json`
 
-#### Для npm установки:
+#### For npm installation:
 ```json
 {
   "mcpServers": {
@@ -80,7 +80,7 @@ docker run -e GOOGLE_API_KEY=your-key pagespeed-insights-mcp
 }
 ```
 
-#### Для глобальної установки:
+#### For global installation:
 ```json
 {
   "mcpServers": {
@@ -94,7 +94,7 @@ docker run -e GOOGLE_API_KEY=your-key pagespeed-insights-mcp
 }
 ```
 
-#### Для Docker:
+#### For Docker:
 ```json
 {
   "mcpServers": {
@@ -110,85 +110,85 @@ docker run -e GOOGLE_API_KEY=your-key pagespeed-insights-mcp
 }
 ```
 
-**Перезапустіть Claude Desktop** після налаштування!
+**Restart Claude Desktop** after configuration!
 
-## 💻 Використання
+## 💻 Usage
 
-Після налаштування просто напишіть Claude будь-що з цих команд:
+After configuration, simply ask Claude any of these commands:
 
-### 🔍 Повний аналіз сторінки
+### 🔍 Full page analysis
 ```
-Проаналізуй продуктивність сайту https://example.com
-```
-
-### 📱 Аналіз для мобільних пристроїв
-```
-Проаналізуй https://example.com для мобільних пристроїв з усіма категоріями
+Analyze the performance of https://example.com
 ```
 
-### ⚡ Швидкий огляд продуктивності
+### 📱 Mobile device analysis
 ```
-Отримай короткий звіт про продуктивність https://example.com
+Analyze https://example.com for mobile devices with all categories
 ```
 
-### 🖥️ Аналіз для десктопу
+### ⚡ Quick performance overview
+```
+Get a quick performance report for https://example.com
+```
+
+### 🖥️ Desktop analysis
 ```
 Analyze https://example.com performance for desktop devices
 ```
 
-### 🌐 Мультикатегорійний аналіз
+### 🌐 Multi-category analysis
 ```
-Проведи повний аудит https://example.com включаючи SEO, доступність та найкращі практики
+Perform a full audit of https://example.com including SEO, accessibility, and best practices
 ```
 
-## Доступні інструменти
+## Available Tools
 
 ### `analyze_page_speed`
 
-Повний аналіз сторінки з усіма метриками Lighthouse.
+Complete page analysis with all Lighthouse metrics.
 
-**Параметри:**
-- `url` (обов'язковий): URL сторінки для аналізу
-- `strategy`: "mobile" або "desktop" (за замовчуванням: "mobile")
-- `category`: масив категорій ["performance", "accessibility", "best-practices", "seo", "pwa"]
-- `locale`: локаль для результатів (за замовчуванням: "en")
+**Parameters:**
+- `url` (required): URL of the page to analyze
+- `strategy`: "mobile" or "desktop" (default: "mobile")
+- `category`: array of categories ["performance", "accessibility", "best-practices", "seo", "pwa"]
+- `locale`: locale for results (default: "en")
 
 ### `get_performance_summary`
 
-Спрощений звіт з основними метриками продуктивності.
+Simplified report with key performance metrics.
 
-**Параметри:**
-- `url` (обов'язковий): URL сторінки для аналізу
-- `strategy`: "mobile" або "desktop" (за замовчуванням: "mobile")
+**Parameters:**
+- `url` (required): URL of the page to analyze
+- `strategy`: "mobile" or "desktop" (default: "mobile")
 
-## Розробка
+## Development
 
 ```bash
-# Режим розробки
+# Development mode
 npm run dev
 
-# Збірка проекту
+# Build project
 npm run build
 
-# Запуск збудованого сервера
+# Run built server
 npm start
 ```
 
-## Усунення проблем
+## Troubleshooting
 
 ### "Google API key not provided"
-Переконайтеся, що змінна середовища `GOOGLE_API_KEY` встановлена в конфігурації Claude Desktop.
+Ensure the `GOOGLE_API_KEY` environment variable is set in your Claude Desktop configuration.
 
 ### "PageSpeed Insights API error: 403"
-Перевірте, чи увімкнений PageSpeed Insights API у вашому Google Cloud проекті.
+Check if PageSpeed Insights API is enabled in your Google Cloud project.
 
 ### "Invalid URL"
-Переконайтеся, що URL містить протокол (http:// або https://).
+Ensure the URL includes the protocol (http:// or https://).
 
-## Ліцензія
+## License
 
 MIT
 
-## Підтримка
+## Support
 
-Для звіту про проблеми або запитів нових функцій, будь ласка, створіть issue в репозиторії.
+For bug reports or feature requests, please create an issue in the repository.
