@@ -157,6 +157,113 @@ Complete page analysis with all Lighthouse metrics.
 
 Simplified report with key performance metrics.
 
+
+### Example
+answer example from Claude Desktop with pagespeed-insights-mcp 🔥🔥🔥
+
+## Complete Ratings for example.com
+
+Now I have the full analysis! Here are all the ratings:
+
+### 📊 **Main Lighthouse Scores**
+
+| Category | Score | Status |
+| --- | --- | --- |
+| **Performance** | **67/100** | 🟡 Needs Improvement |
+| **Accessibility** | **92/100** | 🟢 Good |
+| **Best Practices** | **96/100** | 🟢 Excellent |
+| **SEO** | **100/100** | 🟢 Perfect |
+
+### ⚡ **Detailed Performance Metrics**
+
+| Metric | Value | Score |
+| --- | --- | --- |
+| **First Contentful Paint** | 1.2s | 🟢 Excellent (98/100) |
+| **Largest Contentful Paint** | 2.4s | 🟡 Needs Improvement (75/100) |
+| **Speed Index** | 4.8s | 🟡 Needs Improvement (67/100) |
+| **Total Blocking Time** | 60ms | 🟢 Good (94/100) |
+| **Cumulative Layout Shift** | 0 | 🟢 Perfect (100/100) |
+
+### ♿ **Detailed Accessibility Scores (92/100)**
+
+| Audit | Score | Description |
+| --- | --- | --- |
+| **Label Content Name Mismatch** | 🔴 0/1 | 2 errors with aria-label |
+| **Unsized Images** | 🟡 0.5/1 | 1 image without dimensions |
+| **Color Contrast** | 🟢 1/1 | Sufficient contrast |
+| **Button Names** | 🟢 1/1 | Accessible button names |
+| **Link Names** | 🟢 1/1 | Accessible link names |
+| **ARIA Roles** | 🟢 1/1 | Correct ARIA roles |
+| **HTML Lang** | 🟢 1/1 | Valid lang attribute |
+| **Meta Viewport** | 🟢 1/1 | Proper viewport |
+| **Image Alt Text** | 🟢 1/1 | Correct alt attributes |
+| **List Items** | 🟢 1/1 | Proper list structure |
+
+### 🏆 **Detailed Best Practices Scores (96/100)**
+
+| Audit | Score | Status |
+| --- | --- | --- |
+| **Uses HTTPS** | 🟢 ✓ | HTTPS is used |
+| **HTTP Status Code** | 🟢 1/1 | Correct 200 status |
+| **No Console Errors** | 🟢 1/1 | No console errors |
+| **Valid Source Maps** | 🟢 1/1 | Valid source maps |
+| **No Notification Requests** | 🟢 1/1 | No notification requests |
+| **Charset Declaration** | 🟢 1/1 | Correct encoding |
+| **No Inspector Issues** | 🟢 1/1 | No DevTools issues |
+
+### 🔍 **Detailed SEO Scores (100/100)**
+
+| Audit | Score | Status |
+| --- | --- | --- |
+| **Meta Viewport** | 🟢 1/1 | Mobile optimized |
+| **Document Title** | 🟢 1/1 | Title present |
+| **Meta Description** | 🟢 1/1 | Description present |
+| **HTTP Status Code** | 🟢 1/1 | Successful status |
+| **Link Text** | 🟢 1/1 | Descriptive link texts |
+| **Crawlability** | 🟢 1/1 | Available for indexing |
+| **HTML Lang** | 🟢 1/1 | Valid document language |
+| **Hreflang** | 🟢 1/1 | Correct hreflang attributes |
+
+### 🔧 **Main Performance Issues**
+
+| Issue | Affects | Potential Savings |
+| --- | --- | --- |
+| **Improperly sized images** | LCP, FCP | 1,069 KB, 170ms |
+| **Inefficient caching** | Overall speed | 1,445 KB |
+| **Forced Reflows** | Smoothness | 46.8ms |
+| **JavaScript execution time** | TBT | 338ms |
+
+### 📈 **Network Metrics**
+
+| Metric | Value |
+| --- | --- |
+| **Server Response Time** | 120ms (🟢 Good) |
+| **Network RTT** | Minimal |
+| **Main Thread Work** | 0.9s |
+| **DOM Size** | 453 elements (optimal) |
+
+### 💡 **Priority Recommendations**
+
+1. **🔴 High Priority:**
+    - Optimize image sizes (save 1+ MB)
+    - Fix aria-label mismatches for accessibility
+2. **🟡 Medium Priority:**
+    - Improve caching policy (TTL >600s)
+    - Add width/height attributes for images
+3. **🟢 Low Priority:**
+    - Optimize forced reflows in JavaScript
+
+### 🎯 **Summary**
+
+**Overall Rating: Good with potential for improvement**
+
+- **SEO**: Perfect (100/100) 🏆
+- **Best Practices**: Excellent (96/100) 🏆
+- **Accessibility**: Good (92/100) ✅
+- **Performance**: Needs attention (67/100) ⚠️
+
+The site has excellent SEO optimization and follows best practices, but needs image optimization to improve performance.
+
 **Parameters:**
 - `url` (required): URL of the page to analyze
 - `strategy`: "mobile" or "desktop" (default: "mobile")
