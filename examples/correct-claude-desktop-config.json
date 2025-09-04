@@ -1,0 +1,11 @@
+{
+  "mcpServers": {
+    "pagespeed": {
+      "command": "npx",
+      "args": ["pagespeed-insights-mcp"],
+      "env": {
+        "GOOGLE_API_KEY": "YOUR_FULL_GOOGLE_API_KEY_HERE"
+      }
+    }
+  }
+}

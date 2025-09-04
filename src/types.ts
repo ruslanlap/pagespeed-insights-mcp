@@ -5,6 +5,58 @@ export interface PageSpeedInsightsRequest {
   locale?: string;
 }
 
+export interface CruxRecord {
+  record?: {
+    key: {
+      url: string;
+      formFactor: string;
+    };
+    metrics: {
+      [key: string]: {
+        histogram: Array<{
+          start: number;
+          end?: number;
+          density: number;
+        }>;
+        percentiles: {
+          p75: number;
+          p50?: number;
+          p25?: number;
+        };
+      };
+    };
+  };
+}
+
+export interface PerformanceBudget {
+  lcp?: number;
+  fid?: number;
+  cls?: number;
+  fcp?: number;
+  si?: number;
+  tbt?: number;
+}
+
+export interface ComparisonResult {
+  urlA: string;
+  urlB: string;
+  strategy: string;
+  comparison: {
+    scores: {
+      urlA: number;
+      urlB: number;
+      difference: number;
+    };
+    metrics: {
+      [key: string]: {
+        urlA: string | number;
+        urlB: string | number;
+        better: 'A' | 'B' | 'tie';
+      };
+    };
+  };
+}
+
 export interface PageSpeedInsightsResponse {
   captchaResult?: string;
   kind?: string;
@@ -49,4 +101,23 @@ export interface PageSpeedInsightsResponse {
 
 export interface MCP_Config {
   apiKey?: string;
+}
+
+export interface AnalyzePageSpeedInput {
+  url: string;
+  strategy: 'mobile' | 'desktop';
+  category?: ('performance' | 'accessibility' | 'best-practices' | 'seo' | 'pwa')[];
+  locale: string;
+}
+
+export interface CruxSummaryInput {
+  url: string;
+  formFactor?: 'PHONE' | 'DESKTOP' | 'TABLET';
+}
+
+export interface CompareUrlsInput {
+  urlA: string;
+  urlB: string;
+  strategy: 'mobile' | 'desktop';
+  categories?: ('performance' | 'accessibility' | 'best-practices' | 'seo' | 'pwa')[];
 }

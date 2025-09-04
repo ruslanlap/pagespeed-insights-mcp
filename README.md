@@ -18,20 +18,65 @@ MCP server for Google PageSpeed Insights API that enables web page performance a
 ## 🚀 Quick Installation
 
 ### Option 1: Automatic Installation (Recommended)
+```bash
+# Set environment variable
+export GOOGLE_API_KEY=your-google-api-key
+```
 
 ```bash
-curl -sSL https://raw.githubusercontent.com/ruslanlap/pagespeed-insights-mcp/main/install.sh | bash
+curl -sSL https://raw.githubusercontent.com/ruslanlap/pagespeed-insights-mcp/master/install.sh | bash
 ```
 
 ### Option 2: Via npm
 
 ```bash
-# Global installation
+# Global installation from npm
 npm install -g pagespeed-insights-mcp
 
 # Or use without installation
 npx pagespeed-insights-mcp
+
+# Specific version
+npm install -g pagespeed-insights-mcp@1.0.2
 ```
+
+> **Note:** This package is available on both npm and GitHub Packages.
+> - For npm: Use `npm install pagespeed-insights-mcp`
+> - For GitHub Packages: Use `npm install @ruslanlap/pagespeed-insights-mcp` (requires GitHub authentication)
+>
+> For detailed instructions on installing from GitHub Packages, see [GITHUB_PACKAGES.md](GITHUB_PACKAGES.md)
+
+### 🔧 Configuration
+
+The MCP server requires a Google API key to access the PageSpeed Insights API.
+
+```bash
+# Set environment variable
+export GOOGLE_API_KEY=your-google-api-key
+
+# Or pass directly when running
+GOOGLE_API_KEY=your-google-api-key npx pagespeed-insights-mcp
+```
+
+### Claude Desktop Configuration
+
+To use this MCP server with Claude Desktop, add the following to your Claude Desktop configuration file:
+
+```json
+{
+  "mcpServers": {
+    "pagespeed": {
+      "command": "npx",
+      "args": ["pagespeed-insights-mcp"],
+      "env": {
+        "GOOGLE_API_KEY": "your-google-api-key-here"
+      }
+    }
+  }
+}
+```
+
+Example configuration files are available in the [examples](./examples/) directory.
 
 ### Option 3: Docker
 
@@ -65,7 +110,7 @@ Add the configuration to your Claude Desktop file:
 **Windows:** `%APPDATA%\Claude\claude_desktop_config.json`  
 **Linux:** `~/.config/claude/claude_desktop_config.json`
 
-#### For npm installation:
+#### For npm installation and global installation
 ```json
 {
   "mcpServers": {
@@ -80,19 +125,8 @@ Add the configuration to your Claude Desktop file:
 }
 ```
 
-#### For global installation:
-```json
-{
-  "mcpServers": {
-    "pagespeed-insights": {
-      "command": "pagespeed-insights-mcp",
-      "env": {
-        "GOOGLE_API_KEY": "your-google-api-key-here"
-      }
-    }
-  }
-}
-```
+#### 
+
 
 #### For Docker:
 ```json
