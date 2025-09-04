@@ -1,6 +1,7 @@
 # PageSpeed Insights MCP Server
 
 [![npm version](https://badge.fury.io/js/pagespeed-insights-mcp.svg)](https://www.npmjs.com/package/pagespeed-insights-mcp)
+[![GitHub Package Version](https://img.shields.io/github/package-json/v/ruslanlap/pagespeed-insights-mcp?label=github%20package)](https://github.com/ruslanlap/pagespeed-insights-mcp/pkgs/npm/pagespeed-insights-mcp)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
 MCP server for Google PageSpeed Insights API that enables web page performance analysis directly through Claude.
@@ -27,8 +28,9 @@ export GOOGLE_API_KEY=your-google-api-key
 curl -sSL https://raw.githubusercontent.com/ruslanlap/pagespeed-insights-mcp/master/install.sh | bash
 ```
 
-### Option 2: Via npm
+### Option 2: Via npm or GitHub Packages
 
+#### From npm (Public Registry)
 ```bash
 # Global installation from npm
 npm install -g pagespeed-insights-mcp
@@ -37,14 +39,24 @@ npm install -g pagespeed-insights-mcp
 npx pagespeed-insights-mcp
 
 # Specific version
-npm install -g pagespeed-insights-mcp@1.0.2
+npm install -g pagespeed-insights-mcp@1.0.4
+```
+
+#### From GitHub Packages
+```bash
+# First configure authentication (see GITHUB_PACKAGES.md for details)
+# Then install globally
+npm install -g @ruslanlap/pagespeed-insights-mcp
+
+# Or specific version
+npm install -g @ruslanlap/pagespeed-insights-mcp@1.0.4
 ```
 
 > **Note:** This package is available on both npm and GitHub Packages.
 > - For npm: Use `npm install pagespeed-insights-mcp`
 > - For GitHub Packages: Use `npm install @ruslanlap/pagespeed-insights-mcp` (requires GitHub authentication)
 >
-> For detailed instructions on installing from GitHub Packages, see [GITHUB_PACKAGES.md](GITHUB_PACKAGES.md)
+> For detailed instructions on installing from GitHub Packages, see [GITHUB_PACKAGES.md](GITHUB_PACKAGES.md) or visit the [GitHub Packages page](https://github.com/ruslanlap/pagespeed-insights-mcp/pkgs/npm/pagespeed-insights-mcp)
 
 ### 🔧 Configuration
 
@@ -125,7 +137,20 @@ Add the configuration to your Claude Desktop file:
 }
 ```
 
-#### 
+#### For GitHub Packages installation
+```json
+{
+  "mcpServers": {
+    "pagespeed-insights": {
+      "command": "npx",
+      "args": ["@ruslanlap/pagespeed-insights-mcp"],
+      "env": {
+        "GOOGLE_API_KEY": "your-google-api-key-here"
+      }
+    }
+  }
+}
+```
 
 
 #### For Docker:

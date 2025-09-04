@@ -38,7 +38,7 @@ npm install @ruslanlap/pagespeed-insights-mcp
 Or specify a version:
 
 ```bash
-npm install @ruslanlap/pagespeed-insights-mcp@1.0.2
+npm install @ruslanlap/pagespeed-insights-mcp@1.0.4
 ```
 
 ## Alternative: Global Configuration
