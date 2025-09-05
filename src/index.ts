@@ -11,6 +11,8 @@ import { randomUUID } from "crypto";
 import { validateEnv } from "./env.js";
 import { getLogger, createRequestLogger } from "./logger.js";
 import { PageSpeedClient } from "./pagespeed-client.js";
+import { cache } from "./cache.js";
+import { PerformanceRecommendationsEngine } from "./recommendations.js";
 import {
   AnalyzePageSpeedSchema,
   PerformanceSummarySchema,
@@ -24,6 +26,7 @@ import type { PageSpeedInsightsResponse, CruxRecord, ComparisonResult } from "./
 class PageSpeedInsightsServer {
   private server: Server;
   private client: PageSpeedClient;
+  private recommendationsEngine: PerformanceRecommendationsEngine;
   private logger = getLogger();
 
   constructor() {
@@ -43,6 +46,7 @@ class PageSpeedInsightsServer {
     );
 
     this.client = new PageSpeedClient();
+    this.recommendationsEngine = new PerformanceRecommendationsEngine();
     this.setupTools();
   }
 
@@ -209,6 +213,46 @@ class PageSpeedInsightsServer {
               required: ["urls"]
             },
           },
+          {
+            name: "clear_cache",
+            description: "Clear the internal cache to force fresh API requests",
+            inputSchema: {
+              type: "object",
+              properties: {},
+              additionalProperties: false
+            },
+          },
+          {
+            name: "get_recommendations",
+            description: "Generate smart performance recommendations with priority scoring and actionable fixes",
+            inputSchema: {
+              type: "object",
+              properties: {
+                url: { type: "string", format: "uri", description: "The URL to analyze for recommendations" },
+                strategy: { 
+                  type: "string", 
+                  enum: ["mobile", "desktop"], 
+                  default: "mobile",
+                  description: "Analysis strategy" 
+                },
+                category: {
+                  type: "array",
+                  items: {
+                    type: "string",
+                    enum: ["performance", "accessibility", "best-practices", "seo", "pwa"]
+                  },
+                  default: ["performance", "accessibility", "best-practices", "seo"],
+                  description: "Categories to analyze for recommendations"
+                },
+                locale: { 
+                  type: "string", 
+                  default: "en",
+                  description: "Locale for results" 
+                }
+              },
+              required: ["url"]
+            },
+          },
         ] satisfies Tool[],
       };
     });
@@ -229,6 +273,10 @@ class PageSpeedInsightsServer {
           return await this.handleFullReport(args);
         case "batch_analyze":
           return await this.handleBatchAnalyze(args);
+        case "clear_cache":
+          return await this.handleClearCache();
+        case "get_recommendations":
+          return await this.handleGetRecommendations(args);
         default:
           throw new Error(`Unknown tool: ${name}`);
       }
@@ -493,6 +541,82 @@ class PageSpeedInsightsServer {
           {
             type: "text",
             text: `Error in batch analysis: ${errorMessage}`,
+          },
+        ],
+        isError: true,
+      };
+    }
+  }
+
+  private async handleClearCache(): Promise<any> {
+    const logger = this.logger;
+    
+    try {
+      const sizeBefore = cache.size();
+      cache.clear();
+      
+      logger.info({ clearedEntries: sizeBefore }, "Cache cleared successfully");
+      
+      return {
+        content: [
+          {
+            type: "text",
+            text: `✅ Cache cleared successfully. Removed ${sizeBefore} cached entries.`,
+          },
+        ],
+      };
+    } catch (error) {
+      const errorMessage = error instanceof Error ? error.message : "Unknown error occurred";
+      logger.error({ error: errorMessage }, "Failed to clear cache");
+      
+      return {
+        content: [
+          {
+            type: "text",
+            text: `❌ Error clearing cache: ${errorMessage}`,
+          },
+        ],
+        isError: true,
+      };
+    }
+  }
+
+  private async handleGetRecommendations(args: any) {
+    const correlationId = randomUUID();
+    const logger = createRequestLogger(correlationId, "get-recommendations");
+    
+    try {
+      const input = AnalyzePageSpeedSchema.parse(args);
+      logger.info({ url: input.url, strategy: input.strategy }, "Generating performance recommendations");
+      
+      const result = await this.client.analyzePageSpeed(input, correlationId);
+      const recommendations = this.recommendationsEngine.generateRecommendations(result);
+      const formattedReport = this.recommendationsEngine.formatRecommendations(recommendations);
+      
+      return {
+        content: [
+          {
+            type: "text",
+            text: formattedReport,
+          },
+          {
+            type: "resource",
+            resource: {
+              uri: `data:application/json;base64,${Buffer.from(JSON.stringify(recommendations, null, 2)).toString('base64')}`,
+              name: "recommendations_data.json",
+              mimeType: "application/json",
+            },
+          },
+        ],
+      };
+    } catch (error) {
+      const errorMessage = error instanceof Error ? error.message : "Unknown error occurred";
+      logger.error({ error: errorMessage }, "Recommendations generation failed");
+      return {
+        content: [
+          {
+            type: "text",
+            text: `Error generating recommendations: ${errorMessage}`,
           },
         ],
         isError: true,

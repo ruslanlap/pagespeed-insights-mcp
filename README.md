@@ -12,6 +12,8 @@ MCP server for Google PageSpeed Insights API that enables web page performance a
 - 📱 **Multi-platform Support**: mobile and desktop devices
 - 🔍 **Detailed Lighthouse Reports** with comprehensive metrics
 - 📊 **Simplified Reports** with key performance indicators
+- 🎯 **Smart Recommendations** with priority scoring and actionable fixes
+- 💾 **Intelligent Caching** to reduce API calls and improve performance
 - 🌍 **Localization** - support for multiple languages
 - ⚡ **Quick Installation** - one command setup
 - 🐳 **Docker Support** for containerized deployment
@@ -200,6 +202,16 @@ Analyze https://example.com performance for desktop devices
 Perform a full audit of https://example.com including SEO, accessibility, and best practices
 ```
 
+### 🎯 Smart performance recommendations
+```
+Get smart recommendations for improving https://example.com performance
+```
+
+### 💾 Cache management
+```
+Clear the cache to get fresh data for all subsequent requests
+```
+
 ## Available Tools
 
 ### `analyze_page_speed`
@@ -215,6 +227,20 @@ Complete page analysis with all Lighthouse metrics.
 ### `get_performance_summary`
 
 Simplified report with key performance metrics.
+
+### `get_recommendations`
+
+Generate smart performance recommendations with priority scoring and actionable fixes.
+
+**Parameters:**
+- `url` (required): URL of the page to analyze
+- `strategy`: "mobile" or "desktop" (default: "mobile")
+- `category`: array of categories to analyze (default: ["performance", "accessibility", "best-practices", "seo"])
+- `locale`: locale for results (default: "en")
+
+### `clear_cache`
+
+Clear the internal cache to force fresh API requests for all subsequent analyses.
 
 
 ### Example

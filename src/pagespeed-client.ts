@@ -3,6 +3,7 @@ import pRetry from "p-retry";
 import pLimit from "p-limit";
 import { getEnv } from "./env.js";
 import { createRequestLogger } from "./logger.js";
+import { cache, createPSICacheKey, createCruxCacheKey } from "./cache.js";
 import type { 
   AnalyzePageSpeedInput, 
   CruxSummaryInput,
@@ -14,7 +15,6 @@ export class PageSpeedClient {
   private readonly timeout: number;
   private readonly retryAttempts: number;
   private readonly limiter: ReturnType<typeof pLimit>;
-  private readonly cache = new Map<string, { data: any; timestamp: number }>();
   private readonly cacheTTL: number;
 
   constructor() {
@@ -26,32 +26,6 @@ export class PageSpeedClient {
     this.limiter = pLimit(env.MAX_CONCURRENCY);
   }
 
-  private createCacheKey(params: Record<string, any>): string {
-    const sortedParams = Object.keys(params)
-      .sort()
-      .map(key => `${key}=${params[key]}`)
-      .join("|");
-    return `psi_v5_${sortedParams}`;
-  }
-
-  private getCached<T>(cacheKey: string): T | null {
-    const cached = this.cache.get(cacheKey);
-    if (!cached) return null;
-    
-    if (Date.now() - cached.timestamp > this.cacheTTL) {
-      this.cache.delete(cacheKey);
-      return null;
-    }
-    
-    return cached.data as T;
-  }
-
-  private setCache(cacheKey: string, data: any): void {
-    this.cache.set(cacheKey, {
-      data,
-      timestamp: Date.now(),
-    });
-  }
 
   private async makeRequest(url: string, correlationId: string): Promise<any> {
     const logger = createRequestLogger(correlationId, "psi-request");
@@ -121,15 +95,15 @@ export class PageSpeedClient {
     const logger = createRequestLogger(correlationId, "analyze-page-speed");
     
     return this.limiter(async () => {
-      const cacheKey = this.createCacheKey({
-        url: input.url,
-        strategy: input.strategy,
-        categories: input.category?.join(",") || "performance",
-        locale: input.locale,
-      });
+      const cacheKey = createPSICacheKey(
+        input.url,
+        input.strategy,
+        input.category || ["performance"],
+        input.locale
+      );
       
       // Try cache first
-      const cached = this.getCached<PageSpeedInsightsResponse>(cacheKey);
+      const cached = cache.get<PageSpeedInsightsResponse>(cacheKey);
       if (cached) {
         logger.debug("Cache hit for PSI request");
         return cached;
@@ -148,7 +122,7 @@ export class PageSpeedClient {
       }
       
       const data = await this.makeRequest(url.toString(), correlationId);
-      this.setCache(cacheKey, data);
+      cache.set(cacheKey, data, this.cacheTTL);
       
       return data as PageSpeedInsightsResponse;
     });
@@ -158,12 +132,9 @@ export class PageSpeedClient {
     const logger = createRequestLogger(correlationId, "crux-summary");
     
     return this.limiter(async () => {
-      const cacheKey = this.createCacheKey({
-        url: input.url,
-        formFactor: input.formFactor || "PHONE",
-      });
+      const cacheKey = createCruxCacheKey(input.url, input.formFactor);
       
-      const cached = this.getCached(cacheKey);
+      const cached = cache.get(cacheKey);
       if (cached) {
         logger.debug("Cache hit for CrUX request");
         return cached;
@@ -200,7 +171,7 @@ export class PageSpeedClient {
         }
         
         const data = await response.json();
-        this.setCache(cacheKey, data);
+        cache.set(cacheKey, data, this.cacheTTL);
         
         logger.info({ url: input.url }, "CrUX request successful");
         return data;
