@@ -461,14 +461,6 @@ class PageSpeedInsightsServer {
             type: "text",
             text: this.formatAnalysisReport(result, input),
           },
-          {
-            type: "resource",
-            resource: {
-              uri: `data:application/json;base64,${Buffer.from(JSON.stringify(result, null, 2)).toString('base64')}`,
-              name: "raw_pagespeed_data.json",
-              mimeType: "application/json",
-            },
-          },
         ],
       };
     } catch (error) {
@@ -760,15 +752,7 @@ class PageSpeedInsightsServer {
           {
             type: "text",
             text: formattedReport,
-          },
-          {
-            type: "resource",
-            resource: {
-              uri: `data:application/json;base64,${Buffer.from(JSON.stringify(recommendations, null, 2)).toString('base64')}`,
-              name: "recommendations_data.json",
-              mimeType: "application/json",
-            },
-          },
+          }
         ],
       };
     } catch (error) {
@@ -1010,15 +994,7 @@ class PageSpeedInsightsServer {
           {
             type: "text",
             text: report,
-          },
-          {
-            type: "resource",
-            resource: {
-              uri: `data:application/json;base64,${Buffer.from(JSON.stringify(visualData, null, 2)).toString('base64')}`,
-              name: "visual_analysis_data.json",
-              mimeType: "application/json",
-            },
-          },
+          }
         ],
       };
     } catch (error) {
@@ -1090,15 +1066,7 @@ class PageSpeedInsightsServer {
           {
             type: "text",
             text: report,
-          },
-          {
-            type: "resource",
-            resource: {
-              uri: `data:application/json;base64,${Buffer.from(JSON.stringify(elementData, null, 2)).toString('base64')}`,
-              name: "element_analysis_data.json",
-              mimeType: "application/json",
-            },
-          },
+          }
         ],
       };
     } catch (error) {
@@ -1177,15 +1145,7 @@ class PageSpeedInsightsServer {
           {
             type: "text",
             text: report,
-          },
-          {
-            type: "resource",
-            resource: {
-              uri: `data:application/json;base64,${Buffer.from(JSON.stringify(networkData, null, 2)).toString('base64')}`,
-              name: "network_analysis_data.json",
-              mimeType: "application/json",
-            },
-          },
+          }
         ],
       };
     } catch (error) {
@@ -1279,15 +1239,7 @@ class PageSpeedInsightsServer {
           {
             type: "text",
             text: report,
-          },
-          {
-            type: "resource",
-            resource: {
-              uri: `data:application/json;base64,${Buffer.from(JSON.stringify(jsData, null, 2)).toString('base64')}`,
-              name: "javascript_analysis_data.json",
-              mimeType: "application/json",
-            },
-          },
+          }
         ],
       };
     } catch (error) {
@@ -1377,15 +1329,7 @@ class PageSpeedInsightsServer {
           {
             type: "text",
             text: report,
-          },
-          {
-            type: "resource",
-            resource: {
-              uri: `data:application/json;base64,${Buffer.from(JSON.stringify(imageData, null, 2)).toString('base64')}`,
-              name: "image_optimization_data.json",
-              mimeType: "application/json",
-            },
-          },
+          }
         ],
       };
     } catch (error) {
@@ -1461,15 +1405,7 @@ class PageSpeedInsightsServer {
           {
             type: "text",
             text: report,
-          },
-          {
-            type: "resource",
-            resource: {
-              uri: `data:application/json;base64,${Buffer.from(JSON.stringify(renderBlockingData, null, 2)).toString('base64')}`,
-              name: "render_blocking_data.json",
-              mimeType: "application/json",
-            },
-          },
+          }
         ],
       };
     } catch (error) {
@@ -1549,15 +1485,7 @@ class PageSpeedInsightsServer {
           {
             type: "text",
             text: report,
-          },
-          {
-            type: "resource",
-            resource: {
-              uri: `data:application/json;base64,${Buffer.from(JSON.stringify(thirdPartyData, null, 2)).toString('base64')}`,
-              name: "third_party_impact_data.json",
-              mimeType: "application/json",
-            },
-          },
+          }
         ],
       };
     } catch (error) {
@@ -1652,19 +1580,7 @@ class PageSpeedInsightsServer {
           {
             type: "text",
             text: report,
-          },
-          {
-            type: "resource",
-            resource: {
-              uri: `data:application/json;base64,${Buffer.from(JSON.stringify({
-                categories: categoryData,
-                metrics: detailedMetrics,
-                stackPacks: stackPacks || []
-              }, null, 2)).toString('base64')}`,
-              name: "full_audit_data.json",
-              mimeType: "application/json",
-            },
-          },
+          }
         ],
       };
     } catch (error) {
