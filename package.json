@@ -1,6 +1,6 @@
 {
   "name": "@ruslanlap/pagespeed-insights-mcp",
-  "version": "1.0.5",
+  "version": "1.1.0",
   "description": "MCP server for Google PageSpeed Insights API - analyze web performance with Claude",
   "main": "dist/index.js",
   "type": "module",
