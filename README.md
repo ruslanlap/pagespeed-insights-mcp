@@ -8,6 +8,7 @@ MCP server for Google PageSpeed Insights API that enables web page performance a
 
 ## ✨ Features
 
+### Core Features
 - 🚀 **Performance Analysis** of web pages using Google PageSpeed Insights
 - 📱 **Multi-platform Support**: mobile and desktop devices
 - 🔍 **Detailed Lighthouse Reports** with comprehensive metrics
@@ -17,6 +18,16 @@ MCP server for Google PageSpeed Insights API that enables web page performance a
 - 🌍 **Localization** - support for multiple languages
 - ⚡ **Quick Installation** - one command setup
 - 🐳 **Docker Support** for containerized deployment
+
+### Advanced Analysis Tools (New!)
+- 📸 **Visual Analysis** - Screenshots, filmstrip, and full-page captures
+- 🎯 **Element-Level Debugging** - Find specific DOM elements causing issues
+- 🌐 **Network Waterfall** - Detailed request timing and resource loading
+- ⚡ **JavaScript Profiling** - Execution breakdown and unused code detection
+- 🖼️ **Image Optimization** - Specific image issues with exact savings
+- 🚫 **Render-Blocking Analysis** - Critical request chains and dependencies
+- 🔌 **Third-Party Impact** - Script impact grouped by provider
+- 📊 **Full Audits** - Complete Lighthouse audits for all categories
 
 ## 🚀 Quick Installation
 
@@ -212,6 +223,46 @@ Get smart recommendations for improving https://example.com performance
 Clear the cache to get fresh data for all subsequent requests
 ```
 
+### 📸 Visual analysis
+```
+Get visual analysis for https://example.com showing screenshots and loading timeline
+```
+
+### 🎯 Element-level debugging
+```
+Show me which specific elements are causing performance issues on https://example.com
+```
+
+### 🌐 Network waterfall analysis
+```
+Analyze the network requests and resource loading for https://example.com
+```
+
+### ⚡ JavaScript performance
+```
+Get JavaScript execution breakdown for https://example.com
+```
+
+### 🖼️ Image optimization opportunities
+```
+Show me which images need optimization on https://example.com
+```
+
+### 🚫 Render-blocking resources
+```
+Find render-blocking resources on https://example.com
+```
+
+### 🔌 Third-party script impact
+```
+Analyze third-party script impact on https://example.com performance
+```
+
+### 📊 Full Lighthouse audit
+```
+Run a full audit including accessibility, SEO, and best practices for https://example.com
+```
+
 ## Available Tools
 
 ### `analyze_page_speed`
@@ -241,6 +292,115 @@ Generate smart performance recommendations with priority scoring and actionable 
 ### `clear_cache`
 
 Clear the internal cache to force fresh API requests for all subsequent analyses.
+
+### `get_visual_analysis`
+
+Get screenshots and visual timeline showing how the page loads.
+
+**Parameters:**
+- `url` (required): URL of the page to analyze
+- `strategy`: "mobile" or "desktop" (default: "mobile")
+
+**Returns:**
+- Final screenshot of the loaded page
+- Filmstrip showing page load progression
+- Full-page screenshot with DOM node mapping
+
+### `get_element_analysis`
+
+Get specific DOM elements causing performance issues.
+
+**Parameters:**
+- `url` (required): URL of the page to analyze
+- `strategy`: "mobile" or "desktop" (default: "mobile")
+
+**Returns:**
+- LCP (Largest Contentful Paint) element details
+- CLS (Cumulative Layout Shift) causing elements
+- Lazy-loaded LCP warnings
+
+### `get_network_analysis`
+
+Get detailed network waterfall showing all requests with timing and size.
+
+**Parameters:**
+- `url` (required): URL of the page to analyze
+- `strategy`: "mobile" or "desktop" (default: "mobile")
+
+**Returns:**
+- All network requests with timing data
+- Resource breakdown by type
+- Total transfer size and request count
+- Network RTT and server latency
+
+### `get_javascript_analysis`
+
+Get JavaScript execution breakdown showing performance impact.
+
+**Parameters:**
+- `url` (required): URL of the page to analyze
+- `strategy`: "mobile" or "desktop" (default: "mobile")
+
+**Returns:**
+- JavaScript bootup time by script
+- Main thread work breakdown
+- Unused JavaScript analysis
+- Duplicated JavaScript modules
+
+### `get_image_optimization_details`
+
+Get specific images needing optimization with exact savings potential.
+
+**Parameters:**
+- `url` (required): URL of the page to analyze
+- `strategy`: "mobile" or "desktop" (default: "mobile")
+
+**Returns:**
+- Improperly sized images
+- Offscreen images (lazy-loading candidates)
+- Unoptimized images
+- Modern format recommendations (WebP/AVIF)
+
+### `get_render_blocking_details`
+
+Get render-blocking resources and critical request chains.
+
+**Parameters:**
+- `url` (required): URL of the page to analyze
+- `strategy`: "mobile" or "desktop" (default: "mobile")
+
+**Returns:**
+- Render-blocking CSS and JavaScript files
+- Critical request chains showing dependencies
+- Total blocking time
+
+### `get_third_party_impact`
+
+Get third-party script impact analysis grouped by entity.
+
+**Parameters:**
+- `url` (required): URL of the page to analyze
+- `strategy`: "mobile" or "desktop" (default: "mobile")
+
+**Returns:**
+- Impact by provider (Google, Facebook, etc.)
+- Transfer size and blocking time per provider
+- Recommended facade replacements
+
+### `get_full_audit`
+
+Get comprehensive audit results for all Lighthouse categories.
+
+**Parameters:**
+- `url` (required): URL of the page to analyze
+- `strategy`: "mobile" or "desktop" (default: "mobile")
+- `categories`: array of categories to audit (default: ["performance", "accessibility", "best-practices", "seo"])
+
+**Returns:**
+- Scores for all categories
+- Detailed Core Web Vitals and metrics
+- Key failing audits for each category
+- Framework-specific advice (if applicable)
 
 
 ### Example
