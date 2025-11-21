@@ -8,28 +8,15 @@ MCP server for Google PageSpeed Insights API that enables web page performance a
 
 ## 📚 Documentation
 
-We have comprehensive documentation available in the `docs/` directory.
+We have comprehensive documentation available online.
 
-- [📖 **Read Documentation**](docs/index.md) - Start here for an overview.
-- [🚀 **Getting Started**](docs/getting-started.md) - Installation and configuration guide.
-- [🛠️ **Tools Reference**](docs/features/tools.md) - Detailed reference for all available tools.
-- [🏗️ **Architecture**](docs/developers/architecture.md) - For contributors and developers.
+[**👉 View Full Documentation Site**](https://ruslanlap.github.io/pagespeed-insights-mcp/)
 
-### Running Documentation Locally
+- [🚀 **Getting Started**](https://ruslanlap.github.io/pagespeed-insights-mcp/getting-started/)
+- [🛠️ **Tools Reference**](https://ruslanlap.github.io/pagespeed-insights-mcp/features/tools/)
+- [🏗️ **Architecture**](https://ruslanlap.github.io/pagespeed-insights-mcp/developers/architecture/)
 
-To view the full documentation site locally with search and enhanced navigation:
-
-1. **Install MkDocs**:
-   ```bash
-   pip install mkdocs mkdocs-material
-   ```
-
-2. **Run the server**:
-   ```bash
-   mkdocs serve
-   ```
-
-3. Open [http://localhost:8000](http://localhost:8000) in your browser.
+> You can also view the raw markdown files in the `docs/` directory or run `mkdocs serve` locally.
 
 
 
