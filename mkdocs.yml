@@ -48,3 +48,4 @@ markdown_extensions:
   - pymdownx.inlinehilite
   - pymdownx.snippets
   - attr_list
+copyright: Copyright &copy; 2025 ruslanlap
