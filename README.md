@@ -79,6 +79,9 @@ The MCP server requires a Google API key to access the PageSpeed Insights API.
 # Set environment variable
 export GOOGLE_API_KEY=your-google-api-key
 
+# Windows
+$env:GOOGLE_API_KEY="your-google-api-key"
+
 # Or pass directly when running
 GOOGLE_API_KEY=your-google-api-key npx pagespeed-insights-mcp
 ```
