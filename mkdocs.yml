@@ -38,7 +38,7 @@ nav:
     - Contributing: developers/contributing.md
 # Custom CSS - Catppuccin Macchiato (#24273a)
 extra_css:
-  - stylesheets/extra.css   # ← now included
+  - stylesheets/catppuccin-macchiato.css   # ← now included
 markdown_extensions:
   - admonition
   - pymdownx.details
