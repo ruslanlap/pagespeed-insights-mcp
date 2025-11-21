@@ -2,12 +2,23 @@
 
 [![npm version](https://img.shields.io/npm/v/pagespeed-insights-mcp.svg)](https://www.npmjs.com/package/pagespeed-insights-mcp)
 [![GitHub Package Version](https://img.shields.io/github/package-json/v/ruslanlap/pagespeed-insights-mcp?label=github%20package)](https://github.com/ruslanlap/pagespeed-insights-mcp/pkgs/npm/pagespeed-insights-mcp)
+[![Documentation](https://img.shields.io/badge/docs-online-blue.svg)](https://ruslanlap.github.io/pagespeed-insights-mcp/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
 MCP server for Google PageSpeed Insights API that enables web page performance analysis directly through Claude.
 
-Latest version: 1.0.6
-Published: 2025-11-21
+## 📚 Documentation
+
+We have comprehensive documentation available online.
+
+[**👉 View Full Documentation Site**](https://ruslanlap.github.io/pagespeed-insights-mcp/)
+
+- [🚀 **Getting Started**](https://ruslanlap.github.io/pagespeed-insights-mcp/getting-started/)
+- [🛠️ **Tools Reference**](https://ruslanlap.github.io/pagespeed-insights-mcp/features/tools/)
+- [🏗️ **Architecture**](https://ruslanlap.github.io/pagespeed-insights-mcp/developers/architecture/)
+
+> You can also view the raw markdown files in the `docs/` directory or run `mkdocs serve` locally.
+
 
 
 ## ✨ Features
