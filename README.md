@@ -52,7 +52,7 @@ npm install -g pagespeed-insights-mcp
 npx pagespeed-insights-mcp
 
 # Specific version
-npm install -g pagespeed-insights-mcp@1.0.4
+npm install -g pagespeed-insights-mcp@1.0.6
 ```
 
 #### From GitHub Packages
@@ -62,7 +62,7 @@ npm install -g pagespeed-insights-mcp@1.0.4
 npm install -g @ruslanlap/pagespeed-insights-mcp
 
 # Or specific version
-npm install -g @ruslanlap/pagespeed-insights-mcp@1.0.4
+npm install -g @ruslanlap/pagespeed-insights-mcp@1.0.6
 ```
 
 > **Note:** This package is available on both npm and GitHub Packages.
