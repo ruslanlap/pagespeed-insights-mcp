@@ -103,3 +103,13 @@ Add the following to your configuration file:
     If you are on Windows, make sure to use the full path to the executable if `npx` is not in your PATH, or use the Docker method.
 
 After updating the configuration, restart Claude Desktop. You should now see the PageSpeed tools available in the interface.
+
+## Usage Examples
+
+Once connected, you will see a list of available tools in your MCP client.
+
+![Available Tools](assets/tool-list.png)
+
+You can ask Claude to analyze a website, and it will use these tools to provide a comprehensive report.
+
+![Analysis Result](assets/analysis-result.png)
