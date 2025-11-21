@@ -515,6 +515,11 @@ The site has excellent SEO optimization and follows best practices, but needs im
 
 ## Development
 
+For better log formatting during development, it is recommended to install `pino-pretty` globally:
+```bash
+npm install -g pino-pretty
+```
+
 ```bash
 # Development mode
 npm run dev
