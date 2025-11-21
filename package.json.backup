@@ -1,5 +1,5 @@
 {
-  "name": "@ruslanlap/pagespeed-insights-mcp",
+  "name": "pagespeed-insights-mcp",
   "version": "1.0.6",
   "description": "MCP server for Google PageSpeed Insights API - analyze web performance with Claude",
   "main": "dist/index.js",
@@ -75,7 +75,6 @@
     "node": ">=18"
   },
   "publishConfig": {
-    "registry": "https://npm.pkg.github.com/",
-    "registry": "https://npm.pkg.github.com"
+    "access": "public"
   }
 }
