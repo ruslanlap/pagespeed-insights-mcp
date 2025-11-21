@@ -37,7 +37,7 @@ class PageSpeedInsightsServer {
     this.server = new Server(
       {
         name: "pagespeed-insights-mcp",
-        version: "1.1.0",
+        version: "1.0.6",
       },
       {
         capabilities: {
