@@ -537,6 +537,10 @@ Check if PageSpeed Insights API is enabled in your Google Cloud project.
 ### "Invalid URL"
 Ensure the URL includes the protocol (http:// or https://).
 
+## Acknowledgments
+
+Special thanks to [@engmsaleh](https://github.com/engmsaleh) (Mohamed Saleh Zaied) for his significant contribution to the development of this project.
+
 ## License
 
 MIT
