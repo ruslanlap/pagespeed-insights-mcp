@@ -105,7 +105,7 @@
 }
 
 [data-md-color-scheme="slate"] .md-nav__link:hover {
-    color: var(--ctp-lavender);
+    color: var(--ctp-green);
 }
 
 /* Search box */
