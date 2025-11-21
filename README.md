@@ -90,10 +90,10 @@ To use this MCP server with Claude Desktop, add the following to your Claude Des
 ```json
 {
   "mcpServers": {
-    "pagespeed": {
-      "command": "npx",
-      "args": ["pagespeed-insights-mcp"],
-      "env": {
+     "pagespeed": {
+      "command": "pagespeed-insights-mcp",
+      "args": [],
+       "env": {
         "GOOGLE_API_KEY": "your-google-api-key-here"
       }
     }
