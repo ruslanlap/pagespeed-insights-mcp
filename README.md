@@ -9,6 +9,13 @@ MCP server for Google PageSpeed Insights API that enables web page performance a
 Latest version: 1.0.6
 Published: 2025-11-21
 
+## 📚 Documentation
+
+Full user documentation is available in the `docs/` directory. You can view the built site in the `site/` directory (open `site/index.html` in your browser) or build it yourself using MkDocs.
+
+[View Documentation](site/index.html)
+
+
 
 ## ✨ Features
 

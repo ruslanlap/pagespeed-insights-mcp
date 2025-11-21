@@ -6,3 +6,5 @@ dist/
 *.tsbuildinfo
 .claude
 claude
+venv
+.venv
