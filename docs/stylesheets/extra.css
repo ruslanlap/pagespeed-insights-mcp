@@ -1,0 +1,108 @@
+/* Catppuccin Macchiato Theme for MkDocs Material */
+
+:root {
+    /* Catppuccin Macchiato Color Palette */
+    --ctp-base: #24273a;
+    --ctp-mantle: #1e2030;
+    --ctp-crust: #181926;
+    --ctp-surface0: #363a4f;
+    --ctp-surface1: #494d64;
+    --ctp-surface2: #5b6078;
+    --ctp-overlay0: #6e738d;
+    --ctp-overlay1: #8087a2;
+    --ctp-overlay2: #939ab7;
+    --ctp-subtext0: #a5adcb;
+    --ctp-subtext1: #b8c0e0;
+    --ctp-text: #cad3f5;
+    --ctp-lavender: #b7bdf8;
+    --ctp-blue: #8aadf4;
+    --ctp-sapphire: #7dc4e4;
+    --ctp-sky: #91d7e3;
+    --ctp-teal: #8bd5ca;
+    --ctp-green: #a6da95;
+    --ctp-yellow: #eed49f;
+    --ctp-peach: #f5a97f;
+    --ctp-maroon: #ee99a0;
+    --ctp-red: #ed8796;
+    --ctp-mauve: #c6a0f6;
+    --ctp-pink: #f5bde6;
+    --ctp-flamingo: #f0c6c6;
+    --ctp-rosewater: #f4dbd6;
+}
+
+/* Dark mode (Macchiato) */
+[data-md-color-scheme="slate"] {
+    --md-default-bg-color: var(--ctp-base);
+    --md-default-fg-color: var(--ctp-text);
+    --md-code-bg-color: var(--ctp-mantle);
+    --md-code-fg-color: var(--ctp-text);
+
+    /* Primary colors */
+    --md-primary-fg-color: var(--ctp-mauve);
+    --md-primary-fg-color--light: var(--ctp-lavender);
+    --md-primary-fg-color--dark: var(--ctp-surface0);
+    --md-primary-bg-color: var(--ctp-text);
+    --md-primary-bg-color--light: var(--ctp-subtext1);
+
+    /* Accent colors */
+    --md-accent-fg-color: var(--ctp-blue);
+    --md-accent-fg-color--transparent: rgba(138, 173, 244, 0.1);
+    --md-accent-bg-color: var(--ctp-text);
+    --md-accent-bg-color--light: var(--ctp-subtext1);
+
+    /* Typography */
+    --md-typeset-color: var(--ctp-text);
+    --md-typeset-a-color: var(--ctp-blue);
+
+    /* Code blocks */
+    --md-code-hl-color: var(--ctp-surface0);
+    --md-code-hl-number-color: var(--ctp-peach);
+    --md-code-hl-special-color: var(--ctp-pink);
+    --md-code-hl-function-color: var(--ctp-blue);
+    --md-code-hl-constant-color: var(--ctp-peach);
+    --md-code-hl-keyword-color: var(--ctp-mauve);
+    --md-code-hl-string-color: var(--ctp-green);
+    --md-code-hl-name-color: var(--ctp-text);
+    --md-code-hl-operator-color: var(--ctp-sky);
+    --md-code-hl-punctuation-color: var(--ctp-overlay2);
+    --md-code-hl-comment-color: var(--ctp-overlay0);
+    --md-code-hl-generic-color: var(--ctp-pink);
+    --md-code-hl-variable-color: var(--ctp-text);
+
+    /* Admonitions */
+    --md-admonition-bg-color: var(--ctp-mantle);
+
+    /* Footer */
+    --md-footer-bg-color: var(--ctp-mantle);
+    --md-footer-bg-color--dark: var(--ctp-crust);
+    --md-footer-fg-color: var(--ctp-text);
+    --md-footer-fg-color--light: var(--ctp-subtext1);
+    --md-footer-fg-color--lighter: var(--ctp-subtext0);
+}
+
+/* Additional styling for better Macchiato integration */
+.md-header {
+    background-color: var(--ctp-mantle) !important;
+}
+
+.md-tabs {
+    background-color: var(--ctp-mantle) !important;
+}
+
+.md-nav__link--active {
+    color: var(--ctp-blue) !important;
+}
+
+.md-nav__link:hover {
+    color: var(--ctp-lavender) !important;
+}
+
+/* Search box */
+.md-search__input {
+    background-color: var(--ctp-surface0) !important;
+    color: var(--ctp-text) !important;
+}
+
+.md-search__input::placeholder {
+    color: var(--ctp-overlay0) !important;
+}
