@@ -1,0 +1,47 @@
+site_name: PageSpeed Insights MCP
+site_description: User documentation for the PageSpeed Insights MCP Server
+repo_url: https://github.com/ruslanlap/pagespeed-insights-mcp
+repo_name: ruslanlap/pagespeed-insights-mcp
+theme:
+  name: material
+  features:
+    - navigation.tabs
+    - navigation.sections
+    - search.suggest
+    - search.highlight
+    - content.code.copy
+  palette:
+    - scheme: default
+      primary: indigo
+      accent: indigo
+      toggle:
+        icon: material/brightness-7
+        name: Switch to dark mode
+    - scheme: slate
+      primary: indigo
+      accent: indigo
+      toggle:
+        icon: material/brightness-4
+        name: Switch to light mode
+
+nav:
+  - Home: index.md
+  - Getting Started: getting-started.md
+  - Features:
+    - Overview: features/index.md
+    - Tools Reference: features/tools.md
+  - Concepts:
+    - What is MCP?: concepts/mcp.md
+  - Developers:
+    - Architecture: developers/architecture.md
+    - Contributing: developers/contributing.md
+
+markdown_extensions:
+  - admonition
+  - pymdownx.details
+  - pymdownx.superfences
+  - pymdownx.highlight:
+      anchor_linenums: true
+  - pymdownx.inlinehilite
+  - pymdownx.snippets
+  - attr_list
