@@ -8,3 +8,4 @@ dist/
 claude
 venv
 .venv
+site/

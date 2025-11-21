@@ -6,14 +6,30 @@
 
 MCP server for Google PageSpeed Insights API that enables web page performance analysis directly through Claude.
 
-Latest version: 1.0.6
-Published: 2025-11-21
-
 ## 📚 Documentation
 
-Full user documentation is available in the `docs/` directory. You can view the built site in the `site/` directory (open `site/index.html` in your browser) or build it yourself using MkDocs.
+We have comprehensive documentation available in the `docs/` directory.
 
-[View Documentation](site/index.html)
+- [📖 **Read Documentation**](docs/index.md) - Start here for an overview.
+- [🚀 **Getting Started**](docs/getting-started.md) - Installation and configuration guide.
+- [🛠️ **Tools Reference**](docs/features/tools.md) - Detailed reference for all available tools.
+- [🏗️ **Architecture**](docs/developers/architecture.md) - For contributors and developers.
+
+### Running Documentation Locally
+
+To view the full documentation site locally with search and enhanced navigation:
+
+1. **Install MkDocs**:
+   ```bash
+   pip install mkdocs mkdocs-material
+   ```
+
+2. **Run the server**:
+   ```bash
+   mkdocs serve
+   ```
+
+3. Open [http://localhost:8000](http://localhost:8000) in your browser.
 
 
 
