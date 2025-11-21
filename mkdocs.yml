@@ -7,6 +7,7 @@ theme:
   features:
     - navigation.tabs
     - navigation.sections
+    - navigation.footer
     - search.suggest
     - search.highlight
     - content.code.copy
@@ -35,7 +36,9 @@ nav:
   - Developers:
     - Architecture: developers/architecture.md
     - Contributing: developers/contributing.md
-
+# Custom CSS - Catppuccin Macchiato (#24273a)
+extra_css:
+  - stylesheets/extra.css   # ← now included
 markdown_extensions:
   - admonition
   - pymdownx.details
@@ -45,6 +48,3 @@ markdown_extensions:
   - pymdownx.inlinehilite
   - pymdownx.snippets
   - attr_list
-
-extra_css:
-  - stylesheets/extra.css

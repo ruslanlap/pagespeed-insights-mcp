@@ -1,0 +1,5 @@
+ source .venv/bin/activate
+
+ pip install mkdocs-catppuccin==1.0.2
+
+ mkdocs serve
