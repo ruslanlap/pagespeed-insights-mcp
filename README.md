@@ -6,6 +6,10 @@
 
 MCP server for Google PageSpeed Insights API that enables web page performance analysis directly through Claude.
 
+Latest version: 1.0.6
+Published: 2025-11-21
+
+
 ## ✨ Features
 
 ### Core Features
