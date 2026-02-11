@@ -101,6 +101,45 @@ $env:GOOGLE_API_KEY="your-google-api-key"
 GOOGLE_API_KEY=your-google-api-key npx pagespeed-insights-mcp
 ```
 
+### 📝 MCP Configuration Examples
+
+#### For Claude Desktop (with pino-pretty logging):
+
+```json
+"pagespeed-insights": {
+  "command": "npx",
+  "args": [
+    "-y",
+    "-p",
+    "pino-pretty",
+    "-p",
+    "pagespeed-insights-mcp",
+    "pagespeed-insights-mcp"
+  ],
+  "env": {
+    "GOOGLE_API_KEY": "your-google-api-key-here"
+  }
+}
+```
+
+#### For Codex (with pino-pretty logging):
+
+```toml
+[mcp_servers.pagespeed-insights]
+command = "npx"
+args = [
+  "-y",
+  "-p",
+  "pino-pretty",
+  "-p",
+  "pagespeed-insights-mcp",
+  "pagespeed-insights-mcp"
+]
+env = { GOOGLE_API_KEY = "your-google-api-key-here" }
+```
+
+> **Note:** These examples include `pino-pretty` for better log formatting. For production use without pretty logs, see the [Logging section](#logging--pino-pretty-in-mcp-environments) below.
+
 ### Claude Desktop Configuration
 
 To use this MCP server with Claude Desktop, add the following to your Claude Desktop configuration file:
