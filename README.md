@@ -549,6 +549,48 @@ npm run build
 npm start
 ```
 
+### Logging / `pino-pretty` in MCP environments
+
+This MCP server uses `pino` for logging and enables the `pino-pretty` transport when `NODE_ENV=development`.
+
+- If you **just want it to work with minimal setup** (Claude, Codex, etc.), set:
+
+```bash
+NODE_ENV=production GOOGLE_API_KEY=your-google-api-key npx pagespeed-insights-mcp
+```
+
+or in your MCP config:
+
+```jsonc
+"pagespeed-insights": {
+  "command": "npx",
+  "args": ["pagespeed-insights-mcp"],
+  "env": {
+    "GOOGLE_API_KEY": "your-google-api-key-here",
+    "NODE_ENV": "production"
+  }
+}
+```
+
+- If you **want pretty logs in development via `npx`**, you can have `npx` install `pino-pretty` alongside the server:
+
+```jsonc
+"pagespeed-insights": {
+  "command": "npx",
+  "args": [
+    "-y",
+    "-p",
+    "pino-pretty",
+    "-p",
+    "pagespeed-insights-mcp",
+    "pagespeed-insights-mcp"
+  ],
+  "env": {
+    "GOOGLE_API_KEY": "your-google-api-key-here"
+  }
+}
+```
+
 ## Troubleshooting
 
 ### "Google API key not provided"
