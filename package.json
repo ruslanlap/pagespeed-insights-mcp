@@ -48,7 +48,7 @@
     "url": "https://github.com/ruslanlap/pagespeed-insights-mcp/issues"
   },
   "dependencies": {
-    "@modelcontextprotocol/sdk": "^0.6.0",
+    "@modelcontextprotocol/sdk": "^1.26.0",
     "node-fetch": "^3.3.2",
     "p-limit": "^4.0.0",
     "p-retry": "^6.1.0",
