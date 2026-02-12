@@ -1,3 +1,10 @@
+## [1.0.1](https://github.com/ruslanlap/pagespeed-insights-mcp/compare/v1.0.0...v1.0.1) (2026-02-12)
+
+
+### Bug Fixes
+
+* upgrade @modelcontextprotocol/sdk to 1.26.0 to resolve high-severity vulnerabilities ([3a9b81a](https://github.com/ruslanlap/pagespeed-insights-mcp/commit/3a9b81a4d564dcfa10f7f11bc321ffe912d410b1))
+
 # 1.0.0 (2025-11-21)
 
 
