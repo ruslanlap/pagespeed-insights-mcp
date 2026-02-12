@@ -7,6 +7,53 @@
 
 MCP server for Google PageSpeed Insights API that enables web page performance analysis directly through Claude.
 
+## ⚡ Quick Start (Copy & Paste)
+
+### Claude Desktop
+
+Add to your `claude_desktop_config.json`:
+
+```json
+{
+  "mcpServers": {
+    "pagespeed-insights": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "-p",
+        "pino-pretty",
+        "-p",
+        "pagespeed-insights-mcp",
+        "pagespeed-insights-mcp"
+      ],
+      "env": {
+        "GOOGLE_API_KEY": "your-google-api-key-here"
+      }
+    }
+  }
+}
+```
+
+### Codex / OpenAI
+
+Add to your configuration (TOML):
+
+```toml
+[mcp_servers.pagespeed-insights]
+command = "npx"
+args = [
+  "-y",
+  "-p",
+  "pino-pretty",
+  "-p",
+  "pagespeed-insights-mcp",
+  "pagespeed-insights-mcp"
+]
+env = { GOOGLE_API_KEY = "your-google-api-key-here" }
+```
+
+> **Note:** The `pino-pretty` package is required for proper log formatting. The above configurations ensure it is installed automatically via `npx`.
+
 ## 📚 Documentation
 
 We have comprehensive documentation available online.
@@ -108,10 +155,17 @@ To use this MCP server with Claude Desktop, add the following to your Claude Des
 ```json
 {
   "mcpServers": {
-     "pagespeed": {
-      "command": "pagespeed-insights-mcp",
-      "args": [],
-       "env": {
+    "pagespeed-insights": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "-p",
+        "pino-pretty",
+        "-p",
+        "pagespeed-insights-mcp",
+        "pagespeed-insights-mcp"
+      ],
+      "env": {
         "GOOGLE_API_KEY": "your-google-api-key-here"
       }
     }
@@ -159,7 +213,14 @@ Add the configuration to your Claude Desktop file:
   "mcpServers": {
     "pagespeed-insights": {
       "command": "npx",
-      "args": ["pagespeed-insights-mcp"],
+      "args": [
+        "-y",
+        "-p",
+        "pino-pretty",
+        "-p",
+        "pagespeed-insights-mcp",
+        "pagespeed-insights-mcp"
+      ],
       "env": {
         "GOOGLE_API_KEY": "your-google-api-key-here"
       }
@@ -174,7 +235,14 @@ Add the configuration to your Claude Desktop file:
   "mcpServers": {
     "pagespeed-insights": {
       "command": "npx",
-      "args": ["@ruslanlap/pagespeed-insights-mcp"],
+      "args": [
+        "-y",
+        "-p",
+        "pino-pretty",
+        "-p",
+        "@ruslanlap/pagespeed-insights-mcp",
+        "pagespeed-insights-mcp"
+      ],
       "env": {
         "GOOGLE_API_KEY": "your-google-api-key-here"
       }
