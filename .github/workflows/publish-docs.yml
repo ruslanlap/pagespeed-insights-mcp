@@ -40,5 +40,6 @@ jobs:
         run: |
           mkdir -p site/demo
           cp -r demo/* site/demo/
+          cp demo/index.html site/demo.html
 
       - run: mkdocs gh-deploy --force --dirty

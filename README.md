@@ -9,6 +9,7 @@
 MCP server for Google PageSpeed Insights API that enables web page performance analysis directly through Claude.
 
 > **🎬 [View Interactive Demo →](https://ruslanlap.github.io/pagespeed-insights-mcp/demo/)** — See all 16 tools in action with animated examples
+> Fallback URL: [https://ruslanlap.github.io/pagespeed-insights-mcp/demo.html](https://ruslanlap.github.io/pagespeed-insights-mcp/demo.html)
 
 ## ⚡ Quick Start (Copy & Paste)
 
