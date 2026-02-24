@@ -34,4 +34,11 @@ jobs:
             
       - run: pip install mkdocs-material 
       
+      - run: mkdocs build
+
+      - name: Copy demo page into site
+        run: |
+          mkdir -p site/demo
+          cp -r demo/* site/demo/
+
       - run: mkdocs gh-deploy --force
