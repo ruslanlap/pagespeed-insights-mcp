@@ -1,3 +1,10 @@
+# [1.1.0](https://github.com/ruslanlap/pagespeed-insights-mcp/compare/v1.0.1...v1.1.0) (2026-02-24)
+
+
+### Features
+
+* add interactive demo page and deploy to GitHub Pages ([3484474](https://github.com/ruslanlap/pagespeed-insights-mcp/commit/348447443f9221699c4957790bb651c87373904e))
+
 ## [1.0.1](https://github.com/ruslanlap/pagespeed-insights-mcp/compare/v1.0.0...v1.0.1) (2026-02-24)
 
 
