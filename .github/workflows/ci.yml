@@ -52,7 +52,7 @@ jobs:
         with:
           node-version: '20'
           cache: 'npm'
-      - run: npm audit --omit=dev
+      - run: npm audit --omit=dev --audit-level=high
 
   release:
     name: Release
