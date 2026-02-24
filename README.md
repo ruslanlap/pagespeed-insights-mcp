@@ -1,5 +1,10 @@
 # PageSpeed Insights MCP Server
 
+<p align="center">
+  <img src="./1.png" alt="PageSpeed MCP chat demo" width="48%" />
+  <img src="./2.png" alt="PageSpeed MCP terminal demo" width="48%" />
+</p>
+
 [![npm version](https://img.shields.io/npm/v/pagespeed-insights-mcp.svg)](https://www.npmjs.com/package/pagespeed-insights-mcp)
 [![GitHub Package Version](https://img.shields.io/github/package-json/v/ruslanlap/pagespeed-insights-mcp?label=github%20package)](https://github.com/ruslanlap/pagespeed-insights-mcp/pkgs/npm/pagespeed-insights-mcp)
 [![Documentation](https://img.shields.io/badge/docs-online-blue.svg)](https://ruslanlap.github.io/pagespeed-insights-mcp/)
