@@ -1,3 +1,12 @@
+## [1.1.2](https://github.com/ruslanlap/pagespeed-insights-mcp/compare/v1.1.1...v1.1.2) (2026-05-26)
+
+
+### Bug Fixes
+
+* **ci:** make PR checkout and coverage upload reliable ([c9faa56](https://github.com/ruslanlap/pagespeed-insights-mcp/commit/c9faa5665c1fcac9cf26bc32100eab715c6c5637))
+* **release:** trigger release after tag lineage repair ([fbf29cd](https://github.com/ruslanlap/pagespeed-insights-mcp/commit/fbf29cd1999217a81673ac337743716dfcec6927))
+* **security:** close production npm audit findings and harden inputs ([8f24f9e](https://github.com/ruslanlap/pagespeed-insights-mcp/commit/8f24f9e1b19cb48870194fa461eeb48df1a03320))
+
 ## [1.1.1](https://github.com/ruslanlap/pagespeed-insights-mcp/compare/v1.1.0...v1.1.1) (2026-02-24)
 
 
