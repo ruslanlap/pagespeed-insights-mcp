@@ -1,3 +1,10 @@
+## [1.1.4](https://github.com/ruslanlap/pagespeed-insights-mcp/compare/v1.1.3...v1.1.4) (2026-05-26)
+
+
+### Bug Fixes
+
+* **client:** use dynamic package version in User-Agent header ([a1fc99a](https://github.com/ruslanlap/pagespeed-insights-mcp/commit/a1fc99a3bcd7a875d797927cc461c527bb791464))
+
 ## [1.1.3](https://github.com/ruslanlap/pagespeed-insights-mcp/compare/v1.1.2...v1.1.3) (2026-05-26)
 
 
