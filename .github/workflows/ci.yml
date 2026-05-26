@@ -10,12 +10,25 @@ jobs:
   test:
     name: Test & Build
     runs-on: ubuntu-latest
+    env:
+      CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
     strategy:
       matrix:
         node-version: [20, 22, 24]
     
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout pull request
+        if: github.event_name == 'pull_request'
+        run: |
+          git init .
+          git remote add origin "https://github.com/${{ github.repository }}.git"
+          git fetch --no-tags --prune --depth=1 origin \
+            "+refs/pull/${{ github.event.pull_request.number }}/merge:refs/remotes/pull/${{ github.event.pull_request.number }}/merge"
+          git checkout --progress --force "refs/remotes/pull/${{ github.event.pull_request.number }}/merge"
+
+      - name: Checkout branch
+        if: github.event_name != 'pull_request'
+        uses: actions/checkout@v4
       
       - uses: actions/setup-node@v4
         with:
@@ -31,8 +44,15 @@ jobs:
       - name: Type check
         run: npm run typecheck
         
+      - name: Run tests with coverage
+        if: matrix.node-version == '20'
+        run: npm run test:coverage -- --run
+        env:
+          GOOGLE_API_KEY: dummy_key_for_tests
+
       - name: Run tests
-        run: npm run test
+        if: matrix.node-version != '20'
+        run: npm run test -- --run
         env:
           GOOGLE_API_KEY: dummy_key_for_tests
         
@@ -40,14 +60,25 @@ jobs:
         run: npm run build
         
       - name: Upload coverage reports
-        if: matrix.node-version == '20'
-        uses: codecov/codecov-action@v3
+        if: matrix.node-version == '20' && env.CODECOV_TOKEN != ''
+        uses: codecov/codecov-action@v5
 
   security:
     name: Security Audit
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout pull request
+        if: github.event_name == 'pull_request'
+        run: |
+          git init .
+          git remote add origin "https://github.com/${{ github.repository }}.git"
+          git fetch --no-tags --prune --depth=1 origin \
+            "+refs/pull/${{ github.event.pull_request.number }}/merge:refs/remotes/pull/${{ github.event.pull_request.number }}/merge"
+          git checkout --progress --force "refs/remotes/pull/${{ github.event.pull_request.number }}/merge"
+
+      - name: Checkout branch
+        if: github.event_name != 'pull_request'
+        uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
           node-version: '20'
