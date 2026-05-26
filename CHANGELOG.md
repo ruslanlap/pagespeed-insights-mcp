@@ -1,3 +1,10 @@
+## [1.1.3](https://github.com/ruslanlap/pagespeed-insights-mcp/compare/v1.1.2...v1.1.3) (2026-05-26)
+
+
+### Bug Fixes
+
+* **publish:** repair dual-registry publish so public npm gets new versions ([4d54414](https://github.com/ruslanlap/pagespeed-insights-mcp/commit/4d54414df01a1d8cdb396b81391218733ecec6b8))
+
 ## [1.1.2](https://github.com/ruslanlap/pagespeed-insights-mcp/compare/v1.1.1...v1.1.2) (2026-05-26)
 
 
