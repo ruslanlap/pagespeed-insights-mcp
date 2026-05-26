@@ -121,9 +121,6 @@ npm install -g pagespeed-insights-mcp
 
 # Or use without installation
 npx pagespeed-insights-mcp
-
-# Specific version
-npm install -g pagespeed-insights-mcp@1.0.6
 ```
 
 #### From GitHub Packages
@@ -131,9 +128,6 @@ npm install -g pagespeed-insights-mcp@1.0.6
 # First configure authentication (see GITHUB_PACKAGES.md for details)
 # Then install globally
 npm install -g @ruslanlap/pagespeed-insights-mcp
-
-# Or specific version
-npm install -g @ruslanlap/pagespeed-insights-mcp@1.0.6
 ```
 
 > **Note:** This package is available on both npm and GitHub Packages.
@@ -716,7 +710,16 @@ Ensure the `GOOGLE_API_KEY` environment variable is set in your Claude Desktop c
 Check if PageSpeed Insights API is enabled in your Google Cloud project.
 
 ### "Invalid URL"
-Ensure the URL includes the protocol (http:// or https://).
+Ensure the URL includes the protocol — only `http://` and `https://` are accepted. Other schemes (`file://`, `ftp://`, `javascript:`, etc.) are rejected at the schema level.
+
+## Requirements
+
+- Node.js **20 or later** (Node 18 is EOL since April 2025 and is no longer supported).
+- A Google API key with PageSpeed Insights and (optionally) Chrome UX Report APIs enabled.
+
+## Security
+
+Please report security issues privately — do **not** open a public issue. See [SECURITY.md](./SECURITY.md) for the disclosure policy and operator hardening notes.
 
 ## Acknowledgments
 
