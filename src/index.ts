@@ -9,6 +9,7 @@ import {
 } from "@modelcontextprotocol/sdk/types.js";
 import { randomUUID } from "crypto";
 import { createRequire } from "module";
+import { fileURLToPath } from "url";
 import { validateEnv } from "./env.js";
 import { getLogger, createRequestLogger } from "./logger.js";
 import { PageSpeedClient } from "./pagespeed-client.js";
@@ -27,7 +28,7 @@ import type { PageSpeedInsightsResponse, CruxRecord, ComparisonResult } from "./
 
 const pkg = createRequire(import.meta.url)("../package.json") as { version: string };
 
-class PageSpeedInsightsServer {
+export class PageSpeedInsightsServer {
   private server: Server;
   private client: PageSpeedClient;
   private recommendationsEngine: PerformanceRecommendationsEngine;
@@ -1608,8 +1609,22 @@ class PageSpeedInsightsServer {
   }
 }
 
-const server = new PageSpeedInsightsServer();
-server.start().catch((error) => {
-  console.error("Server failed to start:", error);
-  process.exit(1);
-});
+// Only auto-start when this file is the process entry point. When imported
+// by tests the autostart is skipped, so the suite can construct the server
+// without a real stdio transport hanging around.
+const isMain = (() => {
+  if (!process.argv[1]) return false;
+  try {
+    return fileURLToPath(import.meta.url) === process.argv[1];
+  } catch {
+    return false;
+  }
+})();
+
+if (isMain) {
+  const server = new PageSpeedInsightsServer();
+  server.start().catch((error) => {
+    console.error("Server failed to start:", error);
+    process.exit(1);
+  });
+}
