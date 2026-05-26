@@ -26,13 +26,17 @@ export class PageSpeedClient {
     this.limiter = pLimit(env.MAX_CONCURRENCY);
   }
 
+  // Strip the API key out of anything that may end up in logs or error traces.
+  private redact(text: string): string {
+    return text.replaceAll(this.apiKey, "[REDACTED]");
+  }
 
   private async makeRequest(url: string, correlationId: string): Promise<any> {
     const logger = createRequestLogger(correlationId, "psi-request");
-    
+
     return pRetry(
       async (attempt) => {
-        logger.debug({ attempt, url }, "Making PSI request");
+        logger.debug({ attempt, url: this.redact(url) }, "Making PSI request");
         
         const controller = new AbortController();
         const timeoutId = setTimeout(() => controller.abort(), this.timeout);
@@ -70,7 +74,7 @@ export class PageSpeedClient {
         } catch (error) {
           clearTimeout(timeoutId);
           const errorMessage = error instanceof Error ? error.message : "Unknown error";
-          logger.warn({ attempt, error: errorMessage }, "PSI request failed");
+          logger.warn({ attempt, error: this.redact(errorMessage) }, "PSI request failed");
           throw error;
         }
       },
@@ -178,7 +182,7 @@ export class PageSpeedClient {
       } catch (error) {
         clearTimeout(timeoutId);
         const errorMessage = error instanceof Error ? error.message : "Unknown error";
-        logger.warn({ error: errorMessage }, "CrUX request failed");
+        logger.warn({ error: this.redact(errorMessage) }, "CrUX request failed");
         throw error;
       }
     });

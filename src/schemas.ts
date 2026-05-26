@@ -1,6 +1,19 @@
 import { z } from "zod";
 
-export const UrlSchema = z.string().url("Must be a valid URL");
+export const UrlSchema = z
+  .string()
+  .url("Must be a valid URL")
+  .refine(
+    (value) => {
+      try {
+        const { protocol } = new URL(value);
+        return protocol === "http:" || protocol === "https:";
+      } catch {
+        return false;
+      }
+    },
+    { message: "URL must use http:// or https:// scheme" },
+  );
 
 export const StrategySchema = z.enum(["mobile", "desktop"]).default("mobile");
 
