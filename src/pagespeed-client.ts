@@ -1,6 +1,7 @@
 import fetch from "node-fetch";
 import pRetry from "p-retry";
 import pLimit from "p-limit";
+import { createRequire } from "module";
 import { getEnv } from "./env.js";
 import { createRequestLogger } from "./logger.js";
 import { cache, createPSICacheKey, createCruxCacheKey } from "./cache.js";
@@ -9,6 +10,9 @@ import type {
   CruxSummaryInput,
   PageSpeedInsightsResponse 
 } from "./types.js";
+
+const pkg = createRequire(import.meta.url)("../package.json") as { version: string };
+const USER_AGENT = `pagespeed-insights-mcp/${pkg.version}`;
 
 export class PageSpeedClient {
   private readonly apiKey: string;
@@ -45,7 +49,7 @@ export class PageSpeedClient {
           const response = await fetch(url, {
             signal: controller.signal,
             headers: {
-              "User-Agent": "pagespeed-insights-mcp/1.0.0",
+              "User-Agent": USER_AGENT,
             },
           });
           
@@ -161,7 +165,7 @@ export class PageSpeedClient {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
-            "User-Agent": "pagespeed-insights-mcp/1.0.0",
+            "User-Agent": USER_AGENT,
           },
           body: JSON.stringify(requestBody),
           signal: controller.signal,

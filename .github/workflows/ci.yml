@@ -100,12 +100,15 @@ jobs:
 
       - name: Dual-publish to Registries
         run: |
-          if git describe --tags --exact-match HEAD >/dev/null 2>&1; then
-            echo "🚀 New release tag found! Running dual-publish..."
+          # After semantic-release, HEAD points to the release commit (if a release was created).
+          # Derive the expected tag from package.json and verify HEAD is exactly on it.
+          RELEASE_TAG="v$(node -p "require('./package.json').version")"
+          if git describe --tags --exact-match HEAD 2>/dev/null | grep -qF "$RELEASE_TAG"; then
+            echo "🚀 Release $RELEASE_TAG created — running dual-publish..."
             chmod +x ./publish.sh
             ./publish.sh
           else
-            echo "ℹ️ No new release tag on this commit. Skipping publish."
+            echo "ℹ️ No new release (HEAD is not tagged $RELEASE_TAG). Skipping publish."
           fi
         env:
           GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
