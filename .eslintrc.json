@@ -1,7 +1,10 @@
 {
   "root": true,
+  "parser": "@typescript-eslint/parser",
+  "plugins": ["@typescript-eslint"],
   "extends": [
-    "eslint:recommended"
+    "eslint:recommended",
+    "plugin:@typescript-eslint/recommended"
   ],
   "parserOptions": {
     "ecmaVersion": 2022,
@@ -11,8 +14,11 @@
     "node": true,
     "es2022": true
   },
+  "ignorePatterns": ["dist/", "node_modules/", "*.js"],
   "rules": {
-    "no-unused-vars": "warn",
+    "no-unused-vars": "off",
+    "@typescript-eslint/no-unused-vars": ["warn", { "argsIgnorePattern": "^_", "varsIgnorePattern": "^_" }],
+    "@typescript-eslint/no-explicit-any": "off",
     "prefer-const": "error",
     "no-console": ["warn", { "allow": ["warn", "error"] }]
   }

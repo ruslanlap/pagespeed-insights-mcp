@@ -1,6 +1,5 @@
 import type {
   PageSpeedInsightsResponse,
-  LighthouseAudit,
   ElementNode,
   NetworkRequest,
   JavaScriptExecutionItem,

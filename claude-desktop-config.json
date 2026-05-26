@@ -1,21 +1,11 @@
 {
   "mcpServers": {
-    "Context7": {
+    "pagespeed-insights": {
       "command": "npx",
-      "args": ["-y", "@upstash/context7-mcp"]
-    },
-    "pagespeed": {
-      "command": "npx",
-      "args": ["pagespeed-insights-mcp"],
+      "args": ["-y", "@ruslanlap/pagespeed-insights-mcp"],
       "env": {
-        "GOOGLE_API_KEY": "here"
+        "GOOGLE_API_KEY": "YOUR_GOOGLE_API_KEY_HERE"
       }
-    }
-  },
-  "mcp": {
-    "pagespeed": {
-      "run-pagespeed": "analyze_page_speed",
-      "get-performance-summary": "get_performance_summary"
     }
   }
 }

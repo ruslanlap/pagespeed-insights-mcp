@@ -1,5 +1,4 @@
 import { getLogger } from "./logger.js";
-import type { PageSpeedInsightsResponse, CruxRecord } from "./types.js";
 
 const logger = getLogger();
 

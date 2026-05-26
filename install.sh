@@ -49,8 +49,9 @@ fi
 print_status "Node.js version $NODE_VERSION detected"
 
 # Install the MCP server globally
-print_info "Installing pagespeed-insights-mcp globally..."
-npm install -g pagespeed-insights-mcp
+PACKAGE_NAME="@ruslanlap/pagespeed-insights-mcp"
+print_info "Installing ${PACKAGE_NAME} globally..."
+npm install -g "${PACKAGE_NAME}"
 
 print_status "MCP server installed successfully!"
 
