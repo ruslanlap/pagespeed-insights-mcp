@@ -1,0 +1,51 @@
+name: Manual Publish
+
+# Allows re-running the dual-publish step after fixing NPM_TOKEN credentials
+# without needing to trigger a new semantic-release.
+on:
+  workflow_dispatch:
+    inputs:
+      dry_run:
+        description: "Dry run (print what would be published without actually publishing)"
+        required: false
+        default: "false"
+        type: boolean
+
+jobs:
+  publish:
+    name: Dual-publish to Registries
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          token: ${{ secrets.GH_TOKEN }}
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          registry-url: "https://registry.npmjs.org"
+          cache: "npm"
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build project
+        run: npm run build
+
+      - name: Publish (dry run)
+        if: ${{ inputs.dry_run == 'true' }}
+        run: |
+          VERSION=$(node -p "require('./package.json').version")
+          echo "Would publish pagespeed-insights-mcp@$VERSION and @ruslanlap/pagespeed-insights-mcp@$VERSION"
+          npm pack --dry-run
+
+      - name: Dual-publish to Registries
+        if: ${{ inputs.dry_run != 'true' }}
+        run: |
+          chmod +x ./publish.sh
+          ./publish.sh
+        env:
+          GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
+          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}

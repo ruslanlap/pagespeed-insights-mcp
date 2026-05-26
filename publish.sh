@@ -46,7 +46,15 @@ echo "🚀 Publishing $PUBLIC_NAME@$VERSION to public npm..."
 # `npm pkg` does proper JSON edits — no sed escaping pitfalls.
 npm pkg set "name=$PUBLIC_NAME"
 npm pkg delete publishConfig
-npm publish --access=public --registry=https://registry.npmjs.org/
+
+# Idempotent: skip if this exact version already exists on npm.
+if npm view "${PUBLIC_NAME}@${VERSION}" version --registry=https://registry.npmjs.org 2>/dev/null | grep -qF "$VERSION"; then
+  echo "⚠️  ${PUBLIC_NAME}@${VERSION} already on npm — skipping."
+else
+  # --ignore-scripts: pre-publish lifecycle scripts (lint/test/build) already
+  # ran in CI; skipping them here avoids re-running tests without GOOGLE_API_KEY.
+  npm publish --access=public --registry=https://registry.npmjs.org/ --ignore-scripts
+fi
 
 # ── 2. GitHub Packages (scoped) ─────────────────────────────────────────
 echo "🔄 Restoring canonical package.json for GitHub Packages step..."
@@ -54,7 +62,12 @@ mv -f package.json.backup package.json
 cp package.json package.json.backup  # re-stash so the trap still has a copy
 
 echo "🚀 Publishing $SCOPED_NAME@$VERSION to GitHub Packages..."
-npm publish
+# Idempotent: skip if this exact version already exists on GitHub Packages.
+if npm view "${SCOPED_NAME}@${VERSION}" version 2>/dev/null | grep -qF "$VERSION"; then
+  echo "⚠️  ${SCOPED_NAME}@${VERSION} already on GitHub Packages — skipping."
+else
+  npm publish --ignore-scripts
+fi
 
 # ── Done ────────────────────────────────────────────────────────────────
 # Trap restores package.json on exit; nothing more to do here.
