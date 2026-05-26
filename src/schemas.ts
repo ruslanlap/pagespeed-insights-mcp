@@ -12,20 +12,23 @@ export const UrlSchema = z
         return false;
       }
     },
-    { message: "URL must use http:// or https:// scheme" },
+    { message: "URL must use http:// or https:// scheme" }
   );
 
 export const StrategySchema = z.enum(["mobile", "desktop"]).default("mobile");
 
 export const CategorySchema = z.enum([
   "performance",
-  "accessibility", 
+  "accessibility",
   "best-practices",
   "seo",
-  "pwa"
+  "pwa",
 ]);
 
-export const LocaleSchema = z.string().regex(/^[a-z]{2}(-[A-Z]{2})?$/, "Invalid locale format").default("en");
+export const LocaleSchema = z
+  .string()
+  .regex(/^[a-z]{2}(-[A-Z]{2})?$/, "Invalid locale format")
+  .default("en");
 
 export const AnalyzePageSpeedSchema = z.object({
   url: UrlSchema,
@@ -46,7 +49,7 @@ export const CruxSummarySchema = z.object({
 
 export const CompareUrlsSchema = z.object({
   urlA: UrlSchema,
-  urlB: UrlSchema, 
+  urlB: UrlSchema,
   strategy: StrategySchema,
   categories: z.array(CategorySchema).optional().default(["performance"]),
 });
@@ -58,38 +61,8 @@ export const BatchAnalyzeSchema = z.object({
   locale: LocaleSchema,
 });
 
-export const PaginationSchema = z.object({
-  page: z.number().int().min(1).default(1),
-  pageSize: z.number().int().min(1).max(50).default(10),
-});
-
-export const NetworkAnalysisSchema = z.object({
-  url: UrlSchema,
-  strategy: StrategySchema,
-  page: z.number().int().min(1).default(1),
-  pageSize: z.number().int().min(1).max(50).default(10),
-});
-
-export const JavaScriptAnalysisSchema = z.object({
-  url: UrlSchema,
-  strategy: StrategySchema,
-  page: z.number().int().min(1).default(1),
-  pageSize: z.number().int().min(1).max(50).default(10),
-});
-
-export const FullAuditSchema = z.object({
-  url: UrlSchema,
-  strategy: StrategySchema,
-  categories: z.array(CategorySchema).optional().default(["performance", "accessibility", "best-practices", "seo"]),
-  page: z.number().int().min(1).default(1),
-  pageSize: z.number().int().min(1).max(50).default(10),
-});
-
 export type AnalyzePageSpeedInput = z.infer<typeof AnalyzePageSpeedSchema>;
 export type PerformanceSummaryInput = z.infer<typeof PerformanceSummarySchema>;
 export type CruxSummaryInput = z.infer<typeof CruxSummarySchema>;
 export type CompareUrlsInput = z.infer<typeof CompareUrlsSchema>;
 export type BatchAnalyzeInput = z.infer<typeof BatchAnalyzeSchema>;
-export type NetworkAnalysisInput = z.infer<typeof NetworkAnalysisSchema>;
-export type JavaScriptAnalysisInput = z.infer<typeof JavaScriptAnalysisSchema>;
-export type FullAuditInput = z.infer<typeof FullAuditSchema>;
