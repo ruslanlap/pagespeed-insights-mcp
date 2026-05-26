@@ -8,6 +8,7 @@ import {
   Tool,
 } from "@modelcontextprotocol/sdk/types.js";
 import { randomUUID } from "crypto";
+import { createRequire } from "module";
 import { validateEnv } from "./env.js";
 import { getLogger, createRequestLogger } from "./logger.js";
 import { PageSpeedClient } from "./pagespeed-client.js";
@@ -24,6 +25,8 @@ import {
 } from "./schemas.js";
 import type { PageSpeedInsightsResponse, CruxRecord, ComparisonResult } from "./types.js";
 
+const pkg = createRequire(import.meta.url)("../package.json") as { version: string };
+
 class PageSpeedInsightsServer {
   private server: Server;
   private client: PageSpeedClient;
@@ -37,7 +40,7 @@ class PageSpeedInsightsServer {
     this.server = new Server(
       {
         name: "pagespeed-insights-mcp",
-        version: "1.0.6",
+        version: pkg.version,
       },
       {
         capabilities: {

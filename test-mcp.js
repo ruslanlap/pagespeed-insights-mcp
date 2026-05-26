@@ -3,12 +3,17 @@
 import { spawn } from 'child_process';
 import { createInterface } from 'readline';
 
-// Start the MCP server
+if (!process.env.GOOGLE_API_KEY) {
+  console.error('❌ GOOGLE_API_KEY environment variable is required');
+  console.error('   Set it before running this script, e.g.:');
+  console.error('     macOS/Linux:  export GOOGLE_API_KEY="your-key"');
+  console.error('     Windows PS:   $env:GOOGLE_API_KEY="your-key"');
+  process.exit(1);
+}
+
+// Start the MCP server (inherits GOOGLE_API_KEY from current env)
 const server = spawn('node', ['dist/index.js'], {
-  env: {
-    ...process.env,
-    GOOGLE_API_KEY: 'AIzaSjAD7mURoGVIUcFcAizg' // Replace with your actual API key
-  }
+  env: process.env
 });
 
 // Create readline interface for server's stdout
