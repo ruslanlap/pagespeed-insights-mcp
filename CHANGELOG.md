@@ -1,12 +1,3 @@
-## [1.1.1](https://github.com/ruslanlap/pagespeed-insights-mcp/compare/v1.1.0...v1.1.1) (2026-05-26)
-
-
-### Bug Fixes
-
-* **ci:** make PR checkout and coverage upload reliable ([c9faa56](https://github.com/ruslanlap/pagespeed-insights-mcp/commit/c9faa5665c1fcac9cf26bc32100eab715c6c5637))
-* **docs:** publish demo folder to GitHub Pages ([f41cd5e](https://github.com/ruslanlap/pagespeed-insights-mcp/commit/f41cd5ec0d5caa01e15a7c67c6a6fd530cccbc33))
-* **security:** close production npm audit findings and harden inputs ([8f24f9e](https://github.com/ruslanlap/pagespeed-insights-mcp/commit/8f24f9e1b19cb48870194fa461eeb48df1a03320))
-
 ## [1.1.1](https://github.com/ruslanlap/pagespeed-insights-mcp/compare/v1.1.0...v1.1.1) (2026-02-24)
 
 
