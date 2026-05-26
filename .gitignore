@@ -51,3 +51,6 @@ __pycache__/
 
 # Documentation
 site/
+
+# Serena
+.serena/
