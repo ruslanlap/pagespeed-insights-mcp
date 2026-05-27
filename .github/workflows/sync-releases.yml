@@ -1,0 +1,41 @@
+name: Sync Missing Releases
+
+# Manual trigger to synchronize past missing versions to public NPM & GitHub Packages
+on:
+  workflow_dispatch:
+    inputs:
+      dry_run:
+        description: "Dry run (scan and report missing versions without publishing)"
+        required: false
+        default: "false"
+        type: boolean
+
+jobs:
+  sync:
+    name: Sync Registries
+    runs-on: ubuntu-latest
+    env:
+      GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
+      NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          token: ${{ secrets.GH_TOKEN }}
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: "npm"
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run Sync Script
+        run: |
+          chmod +x ./sync.sh
+          if [ "${{ inputs.dry_run }}" = "true" ]; then
+            export DRY_RUN=true
+          fi
+          ./sync.sh
