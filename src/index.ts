@@ -8,6 +8,7 @@ import {
   Tool,
 } from "@modelcontextprotocol/sdk/types.js";
 import { randomUUID } from "crypto";
+import { realpathSync } from "fs";
 import { createRequire } from "module";
 import { fileURLToPath } from "url";
 import { validateEnv } from "./env.js";
@@ -1612,14 +1613,16 @@ export class PageSpeedInsightsServer {
 // Only auto-start when this file is the process entry point. When imported
 // by tests the autostart is skipped, so the suite can construct the server
 // without a real stdio transport hanging around.
-const isMain = (() => {
-  if (!process.argv[1]) return false;
+export function isProcessEntrypoint(moduleUrl: string, argv1?: string): boolean {
+  if (!argv1) return false;
   try {
-    return fileURLToPath(import.meta.url) === process.argv[1];
+    return realpathSync(fileURLToPath(moduleUrl)) === realpathSync(argv1);
   } catch {
     return false;
   }
-})();
+}
+
+const isMain = isProcessEntrypoint(import.meta.url, process.argv[1]);
 
 if (isMain) {
   const server = new PageSpeedInsightsServer();
