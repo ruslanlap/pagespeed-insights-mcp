@@ -1,3 +1,10 @@
+## [1.1.5](https://github.com/ruslanlap/pagespeed-insights-mcp/compare/v1.1.4...v1.1.5) (2026-05-27)
+
+
+### Bug Fixes
+
+* **ci:** fix dual-publish registry conflict and token management ([c1ca24c](https://github.com/ruslanlap/pagespeed-insights-mcp/commit/c1ca24c427541a3219b2bbfec4d455e22274c760))
+
 ## [1.1.4](https://github.com/ruslanlap/pagespeed-insights-mcp/compare/v1.1.3...v1.1.4) (2026-05-26)
 
 
