@@ -36,9 +36,9 @@ trap 'mv -f package.json.backup package.json 2>/dev/null || true' EXIT
 version_exists() {
   local pkg=$1
   local reg=$2
-  # We use --json and check if the result is empty or the version matches
-  # This avoids issues with exit codes and pipefail
-  npm view "$pkg@$VERSION" version --registry="$reg" --json 2>/dev/null | grep -qF "$VERSION"
+  local out
+  out=$(npm view "$pkg@$VERSION" version --registry="$reg" 2>/dev/null || true)
+  [ "$out" = "$VERSION" ]
 }
 
 # ── 1. Public npm (unscoped) ────────────────────────────────────────────
