@@ -1,17 +1,19 @@
 # PageSpeed Insights MCP Server
 
 <p align="center">
-  <img src="./1.png" alt="PageSpeed MCP chat demo" width="48%" />
-  <img src="./2.png" alt="PageSpeed MCP terminal demo" width="48%" />
+  <img src="https://raw.githubusercontent.com/ruslanlap/pagespeed-insights-mcp/master/1.png" alt="PageSpeed MCP chat demo" width="48%" />
+  <img src="https://raw.githubusercontent.com/ruslanlap/pagespeed-insights-mcp/master/2.png" alt="PageSpeed MCP terminal demo" width="48%" />
 </p>
 
 [![npm version](https://img.shields.io/npm/v/pagespeed-insights-mcp.svg)](https://www.npmjs.com/package/pagespeed-insights-mcp)
+[![npm downloads](https://img.shields.io/npm/dm/pagespeed-insights-mcp.svg)](https://www.npmjs.com/package/pagespeed-insights-mcp)
 [![GitHub Package Version](https://img.shields.io/github/package-json/v/ruslanlap/pagespeed-insights-mcp?label=github%20package)](https://github.com/ruslanlap/pagespeed-insights-mcp/pkgs/npm/pagespeed-insights-mcp)
+[![CI](https://github.com/ruslanlap/pagespeed-insights-mcp/actions/workflows/ci.yml/badge.svg)](https://github.com/ruslanlap/pagespeed-insights-mcp/actions/workflows/ci.yml)
 [![Documentation](https://img.shields.io/badge/docs-online-blue.svg)](https://ruslanlap.github.io/pagespeed-insights-mcp/)
 [![Live Demo](https://img.shields.io/badge/demo-live-blueviolet.svg)](https://ruslanlap.github.io/pagespeed-insights-mcp/demo/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-MCP server for Google PageSpeed Insights API that enables web page performance analysis directly through Claude.
+**16-tool MCP server** for Google PageSpeed Insights & Chrome UX Report APIs. Analyze, compare, and optimize web performance directly through Claude, Cursor, or any MCP-compatible AI client.
 
 > **🎬 [View Interactive Demo →](https://ruslanlap.github.io/pagespeed-insights-mcp/demo/)** — See all 16 tools in action with animated examples
 > Fallback URL: [https://ruslanlap.github.io/pagespeed-insights-mcp/demo.html](https://ruslanlap.github.io/pagespeed-insights-mcp/demo.html)
@@ -60,6 +62,9 @@ MCP server for Google PageSpeed Insights API that enables web page performance a
   - [🔌 Third-Party Script Impact](#-third-party-script-impact)
   - [📊 Full Lighthouse Audit](#-full-lighthouse-audit)
 - [🛠️ Available Tools](#available-tools)
+  - [Core Analysis](#core-analysis)
+  - [CrUX & Comparison](#crux--comparison)
+  - [Advanced Diagnostics](#advanced-diagnostics)
 - [📊 Complete Ratings for example.com](#complete-ratings-for-examplecom)
 - [💻 Development](#development)
 - [🔧 Troubleshooting](#troubleshooting)
@@ -452,6 +457,41 @@ Run a full audit including accessibility, SEO, and best practices for https://ex
 
 ## Available Tools
 
+16 tools across three categories:
+
+### Core Analysis
+
+| Tool | Description |
+|------|-------------|
+| `analyze_page_speed` | Full Lighthouse analysis — all metrics and audits |
+| `get_performance_summary` | Simplified key-metrics report |
+| `get_recommendations` | Prioritized recommendations with actionable fixes |
+| `full_report` | Unified report combining Lighthouse lab data with CrUX field data |
+| `batch_analyze` | Analyze up to 10 URLs in parallel with progress tracking |
+| `clear_cache` | Clear internal cache to force fresh API requests |
+
+### CrUX & Comparison
+
+| Tool | Description |
+|------|-------------|
+| `crux_summary` | Real-world Core Web Vitals from Chrome UX Report (field data) |
+| `compare_pages` | Side-by-side performance comparison between two URLs |
+
+### Advanced Diagnostics
+
+| Tool | Description |
+|------|-------------|
+| `get_visual_analysis` | Screenshots, filmstrip, and full-page captures |
+| `get_element_analysis` | LCP/CLS DOM elements causing performance issues |
+| `get_network_analysis` | Network waterfall — all requests with timing and size |
+| `get_javascript_analysis` | JS bootup time, main-thread work, unused & duplicated modules |
+| `get_image_optimization_details` | Images needing optimization with exact savings |
+| `get_render_blocking_details` | Render-blocking resources and critical request chains |
+| `get_third_party_impact` | Third-party script impact grouped by provider |
+| `get_full_audit` | Complete Lighthouse audit for all categories |
+
+---
+
 ### `analyze_page_speed`
 
 Complete page analysis with all Lighthouse metrics.
@@ -606,6 +646,69 @@ Get comprehensive audit results for all Lighthouse categories.
 - Detailed Core Web Vitals and metrics
 - Key failing audits for each category
 - Framework-specific advice (if applicable)
+
+### `crux_summary`
+
+Get real-world Core Web Vitals from the Chrome UX Report (field data from actual Chrome users).
+
+**Parameters:**
+
+- `url` (required): URL to analyze
+- `formFactor`: "PHONE", "DESKTOP", or "TABLET" (default: "PHONE")
+
+**Returns:**
+
+- Real-world LCP, CLS, FID, INP, TTFB distributions
+- Pass/fail thresholds per Core Web Vital
+- Percentile breakdowns (p75)
+
+### `compare_pages`
+
+Compare performance metrics between two URLs side-by-side.
+
+**Parameters:**
+
+- `urlA` (required): First URL to compare
+- `urlB` (required): Second URL to compare
+- `strategy`: "mobile" or "desktop" (default: "mobile")
+
+**Returns:**
+
+- Side-by-side Lighthouse score comparison
+- Metric-level diff for LCP, CLS, FCP, TBT, SI
+- Winner/loser indication per metric
+
+### `full_report`
+
+Unified report combining Lighthouse lab data with CrUX real-world field data.
+
+**Parameters:**
+
+- `url` (required): URL to analyze
+- `strategy`: "mobile" or "desktop" (default: "mobile")
+
+**Returns:**
+
+- Lighthouse lab scores + CrUX field data in one response
+- Lab vs. field comparison for Core Web Vitals
+- Actionable recommendations
+
+### `batch_analyze`
+
+Analyze performance for multiple URLs with progress tracking.
+
+**Parameters:**
+
+- `urls` (required): Array of URLs to analyze (max 10)
+- `strategy`: "mobile" or "desktop" (default: "mobile")
+
+**Returns:**
+
+- Performance scores for all URLs
+- Sorted ranking by score
+- Per-URL metric breakdown
+
+---
 
 ### Example
 
