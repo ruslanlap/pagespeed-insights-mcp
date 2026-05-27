@@ -23,6 +23,12 @@ if [ -z "${GITHUB_TOKEN:-}" ]; then
   exit 1
 fi
 
+if [ -z "${NPM_TOKEN:-}" ]; then
+  echo "❌ NPM_TOKEN is not set. Required for the public npm step."
+  echo "   Set it with: export NPM_TOKEN=your_npm_automation_token"
+  exit 1
+fi
+
 ORIGINAL_NAME=$(node -p "require('./package.json').name")
 if [ "$ORIGINAL_NAME" != "$SCOPED_NAME" ]; then
   echo "❌ package.json name is '$ORIGINAL_NAME', expected '$SCOPED_NAME'."
@@ -53,7 +59,7 @@ if npm view "${PUBLIC_NAME}@${VERSION}" version --registry=https://registry.npmj
 else
   # --ignore-scripts: pre-publish lifecycle scripts (lint/test/build) already
   # ran in CI; skipping them here avoids re-running tests without GOOGLE_API_KEY.
-  npm publish --access=public --registry=https://registry.npmjs.org/ --ignore-scripts
+  npm publish --access=public --registry=https://registry.npmjs.org --ignore-scripts
 fi
 
 # ── 2. GitHub Packages (scoped) ─────────────────────────────────────────
