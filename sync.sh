@@ -27,7 +27,7 @@ if ! git diff-index --quiet HEAD --; then
 fi
 
 # Save current branch/commit to restore later
-ORIGINAL_REF=$(git symbolic-ref -q HEAD || git rev-parse HEAD)
+ORIGINAL_REF=$(git symbolic-ref -q --short HEAD || git rev-parse HEAD)
 echo "💾 Saved original ref: $ORIGINAL_REF"
 
 # Helper to check if a version exists
