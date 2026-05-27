@@ -1,3 +1,10 @@
+## [1.1.6](https://github.com/ruslanlap/pagespeed-insights-mcp/compare/v1.1.5...v1.1.6) (2026-05-27)
+
+
+### Bug Fixes
+
+* **ci:** make publish.sh more robust and verbose ([b584e31](https://github.com/ruslanlap/pagespeed-insights-mcp/commit/b584e31eb1a870f2694d9e4a806980626c568029))
+
 ## [1.1.5](https://github.com/ruslanlap/pagespeed-insights-mcp/compare/v1.1.4...v1.1.5) (2026-05-27)
 
 
