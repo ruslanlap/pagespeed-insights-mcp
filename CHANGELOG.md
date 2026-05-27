@@ -1,3 +1,10 @@
+# [1.2.0](https://github.com/ruslanlap/pagespeed-insights-mcp/compare/v1.1.7...v1.2.0) (2026-05-27)
+
+
+### Features
+
+* **ci:** add sync-releases utility and workflow to synchronize missing package versions ([e5b4994](https://github.com/ruslanlap/pagespeed-insights-mcp/commit/e5b49944b8c08f267a7ac6d68e3ceed7efeb1255))
+
 ## [1.1.7](https://github.com/ruslanlap/pagespeed-insights-mcp/compare/v1.1.6...v1.1.7) (2026-05-27)
 
 
