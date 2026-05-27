@@ -1,3 +1,10 @@
+## [1.2.1](https://github.com/ruslanlap/pagespeed-insights-mcp/compare/v1.2.0...v1.2.1) (2026-05-27)
+
+
+### Bug Fixes
+
+* **entrypoint:** extract helper and add symlink regression tests ([2529ce6](https://github.com/ruslanlap/pagespeed-insights-mcp/commit/2529ce69b0c206fce297ce5cb66c7ab7964beffd))
+
 # [1.2.0](https://github.com/ruslanlap/pagespeed-insights-mcp/compare/v1.1.7...v1.2.0) (2026-05-27)
 
 
