@@ -1,6 +1,6 @@
 {
   "name": "@ruslanlap/pagespeed-insights-mcp",
-  "version": "1.1.6",
+  "version": "1.1.7",
   "description": "MCP server for Google PageSpeed Insights & Chrome UX Report APIs — 16 tools to analyze, compare, and optimize web performance with Claude, Cursor, or any MCP-compatible AI client",
   "main": "dist/index.js",
   "type": "module",

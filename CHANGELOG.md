@@ -1,3 +1,10 @@
+## [1.1.7](https://github.com/ruslanlap/pagespeed-insights-mcp/compare/v1.1.6...v1.1.7) (2026-05-27)
+
+
+### Bug Fixes
+
+* **ci:** fix version_exists helper to avoid false matches on npm view 404 errors ([9eba92a](https://github.com/ruslanlap/pagespeed-insights-mcp/commit/9eba92a7fe3881666877e223e31bf0e9f596ca32))
+
 ## [1.1.6](https://github.com/ruslanlap/pagespeed-insights-mcp/compare/v1.1.5...v1.1.6) (2026-05-27)
 
 
