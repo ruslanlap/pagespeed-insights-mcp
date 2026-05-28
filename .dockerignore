@@ -1,6 +1,6 @@
 # Dependencies & build artifacts
+# NOTE: do NOT ignore dist/ — the Dockerfile copies the compiled output (COPY dist/ ./dist/)
 node_modules
-dist
 coverage
 site
 src
