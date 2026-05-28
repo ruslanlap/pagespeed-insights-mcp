@@ -22,11 +22,11 @@ Run the automated test script that tests all tools:
 
 ```bash
 # Pass API key as argument
-node test-tools.js YOUR_GOOGLE_API_KEY
+node scripts/test-tools.js YOUR_GOOGLE_API_KEY
 
 # Or use environment variable
 export GOOGLE_API_KEY=your-api-key
-node test-tools.js
+node scripts/test-tools.js
 ```
 
 This script will:
@@ -97,7 +97,7 @@ Testing analyze_page_speed - Complete PageSpeed analysis...
 Run the manual test helper:
 
 ```bash
-./manual-test.sh
+./scripts/manual-test.sh
 ```
 
 This will:

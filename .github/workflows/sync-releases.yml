@@ -34,8 +34,8 @@ jobs:
 
       - name: Run Sync Script
         run: |
-          chmod +x ./sync.sh
+          chmod +x ./scripts/sync.sh
           if [ "${{ inputs.dry_run }}" = "true" ]; then
             export DRY_RUN=true
           fi
-          ./sync.sh
+          ./scripts/sync.sh

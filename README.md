@@ -1,8 +1,8 @@
 # PageSpeed Insights MCP Server
 
 <p align="center">
-  <img src="https://raw.githubusercontent.com/ruslanlap/pagespeed-insights-mcp/master/1.png" alt="PageSpeed MCP chat demo" width="48%" />
-  <img src="https://raw.githubusercontent.com/ruslanlap/pagespeed-insights-mcp/master/2.png" alt="PageSpeed MCP terminal demo" width="48%" />
+  <img src="https://raw.githubusercontent.com/ruslanlap/pagespeed-insights-mcp/master/assets/1.png" alt="PageSpeed MCP chat demo" width="48%" />
+  <img src="https://raw.githubusercontent.com/ruslanlap/pagespeed-insights-mcp/master/assets/2.png" alt="PageSpeed MCP terminal demo" width="48%" />
 </p>
 
 [![npm version](https://img.shields.io/npm/v/pagespeed-insights-mcp.svg)](https://www.npmjs.com/package/pagespeed-insights-mcp)
@@ -116,6 +116,36 @@ env = { GOOGLE_API_KEY = "your-google-api-key-here" }
 
 > **Note:** The `pino-pretty` package is required for proper log formatting. The above configurations ensure it is installed automatically via `npx`.
 
+### For Grok Build (config.toml)
+
+Add to `~/.grok/config.toml` (global) or `<repo>/.grok/config.toml` (project-scoped, higher priority):
+
+```toml
+[mcp_servers.pagespeed-insights]
+command = "npx"
+args = ["-y", "-p", "pino-pretty", "-p", "pagespeed-insights-mcp", "pagespeed-insights-mcp"]
+env = { GOOGLE_API_KEY = "${GOOGLE_API_KEY}" }
+enabled = true
+
+# Recommended companion professional MCPs (add once):
+# [mcp_servers.github]      — PRs, issues, code search
+# [mcp_servers.context7]    — fresh library docs (Upstash)
+# [mcp_servers.serena]      — semantic code intelligence (uses your .serena/ if present)
+```
+
+**Project-scoped example** (put in this repo's `.grok/config.toml` for local `dist/index.js` + tighter Serena):
+
+```toml
+[mcp_servers.pagespeed-insights]
+command = "node"
+args = ["/home/ubuntuvm/Projects/pagespeed-insights-mcp/dist/index.js"]
+env = { GOOGLE_API_KEY = "${GOOGLE_API_KEY}", NODE_ENV = "development" }
+```
+
+Verification inside Grok session:
+- `/mcps` (or Ctrl+L → MCP tab) → ensure pagespeed-insights shows "running"
+- Use tools: `pagespeed-insights__analyze_page`, `pagespeed-insights__get_crux_data` etc. (namespaced)
+
 ## 📚 Documentation
 
 We have comprehensive documentation available online.
@@ -163,7 +193,7 @@ export GOOGLE_API_KEY=your-google-api-key
 ```
 
 ```bash
-curl -sSL https://raw.githubusercontent.com/ruslanlap/pagespeed-insights-mcp/master/install.sh | bash
+curl -sSL https://raw.githubusercontent.com/ruslanlap/pagespeed-insights-mcp/master/scripts/install.sh | bash
 ```
 
 ### Option 2: Via npm or GitHub Packages
@@ -290,7 +320,7 @@ docker run -e GOOGLE_API_KEY=your-key pagespeed-insights-mcp
 
 ### Automatic Configuration
 
-If you used the install.sh script, the configuration was created automatically.
+If you used the `scripts/install.sh` script, the configuration was created automatically.
 
 ### Manual Configuration
 

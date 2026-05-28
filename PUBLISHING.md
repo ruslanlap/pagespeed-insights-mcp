@@ -22,7 +22,7 @@ We use a dual-publishing strategy to make the package available to the widest au
 
 ### Automated Publishing (Recommended)
 
-The project includes a `publish.sh` script that automates the dual-publish process. It:
+The project includes a `scripts/publish.sh` script that automates the dual-publish process. It:
 1. Builds the project.
 2. Temporarily renames the package to the unscoped name for the npm step.
 3. Publishes to npm.
@@ -31,12 +31,12 @@ The project includes a `publish.sh` script that automates the dual-publish proce
 
 Usage in CI:
 ```bash
-GITHUB_TOKEN=xxx NPM_TOKEN=xxx ./publish.sh
+GITHUB_TOKEN=xxx NPM_TOKEN=xxx ./scripts/publish.sh
 ```
 
 ### Manual Publishing
 
-If you need to publish manually, it's still recommended to use `publish.sh`. If you must do it step-by-step:
+If you need to publish manually, it's still recommended to use `scripts/publish.sh`. If you must do it step-by-step:
 
 1. **npm**:
    - Change name to `pagespeed-insights-mcp`.
@@ -50,6 +50,6 @@ If you need to publish manually, it's still recommended to use `publish.sh`. If 
 
 ## CI/CD Workflow
 
-The `.github/workflows/ci.yml` handles automatic publishing on pushes to `master` after a successful build and test run. It uses `semantic-release` to determine the next version and then calls `publish.sh`.
+The `.github/workflows/ci.yml` handles automatic publishing on pushes to `master` after a successful build and test run. It uses `semantic-release` to determine the next version and then calls `scripts/publish.sh`.
 
 For manual re-publishes (e.g., if a secret was misconfigured), use the **Manual Publish** workflow in GitHub Actions.

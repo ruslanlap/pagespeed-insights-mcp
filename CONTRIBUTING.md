@@ -35,8 +35,10 @@ pagespeed-mcp/
 │   ├── index.ts          # Main MCP server implementation
 │   └── types.ts          # TypeScript type definitions
 ├── examples/             # Configuration examples
+├── assets/               # README images
+├── scripts/              # install/publish/sync/test helper scripts
+│   └── install.sh        # Auto-installation script
 ├── dist/                 # Compiled JavaScript (generated)
-├── install.sh           # Auto-installation script
 ├── Dockerfile           # Docker container setup
 └── docker-compose.yml   # Docker Compose configuration
 ```

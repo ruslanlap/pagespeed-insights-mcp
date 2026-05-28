@@ -105,8 +105,8 @@ jobs:
           RELEASE_TAG="v$(node -p "require('./package.json').version")"
           if git describe --tags --exact-match HEAD 2>/dev/null | grep -qF "$RELEASE_TAG"; then
             echo "🚀 Release $RELEASE_TAG created — running dual-publish..."
-            chmod +x ./publish.sh
-            ./publish.sh
+            chmod +x ./scripts/publish.sh
+            ./scripts/publish.sh
           else
             echo "ℹ️ No new release (HEAD is not tagged $RELEASE_TAG). Skipping publish."
           fi

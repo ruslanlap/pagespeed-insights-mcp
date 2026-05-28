@@ -1,11 +1,84 @@
+# Dependencies & build artifacts
 node_modules
+dist
+coverage
+site
 src
+
+# Logs & debug
 *.log
+npm-debug.log*
+
+# Git & VCS
 .git
 .gitignore
+.gitattributes
+
+# Documentation & metadata (not needed in runtime image)
 README.md
+CONTRIBUTING.md
+CHANGELOG.md
+LICENSE
+SECURITY.md
+*.md
+docs/
+site/
+mkdocs.yml
+assets/
+scripts/docsbuild.sh
+
+# Config & IDE
 tsconfig.json
+tsconfig.*.json
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Environment & secrets (CRITICAL — never ship real credentials in image)
 .env
+.env.*
+.envrc
+.envrc.*
+*.env
+.env.local
+.env.*.local
+.env.docker
+.env.prod
+.env.staging
+.env.secrets
+docker-compose.override.yml
+docker-compose.*.override.yml
+secrets/
+**/*-key.json
+**/service-account*.json
+**/.aws/
+**/.config/gcloud/
+**/.azure/
+.npmrc
+.yarnrc*
+.netrc
+.git-credentials
+
+# OS & temp
 .DS_Store
+Thumbs.db
+tmp/
+temp/
+*.tmp
+.cache/
+
+# Scripts & tooling not needed at runtime
+scripts/
+test-*.js
+test-*.sh
+*.sh
+
+# TypeScript & build info
 *.tsbuildinfo
-install.sh
+*.ts
+
+# Serena / Claude local data
+.serena/
+.claude/
+.cursor/

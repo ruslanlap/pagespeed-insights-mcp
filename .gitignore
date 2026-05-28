@@ -19,12 +19,20 @@ yarn-error.log*
 pnpm-debug.log*
 lerna-debug.log*
 
-# Environment variables
+# Environment variables (zero tolerance — never commit real secrets)
 .env
+.env.*
+.envrc
+.envrc.*
+*.env
 .env.local
+.env.*.local
 .env.development.local
 .env.test.local
 .env.production.local
+.env.docker
+.env.prod
+.env.staging
 
 # OS Files
 .DS_Store
@@ -54,3 +62,122 @@ site/
 
 # Serena
 .serena/
+
+# =============================================================================
+# 🔐 SECRETS & CREDENTIALS (zero tolerance — never commit these)
+# =============================================================================
+
+# Cryptographic keys & certificates
+*.pem
+*.key
+*.p12
+*.pfx
+*.crt
+*.cer
+*.csr
+id_rsa
+id_rsa.*
+id_ed25519
+id_ed25519.*
+id_ecdsa
+id_ecdsa.*
+id_dsa
+*.asc
+*.gpg
+
+# SSH / GPG / Auth directories
+**/.ssh/
+**/.gnupg/
+**/.gnupg/**
+**/.pgp/
+
+# npm / yarn / pnpm authentication (tokens can live here)
+.npmrc
+.yarnrc.yml
+.yarnrc
+.pnpmrc
+**/.npm/_auth
+**/.npmrc
+
+# Git credentials & tokens
+.git-credentials
+.gitconfig.local
+.ghc/
+**/.git-credentials
+
+# Netrc (FTP/HTTP basic auth)
+.netrc
+.netrc.*
+
+# Cloud provider credentials (Google, AWS, Azure, etc.)
+**/.aws/
+**/.aws/**
+aws-credentials
+credentials
+**/.config/gcloud/
+**/.config/gcloud/**
+**/.azure/
+**/.azure/**
+**/.kube/config
+**/*-key.json
+**/service-account*.json
+**/serviceAccount*.json
+**/google-credentials*.json
+**/gcp-credentials*.json
+**/application_default_credentials.json
+
+# Docker / Compose secrets
+secrets/
+**/secrets/**
+docker-compose.override.yml
+docker-compose.*.override.yml
+*.env.secrets
+
+# Backup files that often contain secrets (manual copies)
+*.backup
+*.bak
+*.bak.*
+*~
+*.swp
+*.swo
+*.orig
+**/*-backup.*
+**/*-backup/
+**/*.backup.*
+
+# Temporary / cache files that may contain tokens during development
+tmp/
+temp/
+*.tmp
+*.temp
+.cache/
+**/.cache/
+**/.parcel-cache/
+**/.turbo/
+**/.next/
+
+# Local Claude / Cursor / AI tool configs that may contain API keys
+**/.claude/
+**/.cursor/
+**/.continue/
+**/.windsurf/
+**/.aider/
+.grok/
+**/.grok/
+.antigravitycli/
+**/.antigravitycli/
+
+# Local testing / manual scripts output that may leak keys
+test-results*.md
+test-results*.json
+manual-test-output/
+local-test-*.log
+
+# Extra safety: common secret filename patterns (use with care — may need ! exceptions later)
+**/*secret*.env
+**/*secret*.json
+**/*secret*.yaml
+**/*secret*.yml
+**/*credentials*.json
+**/*-apikey*
+**/google-api-key*
