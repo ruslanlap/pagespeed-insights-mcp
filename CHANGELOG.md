@@ -1,3 +1,10 @@
+## [1.2.2](https://github.com/ruslanlap/pagespeed-insights-mcp/compare/v1.2.1...v1.2.2) (2026-05-28)
+
+
+### Bug Fixes
+
+* **docker:** do not ignore dist/ in .dockerignore ([17dd3c8](https://github.com/ruslanlap/pagespeed-insights-mcp/commit/17dd3c89cb1d1f2339465cc8782bea8c347c63f0))
+
 ## [1.2.1](https://github.com/ruslanlap/pagespeed-insights-mcp/compare/v1.2.0...v1.2.1) (2026-05-27)
 
 
