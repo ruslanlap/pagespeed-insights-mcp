@@ -113,11 +113,7 @@ type HandlerResult = { content: TextContent[]; isError?: boolean };
 // Cast helpers so we can call the private handler methods directly. Each
 // handler is exercised the same way the SDK dispatch would, just without
 // going through the schema-driven request router.
-function callHandler(
-  server: unknown,
-  name: string,
-  args: unknown,
-): Promise<HandlerResult> {
+function callHandler(server: unknown, name: string, args: unknown): Promise<HandlerResult> {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const fn = (server as any)[name].bind(server);
   return fn(args);
@@ -224,12 +220,8 @@ describe("PageSpeedInsightsServer handlers", () => {
       expect(parsed.comparison.scores.urlB).toBe(60);
       expect(parsed.comparison.scores.difference).toBe(30);
       // LCP audit also compared — A has 1.5s (higher Lighthouse score) than B at 3.5s.
-      expect(parsed.comparison.metrics["largest-contentful-paint"].urlA).toBe(
-        "1.5 s",
-      );
-      expect(parsed.comparison.metrics["largest-contentful-paint"].urlB).toBe(
-        "3.5 s",
-      );
+      expect(parsed.comparison.metrics["largest-contentful-paint"].urlA).toBe("1.5 s");
+      expect(parsed.comparison.metrics["largest-contentful-paint"].urlB).toBe("3.5 s");
     });
   });
 

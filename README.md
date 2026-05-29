@@ -306,15 +306,27 @@ docker run -e GOOGLE_API_KEY=your-key pagespeed-insights-mcp
 
 ## 🔑 Getting Google API Key
 
-1. Go to [Google Cloud Console](https://console.cloud.google.com/)
-2. Create a new project or select an existing one
-3. Enable PageSpeed Insights API:
-   - Navigate to "APIs & Services" → "Library"
-   - Search for "PageSpeed Insights API" and enable it
+To use this MCP server, you need a Google API key with the PageSpeed Insights API enabled.
+
+> [!TIP]
+> **⚡ Quick Setup Link:** You can go directly to the **[Google Cloud Credentials Setup Page](https://console.cloud.google.com/apis/credentials/key/)** to quickly create a key in your project.
+
+### Step-by-Step Guide
+
+1. Go to the [Google Cloud Console](https://console.cloud.google.com/) (or use the [Quick Setup Link](https://console.cloud.google.com/apis/credentials/key/)).
+2. Create a new project or select an existing one.
+3. Enable **PageSpeed Insights API**:
+   - Navigate to **APIs & Services** → **Library**.
+   - Search for **"PageSpeed Insights API"** and click **Enable**.
 4. Create an API key:
-   - Go to "APIs & Services" → "Credentials"
-   - Click "Create Credentials" → "API Key"
-   - Copy the generated key
+   - Go to **APIs & Services** → **Credentials**.
+   - Click **Create Credentials** → **API Key**.
+   - Copy the generated key and set it as `GOOGLE_API_KEY` in your configuration.
+
+<p align="center">
+  <img src="assets/3.png" alt="Google Cloud Console API Key Setup" width="90%" />
+</p>
+
 
 ## ⚙️ Claude Desktop Configuration
 

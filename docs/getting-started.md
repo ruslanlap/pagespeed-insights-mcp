@@ -11,13 +11,22 @@ Before you begin, ensure you have the following:
 
 ### Obtaining a Google API Key
 
-1.  Go to the [Google Cloud Console](https://console.cloud.google.com/).
+To use the PageSpeed Insights MCP server, you need a Google API key with the PageSpeed Insights API enabled.
+
+!!! tip "⚡ Quick Setup Link"
+    You can go directly to the **[Google Cloud Credentials Setup Page](https://console.cloud.google.com/apis/credentials/key/)** to quickly create or manage API keys in your project.
+
+#### Step-by-Step Guide
+
+1.  Go to the [Google Cloud Console](https://console.cloud.google.com/) (or use the [Quick Setup Link](https://console.cloud.google.com/apis/credentials/key/)).
 2.  Create a new project or select an existing one.
 3.  Navigate to **APIs & Services** > **Library**.
-4.  Search for "PageSpeed Insights API" and enable it.
+4.  Search for **"PageSpeed Insights API"** and click **Enable**.
 5.  Go to **APIs & Services** > **Credentials**.
 6.  Click **Create Credentials** > **API Key**.
 7.  Copy the generated key.
+
+![Google Cloud Console API Key Setup](assets/3.png)
 
 ## Installation
 

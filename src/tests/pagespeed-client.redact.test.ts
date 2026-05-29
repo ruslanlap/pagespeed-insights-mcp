@@ -65,8 +65,8 @@ describe("PageSpeedClient redaction", () => {
           category: ["performance"],
           locale: "en",
         },
-        "corr-redact-1",
-      ),
+        "corr-redact-1"
+      )
     ).rejects.toThrow();
 
     // The PSI request logger.warn call should exist and must NOT contain the key.
@@ -92,7 +92,7 @@ describe("PageSpeedClient redaction", () => {
         category: ["performance"],
         locale: "en",
       },
-      "corr-redact-2",
+      "corr-redact-2"
     );
 
     const allSerialised = JSON.stringify(logCalls);
@@ -106,7 +106,7 @@ describe("PageSpeedClient redaction", () => {
       .replyWithError(`crux blew up with key=${SECRET_KEY}`);
 
     await expect(
-      client.getCruxData({ url: "https://example.com" }, "corr-redact-3"),
+      client.getCruxData({ url: "https://example.com" }, "corr-redact-3")
     ).rejects.toThrow();
 
     const warnCalls = logCalls.filter((c) => c.level === "warn");
