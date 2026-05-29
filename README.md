@@ -12,6 +12,7 @@
 [![Documentation](https://img.shields.io/badge/docs-online-blue.svg)](https://ruslanlap.github.io/pagespeed-insights-mcp/)
 [![Live Demo](https://img.shields.io/badge/demo-live-blueviolet.svg)](https://ruslanlap.github.io/pagespeed-insights-mcp/demo/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![Agent Tool Intel: Grade A](https://agent-tool-intel-production.up.railway.app/badge/ruslanlap%2Fpagespeed-insights-mcp)](https://agent-tool-intel-production.up.railway.app)
 
 **16-tool MCP server** for Google PageSpeed Insights & Chrome UX Report APIs. Analyze, compare, and optimize web performance directly through Claude, Cursor, or any MCP-compatible AI client.
 
