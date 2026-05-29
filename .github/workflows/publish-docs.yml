@@ -4,6 +4,12 @@ on:
     branches:
       - master
       - docs
+    paths:
+      - 'docs/**'
+      - 'mkdocs.yml'
+      - 'demo/**'
+      - 'README.md'
+      - '.github/workflows/publish-docs.yml'
 
 permissions:
   contents: write
