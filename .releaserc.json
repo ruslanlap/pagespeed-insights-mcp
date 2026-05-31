@@ -1,7 +1,21 @@
 {
   "branches": ["master"],
   "plugins": [
-    "@semantic-release/commit-analyzer",
+    [
+      "@semantic-release/commit-analyzer",
+      {
+        "releaseRules": [
+          { "type": "docs", "scope": "antigravity", "release": "patch" },
+          { "type": "docs", "scope": "integration", "release": "patch" },
+          { "type": "docs", "scope": "integrations", "release": "patch" },
+          { "type": "docs", "scope": "mcp-client", "release": "patch" },
+          { "type": "docs", "scope": "mcp-clients", "release": "patch" },
+          { "type": "docs", "scope": "configuration", "release": "patch" },
+          { "type": "docs", "scope": "config", "release": "patch" },
+          { "type": "docs", "scope": "examples", "release": "patch" }
+        ]
+      }
+    ],
     "@semantic-release/release-notes-generator",
     "@semantic-release/changelog",
     [
