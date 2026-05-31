@@ -1,6 +1,13 @@
 ## [1.2.3](https://github.com/ruslanlap/pagespeed-insights-mcp/compare/v1.2.2...v1.2.3) (2026-05-31)
 
 
+### Bug Fixes
+
+* **release:** publish antigravity v1.2.3 notes ([1b9b514](https://github.com/ruslanlap/pagespeed-insights-mcp/commit/1b9b514be2fc289a281693105c52b8b2744deba9))
+
+## [1.2.3](https://github.com/ruslanlap/pagespeed-insights-mcp/compare/v1.2.2...v1.2.3) (2026-05-31)
+
+
 ### Documentation
 
 * **antigravity:** add Google Antigravity MCP configuration example and README setup guide ([ed0feea](https://github.com/ruslanlap/pagespeed-insights-mcp/commit/ed0feea8018e6b879e0795e7140cfdb112a81c00))
