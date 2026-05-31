@@ -181,3 +181,7 @@ local-test-*.log
 **/*credentials*.json
 **/*-apikey*
 **/google-api-key*
+
+# Antigravity data
+.antigravitycli/
+mcp_config.json
