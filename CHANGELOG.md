@@ -1,3 +1,11 @@
+## [1.2.3](https://github.com/ruslanlap/pagespeed-insights-mcp/compare/v1.2.2...v1.2.3) (2026-05-31)
+
+
+### Documentation
+
+* **antigravity:** add Google Antigravity MCP configuration example and README setup guide ([ed0feea](https://github.com/ruslanlap/pagespeed-insights-mcp/commit/ed0feea8018e6b879e0795e7140cfdb112a81c00))
+* **release:** document user-facing release notes in README and patch-release rules for important integration docs
+
 ## [1.2.2](https://github.com/ruslanlap/pagespeed-insights-mcp/compare/v1.2.1...v1.2.2) (2026-05-28)
 
 

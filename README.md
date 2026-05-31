@@ -25,6 +25,7 @@
   - [Claude Desktop](#claude-desktop)
   - [Codex / OpenAI](#codex--openai)
 - [📚 Documentation](#-documentation)
+- [📝 Release Notes](#-release-notes)
 - [✨ Features](#-features)
   - [Core Features](#core-features)
   - [Advanced Analysis Tools (New!)](#advanced-analysis-tools-new)
@@ -159,6 +160,18 @@ We have comprehensive documentation available online.
 - [🏗️ **Architecture**](https://ruslanlap.github.io/pagespeed-insights-mcp/developers/architecture/)
 
 > You can also view the raw markdown files in the `docs/` directory or run `mkdocs serve` locally.
+
+## 📝 Release Notes
+
+Current release: **v1.2.3**.
+
+### v1.2.3 — Google Antigravity support
+
+- Added a Google Antigravity MCP configuration guide for `~/.gemini/config/mcp_config.json`.
+- Added an Antigravity-ready example configuration in [`examples/antigravity-config.json`](./examples/antigravity-config.json).
+- Tightened release automation so important MCP client integration documentation can trigger a patch release when commits use scoped conventional commit messages such as `docs(antigravity): ...`, `docs(integration): ...`, or `docs(config): ...`.
+
+For the complete release history, see [`CHANGELOG.md`](./CHANGELOG.md).
 
 ## ✨ Features
 
