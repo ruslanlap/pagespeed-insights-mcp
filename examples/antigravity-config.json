@@ -1,0 +1,18 @@
+{
+  "mcpServers": {
+    "pagespeed-insights": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "-p",
+        "pino-pretty",
+        "-p",
+        "pagespeed-insights-mcp",
+        "pagespeed-insights-mcp"
+      ],
+      "env": {
+        "GOOGLE_API_KEY": "YOUR_GOOGLE_API_KEY"
+      }
+    }
+  }
+}

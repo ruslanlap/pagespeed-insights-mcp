@@ -38,6 +38,7 @@
     - [For Claude Desktop](#for-claude-desktop-with-pino-pretty-logging)
     - [For Codex](#for-codex-with-pino-pretty-logging)
   - [Claude Desktop Configuration](#claude-desktop-configuration)
+  - [Google Antigravity](#google-antigravity)
   - [Option 3: Docker](#option-3-docker)
 - [🔑 Getting Google API Key](#-getting-google-api-key)
 - [⚙️ Claude Desktop Configuration](#-claude-desktop-configuration)
@@ -290,6 +291,24 @@ To use this MCP server with Claude Desktop, add the following to your Claude Des
       "args": ["-y", "-p", "pino-pretty", "-p", "pagespeed-insights-mcp", "pagespeed-insights-mcp"],
       "env": {
         "GOOGLE_API_KEY": "your-google-api-key-here"
+      }
+    }
+  }
+}
+```
+
+### Google Antigravity
+
+To use this MCP server with Google Antigravity, add the following configuration to your global settings file (`~/.gemini/config/mcp_config.json`):
+
+```json
+{
+  "mcpServers": {
+    "pagespeed-insights": {
+      "command": "npx",
+      "args": ["-y", "-p", "pino-pretty", "-p", "pagespeed-insights-mcp", "pagespeed-insights-mcp"],
+      "env": {
+        "GOOGLE_API_KEY": "YOUR_GOOGLE_API_KEY"
       }
     }
   }
