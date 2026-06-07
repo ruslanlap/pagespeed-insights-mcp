@@ -211,6 +211,13 @@ export GOOGLE_API_KEY=your-google-api-key
 curl -sSL https://raw.githubusercontent.com/ruslanlap/pagespeed-insights-mcp/master/scripts/install.sh | bash
 ```
 
+The installer uses the public npm package (`pagespeed-insights-mcp`) by default. To install the scoped GitHub Packages build instead, configure GitHub Packages authentication first and run:
+
+```bash
+curl -sSL https://raw.githubusercontent.com/ruslanlap/pagespeed-insights-mcp/master/scripts/install.sh | \
+  PAGESPEED_INSIGHTS_MCP_PACKAGE=@ruslanlap/pagespeed-insights-mcp bash
+```
+
 ### Option 2: Via npm or GitHub Packages
 
 #### From npm (Public Registry)
