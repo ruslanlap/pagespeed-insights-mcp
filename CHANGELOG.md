@@ -1,3 +1,10 @@
+## [1.2.4](https://github.com/ruslanlap/pagespeed-insights-mcp/compare/v1.2.3...v1.2.4) (2026-06-07)
+
+
+### Bug Fixes
+
+* **installer:** use public npm package by default ([363dbb3](https://github.com/ruslanlap/pagespeed-insights-mcp/commit/363dbb3c3ef8afdea7457a41325ea9b42d45d8e2))
+
 ## [1.2.3](https://github.com/ruslanlap/pagespeed-insights-mcp/compare/v1.2.2...v1.2.3) (2026-05-31)
 
 
