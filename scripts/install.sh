@@ -49,25 +49,30 @@ fi
 print_status "Node.js version $NODE_VERSION detected"
 
 # Install the MCP server globally
-PACKAGE_NAME="@ruslanlap/pagespeed-insights-mcp"
+#
+# The scoped package is published to GitHub Packages and requires registry
+# authentication. Use the public npm package by default so the curl | bash
+# quick-start works for unauthenticated users. Advanced users can override this
+# value, for example:
+#   PAGESPEED_INSIGHTS_MCP_PACKAGE=@ruslanlap/pagespeed-insights-mcp ./scripts/install.sh
+PACKAGE_NAME="${PAGESPEED_INSIGHTS_MCP_PACKAGE:-pagespeed-insights-mcp}"
 print_info "Installing ${PACKAGE_NAME} globally..."
 npm install -g "${PACKAGE_NAME}"
 
 print_status "MCP server installed successfully!"
 
-# Get the global npm bin directory
-NPM_BIN=$(npm bin -g)
-MCP_PATH="$NPM_BIN/pagespeed-insights-mcp"
+# Locate the installed binary. npm 11 removed `npm bin`, so prefer PATH and
+# fall back to the conventional global prefix bin directory.
+MCP_PATH=$(command -v pagespeed-insights-mcp 2>/dev/null || true)
+if [ -z "$MCP_PATH" ]; then
+    NPM_PREFIX=$(npm prefix -g)
+    MCP_PATH="$NPM_PREFIX/bin/pagespeed-insights-mcp"
+fi
 
 # Check if the binary exists
 if [ ! -f "$MCP_PATH" ]; then
-    print_warning "Binary not found at expected location. Trying alternative path..."
-    MCP_PATH=$(which pagespeed-insights-mcp 2>/dev/null || echo "")
-    
-    if [ -z "$MCP_PATH" ]; then
-        print_error "Could not find the installed MCP binary. Please check your npm global installation."
-        exit 1
-    fi
+    print_error "Could not find the installed MCP binary at $MCP_PATH. Please check your npm global installation."
+    exit 1
 fi
 
 print_status "MCP server binary located at: $MCP_PATH"
@@ -90,12 +95,21 @@ fi
 print_info "Detected platform: $PLATFORM"
 print_info "Claude Desktop config path: $CONFIG_PATH"
 
-# Prompt for Google API key
+# Prompt for Google API key when running interactively. In curl | bash usage,
+# stdin is the downloaded script, so use an existing GOOGLE_API_KEY environment
+# variable and avoid blocking or exiting on EOF.
 echo
 print_info "To use this MCP server, you need a Google API key for PageSpeed Insights."
 echo "Get one at: https://console.cloud.google.com/"
 echo
-read -p "Enter your Google API key (or press Enter to configure later): " API_KEY
+API_KEY="${GOOGLE_API_KEY:-}"
+if [ -n "$API_KEY" ]; then
+    print_status "Using GOOGLE_API_KEY from the current environment."
+elif [ -t 0 ]; then
+    read -r -p "Enter your Google API key (or press Enter to configure later): " API_KEY
+else
+    print_warning "No GOOGLE_API_KEY environment variable found; configure it later in your MCP client."
+fi
 
 # Create configuration snippet
 CONFIG_SNIPPET=$(cat <<EOF
@@ -140,21 +154,21 @@ echo '   "Analyze the performance of https://example.com"'
 echo
 print_status "Installation guide completed!"
 
-# Offer to create the config directory if it doesn't exist
+# Offer to create the config directory if it doesn't exist when running interactively
 CONFIG_DIR=$(dirname "$CONFIG_PATH")
-if [ ! -d "$CONFIG_DIR" ]; then
+if [ ! -d "$CONFIG_DIR" ] && [ -t 0 ]; then
     echo
-    read -p "Claude config directory doesn't exist. Create it? (y/N): " CREATE_DIR
+    read -r -p "Claude config directory doesn't exist. Create it? (y/N): " CREATE_DIR
     if [[ $CREATE_DIR =~ ^[Yy]$ ]]; then
         mkdir -p "$CONFIG_DIR"
         print_status "Created config directory: $CONFIG_DIR"
     fi
 fi
 
-# Offer to create/update the config file
-if [ -n "$API_KEY" ]; then
+# Offer to create/update the config file when running interactively
+if [ -n "$API_KEY" ] && [ -t 0 ]; then
     echo
-    read -p "Would you like to automatically update your Claude Desktop config? (y/N): " UPDATE_CONFIG
+    read -r -p "Would you like to automatically update your Claude Desktop config? (y/N): " UPDATE_CONFIG
     if [[ $UPDATE_CONFIG =~ ^[Yy]$ ]]; then
         if [ -f "$CONFIG_PATH" ]; then
             # Backup existing config
