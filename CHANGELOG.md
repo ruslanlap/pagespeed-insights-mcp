@@ -1,3 +1,10 @@
+## [1.2.5](https://github.com/ruslanlap/pagespeed-insights-mcp/compare/v1.2.4...v1.2.5) (2026-07-20)
+
+
+### Bug Fixes
+
+* **security:** resolve hono high-severity vulnerability via npm audit fix ([62a6d79](https://github.com/ruslanlap/pagespeed-insights-mcp/commit/62a6d79a1366e6a522f6c62ba2bfe515e65f252e))
+
 ## [1.2.4](https://github.com/ruslanlap/pagespeed-insights-mcp/compare/v1.2.3...v1.2.4) (2026-06-07)
 
 
