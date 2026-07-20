@@ -61,7 +61,7 @@
   "dependencies": {
     "@modelcontextprotocol/sdk": "^1.29.0",
     "node-fetch": "^3.3.2",
-    "p-limit": "^4.0.0",
+    "p-limit": "^7.3.0",
     "p-retry": "^6.1.0",
     "pino": "^8.17.2",
     "pino-pretty": "^10.3.1",
