@@ -1,3 +1,10 @@
+## [1.2.6](https://github.com/ruslanlap/pagespeed-insights-mcp/compare/v1.2.5...v1.2.6) (2026-07-20)
+
+
+### Bug Fixes
+
+* **ci:** bump release job Node version to 22 for semantic-release compatibility ([b945b86](https://github.com/ruslanlap/pagespeed-insights-mcp/commit/b945b869b04b48dc5b10c63d044a70809d3dd63c))
+
 ## [1.2.5](https://github.com/ruslanlap/pagespeed-insights-mcp/compare/v1.2.4...v1.2.5) (2026-07-20)
 
 
