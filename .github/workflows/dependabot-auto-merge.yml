@@ -1,0 +1,63 @@
+name: Dependabot Auto-Merge
+
+on:
+  pull_request:
+    branches: [master]
+
+permissions:
+  contents: write
+  pull-requests: write
+  checks: read
+
+jobs:
+  auto-merge:
+    if: github.actor == 'dependabot[bot]' || github.actor == 'app/dependabot'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Fetch Dependabot metadata
+        id: metadata
+        uses: dependabot/fetch-metadata@v2
+        with:
+          github-token: '${{ secrets.GITHUB_TOKEN }}'
+
+      - name: Enable auto-merge for safe updates
+        if: |
+          steps.metadata.outputs.update-type == 'version-update:semver-patch' ||
+          steps.metadata.outputs.update-type == 'version-update:semver-minor'
+        run: |
+          echo "Enabling auto-merge for ${{ steps.metadata.outputs.update-type }}..."
+          gh pr merge "$PR_URL" --auto --squash --delete-branch
+          echo "✅ Auto-merge enabled. PR will merge once all checks pass."
+        env:
+          PR_URL: ${{ github.event.pull_request.html_url }}
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Label major version bumps
+        if: steps.metadata.outputs.update-type == 'version-update:semver-major'
+        run: |
+          gh pr edit "$PR_URL" --add-label "major-bump"
+          gh pr comment "$PR_URL" --body "⚠️ **Major version bump** — manual review required. Auto-merge is NOT enabled. CI must pass before merging."
+        env:
+          PR_URL: ${{ github.event.pull_request.html_url }}
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  auto-close-on-failure:
+    if: github.actor == 'dependabot[bot]' || github.actor == 'app/dependabot'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Wait for CI checks
+        id: wait
+        uses: lewagon/wait-on-check-action@v1.3.4
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+          check-name: 'Test & Build (20)'
+          repo-token: ${{ secrets.GITHUB_TOKEN }}
+          wait-interval: 15
+
+      - name: Close PR if CI failed
+        if: failure()
+        run: |
+          gh pr close "$PR_URL" --delete-branch --comment "🔧 Auto-closed: CI checks failed. This dependency bump breaks the build and will need manual attention."
+        env:
+          PR_URL: ${{ github.event.pull_request.html_url }}
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
