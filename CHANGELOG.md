@@ -1,3 +1,10 @@
+## [1.2.7](https://github.com/ruslanlap/pagespeed-insights-mcp/compare/v1.2.6...v1.2.7) (2026-07-27)
+
+
+### Bug Fixes
+
+* **security:** resolve fast-uri high-severity vulnerability via npm audit fix ([18a5ed9](https://github.com/ruslanlap/pagespeed-insights-mcp/commit/18a5ed9429168a4bdf6ebd05f9efa05452cf42f1)), closes [hi#severity](https://github.com/hi/issues/severity)
+
 ## [1.2.6](https://github.com/ruslanlap/pagespeed-insights-mcp/compare/v1.2.5...v1.2.6) (2026-07-20)
 
 
