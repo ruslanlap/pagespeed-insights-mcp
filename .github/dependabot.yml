@@ -11,6 +11,8 @@ updates:
       - "dependencies"
     commit-message:
       prefix: "chore(deps)"
+    # Auto-approve patch and minor updates for safe auto-merge
+    auto-merge: true
     groups:
       # Group MCP SDK updates together
       mcp-sdk:
@@ -55,6 +57,7 @@ updates:
       - "ci"
     commit-message:
       prefix: "chore(ci)"
+    auto-merge: true
 
   # Docker
   - package-ecosystem: "docker"
