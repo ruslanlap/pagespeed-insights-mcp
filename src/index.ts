@@ -874,9 +874,11 @@ export class PageSpeedInsightsServer {
     summary += `**Form Factor:** ${record.key.formFactor}\n\n`;
 
     const cwvMetrics = {
-      "largest_contentful_paint": "Largest Contentful Paint",
-      "first_input_delay": "First Input Delay", 
-      "cumulative_layout_shift": "Cumulative Layout Shift",
+        "largest_contentful_paint": "Largest Contentful Paint",
+        "interaction_to_next_paint": "Interaction to Next Paint",
+        "cumulative_layout_shift": "Cumulative Layout Shift",
+        "experimental_time_to_first_byte": "Time to First Byte",
+        "first_contentful_paint": "First Contentful Paint",
     };
 
     summary += `## Core Web Vitals (Real User Data)\n`;
