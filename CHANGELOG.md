@@ -1,3 +1,10 @@
+# [1.3.0](https://github.com/ruslanlap/pagespeed-insights-mcp/compare/v1.2.8...v1.3.0) (2026-07-28)
+
+
+### Features
+
+* add workflow_dispatch for manual trigger ([f4a4283](https://github.com/ruslanlap/pagespeed-insights-mcp/commit/f4a4283f6d8bc15f990b78029d7eab536075b3b4))
+
 ## [1.2.8](https://github.com/ruslanlap/pagespeed-insights-mcp/compare/v1.2.7...v1.2.8) (2026-07-28)
 
 
