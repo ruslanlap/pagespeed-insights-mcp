@@ -1,3 +1,10 @@
+## [1.2.8](https://github.com/ruslanlap/pagespeed-insights-mcp/compare/v1.2.7...v1.2.8) (2026-07-28)
+
+
+### Bug Fixes
+
+* add INP, TTFB, FCP metrics to crux_summary output ([#56](https://github.com/ruslanlap/pagespeed-insights-mcp/issues/56)) ([5fdd78b](https://github.com/ruslanlap/pagespeed-insights-mcp/commit/5fdd78b0a56aa3bf9618d0dbba4c83b9ef1dbf91))
+
 ## [1.2.7](https://github.com/ruslanlap/pagespeed-insights-mcp/compare/v1.2.6...v1.2.7) (2026-07-27)
 
 
