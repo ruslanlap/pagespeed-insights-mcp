@@ -114,7 +114,6 @@ type HandlerResult = { content: TextContent[]; isError?: boolean };
 // handler is exercised the same way the SDK dispatch would, just without
 // going through the schema-driven request router.
 function callHandler(server: unknown, name: string, args: unknown): Promise<HandlerResult> {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const fn = (server as any)[name].bind(server);
   return fn(args);
 }

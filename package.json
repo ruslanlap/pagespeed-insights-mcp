@@ -71,17 +71,18 @@
     "@semantic-release/changelog": "^7.0.0",
     "@semantic-release/git": "^11.0.1",
     "@types/node": "^26.1.2",
-    "@types/supertest": "^6.0.2",
-    "@typescript-eslint/eslint-plugin": "^6.21.0",
-    "@typescript-eslint/parser": "^6.21.0",
-    "@vitest/coverage-v8": "^4.0.12",
+    "@types/supertest": "^7.2.1",
+    "@typescript-eslint/eslint-plugin": "^8.66.0",
+    "@typescript-eslint/parser": "^8.66.0",
+    "@vitest/coverage-v8": "^4.1.10",
     "eslint": "^10.8.0",
-    "nock": "^13.5.0",
+    "nock": "^14.0.17",
     "prettier": "^3.9.6",
     "semantic-release": "^25.0.8",
-    "tsx": "^4.6.0",
-    "typescript": "^5.3.0",
-    "vitest": "^4.0.12"
+    "tsx": "^4.23.1",
+    "typescript": "^5.8.0",
+    "typescript-eslint": "^8.66.0",
+    "vitest": "^4.1.10"
   },
   "engines": {
     "node": ">=20"
