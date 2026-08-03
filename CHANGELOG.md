@@ -1,3 +1,10 @@
+# [1.4.0](https://github.com/ruslanlap/pagespeed-insights-mcp/compare/v1.3.0...v1.4.0) (2026-08-03)
+
+
+### Features
+
+* add get_performance_map tool with Mermaid visualization ([5eef96d](https://github.com/ruslanlap/pagespeed-insights-mcp/commit/5eef96dec2a70b82fb7eec6fa91b5edc421047bf))
+
 # [1.3.0](https://github.com/ruslanlap/pagespeed-insights-mcp/compare/v1.2.8...v1.3.0) (2026-07-28)
 
 
