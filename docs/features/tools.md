@@ -121,4 +121,18 @@ Retrieves Chrome User Experience Report (CrUX) data.
 *   `formFactor` (string): "PHONE", "DESKTOP", or "TABLET".
 
 ### `clear_cache`
-Clears the internal cache to force fresh API requests for subsequent calls.
+Clears the internal cache to force fresh API requests for all subsequent analyses.
+
+### `get_performance_map`
+Generate a Mermaid flowchart visualizing the performance score, Core Web Vitals status (LCP, CLS, TBT, FCP, Speed Index), and top 5 optimization opportunities in a single visual map. Color-coded by pass/fail thresholds.
+
+**Parameters:**
+
+- `url` (required): URL of the page to analyze
+- `strategy`: "mobile" or "desktop" (default: "mobile")
+
+**Returns:**
+
+- Mermaid flowchart with performance score node
+- Core Web Vitals nodes with good/needs improvement/poor status colors
+- Top optimization opportunity nodes with potential savings

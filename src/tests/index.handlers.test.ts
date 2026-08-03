@@ -194,6 +194,27 @@ describe("PageSpeedInsightsServer handlers", () => {
     });
   });
 
+  describe("handlePerformanceMap", () => {
+    it("returns a Mermaid map of the performance score and Core Web Vitals", async () => {
+      nock("https://www.googleapis.com")
+        .get("/pagespeedonline/v5/runPagespeed")
+        .query(true)
+        .reply(200, mockPsiResponse({ score: 0.85, lcp: "2.5 s" }));
+
+      const result = await callHandler(server, "handlePerformanceMap", {
+        url: "https://example.com",
+        strategy: "mobile",
+      });
+
+      expect(result.isError).toBeFalsy();
+      expect(result.content[0].text).toContain("# Performance Map");
+      expect(result.content[0].text).toContain("```mermaid");
+      expect(result.content[0].text).toContain("Performance: 85/100");
+      expect(result.content[0].text).toContain("LCP: 2.5 s");
+      expect(result.content[0].text).toContain("CLS: 0.01");
+    });
+  });
+
   describe("handleComparePages", () => {
     it("runs both URLs in parallel and reports the per-metric winner", async () => {
       nock("https://www.googleapis.com")

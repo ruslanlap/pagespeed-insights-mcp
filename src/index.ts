@@ -404,6 +404,23 @@ export class PageSpeedInsightsServer {
               required: ["url"]
             },
           },
+          {
+            name: "get_performance_map",
+            description: "Generate a Mermaid flowchart visualizing the performance score, Core Web Vitals status, and top optimization opportunities in a single visual map",
+            inputSchema: {
+              type: "object",
+              properties: {
+                url: { type: "string", format: "uri", description: "The URL to analyze" },
+                strategy: { 
+                  type: "string", 
+                  enum: ["mobile", "desktop"], 
+                  default: "mobile",
+                  description: "Analysis strategy" 
+                }
+              },
+              required: ["url"]
+            },
+          },
         ] satisfies Tool[],
       };
     });
@@ -444,6 +461,8 @@ export class PageSpeedInsightsServer {
           return await this.handleGetThirdPartyImpact(args);
         case "get_full_audit":
           return await this.handleGetFullAudit(args);
+        case "get_performance_map":
+          return await this.handlePerformanceMap(args);
         default:
           throw new Error(`Unknown tool: ${name}`);
       }
@@ -521,6 +540,116 @@ export class PageSpeedInsightsServer {
         isError: true,
       };
     }
+  }
+
+  private async handlePerformanceMap(args: any) {
+    const correlationId = randomUUID();
+    const logger = createRequestLogger(correlationId, "performance-map");
+
+    try {
+      const input = PerformanceSummarySchema.parse(args);
+      logger.info({ url: input.url }, "Generating performance map");
+
+      const fullInput: AnalyzePageSpeedInput = {
+        ...input,
+        category: ["performance"],
+        locale: "en",
+      };
+
+      const result = await this.client.analyzePageSpeed(fullInput, correlationId);
+      const map = this.createPerformanceMap(result, input);
+
+      return {
+        content: [
+          {
+            type: "text",
+            text: map,
+          },
+        ],
+      };
+    } catch (error) {
+      const errorMessage = error instanceof Error ? error.message : "Unknown error occurred";
+      logger.error({ error: errorMessage }, "Performance map failed");
+      return {
+        content: [
+          {
+            type: "text",
+            text: `Error generating performance map: ${errorMessage}`,
+          },
+        ],
+        isError: true,
+      };
+    }
+  }
+
+  private createPerformanceMap(data: PageSpeedInsightsResponse, input: { url: string; strategy: string }): string {
+    const lighthouse = data.lighthouseResult;
+    const performance = lighthouse?.categories?.performance;
+    const audits = lighthouse?.audits || {};
+    const score = performance?.score != null ? Math.round(performance.score * 100) : null;
+    const scoreEmoji = score === null ? "❓" : score >= 90 ? "🟢" : score >= 50 ? "🟠" : "🔴";
+
+    const cwvConfigs = [
+      { id: "largest-contentful-paint", label: "LCP", good: 2500, mediocre: 4000, unit: "ms", display: audits["largest-contentful-paint"]?.displayValue },
+      { id: "cumulative-layout-shift", label: "CLS", good: 0.1, mediocre: 0.25, unit: "", display: audits["cumulative-layout-shift"]?.displayValue },
+      { id: "total-blocking-time", label: "TBT", good: 200, mediocre: 600, unit: "ms", display: audits["total-blocking-time"]?.displayValue },
+      { id: "first-contentful-paint", label: "FCP", good: 1800, mediocre: 3000, unit: "ms", display: audits["first-contentful-paint"]?.displayValue },
+      { id: "speed-index", label: "SI", good: 3400, mediocre: 5800, unit: "ms", display: audits["speed-index"]?.displayValue },
+    ];
+
+    const vitalNodes = cwvConfigs
+      .filter(v => audits[v.id]?.numericValue != null)
+      .map(v => {
+        const num = audits[v.id]!.numericValue!;
+        const status = num <= v.good ? "🟢 Good" : num <= v.mediocre ? "🟡 Needs Improvement" : "🔴 Poor";
+        const display = v.display || String(num);
+        return `  ${v.label}["${v.label}: ${display}<br/>${status}"]`;
+      });
+
+    // Top 5 opportunities from Lighthouse audit refs
+    const opportunities = performance?.auditRefs
+      ?.filter(ref => audits[ref.id]?.details?.type === "opportunity")
+      .slice(0, 5)
+      .map(ref => {
+        const audit = audits[ref.id];
+        return `  OPP_${ref.id}["${audit.title}<br/>Save: ${audit.displayValue || "N/A"}"]`;
+      }) || [];
+
+    let map = `# Performance Map\n\n`;
+    map += `**URL:** ${input.url}\n`;
+    map += `**Strategy:** ${input.strategy}\n\n`;
+    map += "```mermaid\n";
+    map += "graph TD\n";
+    map += `  Score["Performance: ${score !== null ? score + "/100" : "N/A"} ${scoreEmoji}"]\n`;
+
+    if (vitalNodes.length > 0) {
+      map += "  Score --> Vitals\n";
+      map += `  Vitals{{"Core Web Vitals"}}\n`;
+      vitalNodes.forEach(n => { map += `  Vitals --> ${n.split('[')[0].trim()}\n`; });
+      vitalNodes.forEach(n => { map += n + "\n"; });
+    }
+
+    if (opportunities.length > 0) {
+      map += "  Score --> Opps\n";
+      map += `  Opps{{"Top Opportunities"}}\n`;
+      opportunities.forEach(o => { map += `  Opps --> ${o.split('[')[0].trim()}\n`; });
+      opportunities.forEach(o => { map += o + "\n"; });
+    }
+
+    // Style nodes by status
+    map += "\n";
+    cwvConfigs.forEach(v => {
+      if (audits[v.id]?.numericValue != null) {
+        const num = audits[v.id]!.numericValue!;
+        const cls = num <= v.good ? "good" : num <= v.mediocre ? "mediocre" : "poor";
+        const colour = num <= v.good ? "#4CAF50" : num <= v.mediocre ? "#FF9800" : "#F44336";
+        map += `  classDef ${cls} fill:${colour},color:#fff\n`;
+        map += `  class ${v.label} ${cls}\n`;
+      }
+    });
+
+    map += "```\n";
+    return map;
   }
 
   private async handleCruxSummary(args: any) {

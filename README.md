@@ -14,9 +14,9 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Agent Tool Intel: Grade A](https://agent-tool-intel-production.up.railway.app/badge/ruslanlap%2Fpagespeed-insights-mcp)](https://agent-tool-intel-production.up.railway.app)
 
-**16-tool MCP server** for Google PageSpeed Insights & Chrome UX Report APIs. Analyze, compare, and optimize web performance directly through Claude, Cursor, or any MCP-compatible AI client.
+**17-tool MCP server** for Google PageSpeed Insights & Chrome UX Report APIs. Analyze, compare, and optimize web performance directly through Claude, Cursor, or any MCP-compatible AI client.
 
-> **🎬 [View Interactive Demo →](https://ruslanlap.github.io/pagespeed-insights-mcp/demo/)** — See all 16 tools in action with animated examples
+> **🎬 [View Interactive Demo →](https://ruslanlap.github.io/pagespeed-insights-mcp/demo/)** — See all 17 tools in action with animated examples
 > Fallback URL: [https://ruslanlap.github.io/pagespeed-insights-mcp/demo.html](https://ruslanlap.github.io/pagespeed-insights-mcp/demo.html)
 
 ## 📖 Table of Contents
@@ -539,7 +539,7 @@ Run a full audit including accessibility, SEO, and best practices for https://ex
 
 ## Available Tools
 
-16 tools across three categories:
+17 tools across three categories:
 
 ### Core Analysis
 
@@ -571,6 +571,7 @@ Run a full audit including accessibility, SEO, and best practices for https://ex
 | `get_render_blocking_details` | Render-blocking resources and critical request chains |
 | `get_third_party_impact` | Third-party script impact grouped by provider |
 | `get_full_audit` | Complete Lighthouse audit for all categories |
+| `get_performance_map` | Mermaid flowchart visualizing performance score, Core Web Vitals status, and top opportunities |
 
 ---
 
