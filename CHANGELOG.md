@@ -1,3 +1,11 @@
+## [1.4.1](https://github.com/ruslanlap/pagespeed-insights-mcp/compare/v1.4.0...v1.4.1) (2026-08-03)
+
+
+### Bug Fixes
+
+* deduplicate Mermaid classDef statements in performance map ([67d919f](https://github.com/ruslanlap/pagespeed-insights-mcp/commit/67d919f184cde81167b870ee6552d643abce4cdf))
+* **deps:** upgrade [@typescript-eslint](https://github.com/typescript-eslint) to v8, nock 14, vitest 4.1, tsx 4.23 ([f65a557](https://github.com/ruslanlap/pagespeed-insights-mcp/commit/f65a557b559fccf15f1889b67044107b074bfe7c)), closes [#60](https://github.com/ruslanlap/pagespeed-insights-mcp/issues/60)
+
 # [1.4.0](https://github.com/ruslanlap/pagespeed-insights-mcp/compare/v1.3.0...v1.4.0) (2026-08-03)
 
 
