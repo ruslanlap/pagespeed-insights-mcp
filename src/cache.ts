@@ -4,7 +4,6 @@ const logger = getLogger();
 
 interface CacheEntry<T> {
   data: T;
-  timestamp: number;
   expiresAt: number;
 }
 
@@ -16,7 +15,6 @@ class SimpleCache {
     const now = Date.now();
     this.cache.set(key, {
       data,
-      timestamp: now,
       expiresAt: now + ttl,
     });
     
@@ -41,21 +39,6 @@ class SimpleCache {
     return entry.data as T;
   }
 
-  has(key: string): boolean {
-    const entry = this.cache.get(key);
-    if (!entry) return false;
-    
-    if (Date.now() > entry.expiresAt) {
-      this.cache.delete(key);
-      return false;
-    }
-    
-    return true;
-  }
-
-  delete(key: string): boolean {
-    return this.cache.delete(key);
-  }
 
   clear(): void {
     this.cache.clear();
@@ -101,5 +84,3 @@ export const cache = new SimpleCache();
 setInterval(() => {
   cache.cleanup();
 }, 10 * 60 * 1000);
-
-export type { CacheEntry };

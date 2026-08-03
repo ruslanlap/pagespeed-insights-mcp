@@ -7,7 +7,6 @@ const EnvSchema = z.object({
   REQUEST_TIMEOUT: z.coerce.number().min(1000).max(60000).default(30000),
   RETRY_ATTEMPTS: z.coerce.number().min(0).max(5).default(3),
   CACHE_TTL: z.coerce.number().min(60).max(86400).default(3600),
-  REDIS_URL: z.string().url().optional(),
   NODE_ENV: z.enum(["development", "production", "test"]).default("development"),
 });
 

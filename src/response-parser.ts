@@ -180,7 +180,6 @@ export class ResponseParser {
       mainThreadWork: [] as MainThreadWorkItem[],
       unusedJavaScript: [] as UnusedResourceItem[],
       duplicatedJavaScript: [] as Array<{ source: string; totalBytes: number; wastedBytes: number }>,
-      legacyJavaScript: [] as Array<{ url: string; wastedBytes: number; signals: string[] }>,
     };
 
     // Bootup time
@@ -225,15 +224,6 @@ export class ResponseParser {
       }));
     }
 
-    // Legacy JavaScript
-    const legacyJsAudit = audits['legacy-javascript'];
-    if (legacyJsAudit?.details?.items) {
-      jsData.legacyJavaScript = legacyJsAudit.details.items.map((item: any) => ({
-        url: item.url || '',
-        wastedBytes: item.wastedBytes || 0,
-        signals: item.subItems?.items?.map((subItem: any) => subItem.signal || '') || [],
-      }));
-    }
 
     return jsData;
   }
@@ -464,19 +454,6 @@ export class ResponseParser {
       // Other metrics
       speedIndex: metrics.speedIndex || audits['speed-index']?.numericValue,
       timeToInteractive: metrics.interactive || audits['interactive']?.numericValue,
-      firstMeaningfulPaint: metrics.firstMeaningfulPaint,
-      
-      // Observed metrics (field data simulation)
-      observedFirstContentfulPaint: metrics.observedFirstContentfulPaint,
-      observedLargestContentfulPaint: metrics.observedLargestContentfulPaint,
-      observedSpeedIndex: metrics.observedSpeedIndex,
-      observedDomContentLoaded: metrics.observedDomContentLoaded,
-      observedLoad: metrics.observedLoad,
-      
-      // Additional timing
-      observedNavigationStart: metrics.observedNavigationStart,
-      observedTimeOrigin: metrics.observedTimeOrigin,
-      observedTraceEnd: metrics.observedTraceEnd,
     };
   }
 }
