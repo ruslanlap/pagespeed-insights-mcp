@@ -638,13 +638,19 @@ export class PageSpeedInsightsServer {
 
     // Style nodes by status
     map += "\n";
+    const styleMap: Record<string, string> = { good: "#4CAF50", mediocre: "#FF9800", poor: "#F44336" };
+    const nodesByClass: Record<string, string[]> = { good: [], mediocre: [], poor: [] };
     cwvConfigs.forEach(v => {
       if (audits[v.id]?.numericValue != null) {
         const num = audits[v.id]!.numericValue!;
         const cls = num <= v.good ? "good" : num <= v.mediocre ? "mediocre" : "poor";
-        const colour = num <= v.good ? "#4CAF50" : num <= v.mediocre ? "#FF9800" : "#F44336";
-        map += `  classDef ${cls} fill:${colour},color:#fff\n`;
-        map += `  class ${v.label} ${cls}\n`;
+        nodesByClass[cls].push(v.label);
+      }
+    });
+    (Object.keys(nodesByClass) as Array<keyof typeof nodesByClass>).forEach(cls => {
+      if (nodesByClass[cls].length > 0) {
+        map += `  classDef ${cls} fill:${styleMap[cls]},color:#fff\n`;
+        map += `  class ${nodesByClass[cls].join(",")} ${cls}\n`;
       }
     });
 
