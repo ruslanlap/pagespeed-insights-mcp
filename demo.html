@@ -611,6 +611,10 @@
     display: inline-block;
   }
   .icon.brand { fill: currentColor; stroke: none; }
+  /* btn-primary: white bg + black text → icon black (correct, inherits) */
+  /* btn-secondary + nav-cta: dark bg + white text → icon white (correct, inherits) */
+  /* integration-item: dim text context */
+  .integration-item .icon.brand { fill: var(--text-dim); }
   .tool-icon .icon { width: 18px; height: 18px; }
   .section-label .icon { width: 14px; height: 14px; }
   .check .icon, .cross .icon { width: 16px; height: 16px; }
