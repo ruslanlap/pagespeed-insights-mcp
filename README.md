@@ -27,6 +27,7 @@
   - [Codex / OpenAI](#codex--openai)
 - [📚 Documentation](#-documentation)
 - [📝 Release Notes](#-release-notes)
+- [🎯 Why You Need This](#-why-you-need-this)
 - [✨ Features](#-features)
   - [Core Features](#core-features)
   - [Advanced Analysis Tools (New!)](#advanced-analysis-tools-new)
@@ -173,6 +174,14 @@ Current release: **v1.2.3**.
 - Tightened release automation so important MCP client integration documentation can trigger a patch release when commits use scoped conventional commit messages such as `docs(antigravity): ...`, `docs(integration): ...`, or `docs(config): ...`.
 
 For the complete release history, see [`CHANGELOG.md`](./CHANGELOG.md).
+
+## 🎯 Why You Need This
+
+**Pain point 1 — "My page is slow but I don't know why."**
+You open PageSpeed Insights, get a wall of data, and still can't tell what to fix first. This MCP gives your AI assistant 18 specialized tools that cut through the noise: it identifies the exact render-blocking resources, the specific images wasting 2 MB, the third-party scripts eating 1.5 s of main-thread time — and ranks them by impact. Ask "why is my site slow?" and get a prioritized fix list, not a 40-metric dashboard.
+
+**Pain point 2 — "I ship performance regressions to production."**
+Your team moves fast, deploys daily, and nobody runs a full Lighthouse audit before each merge. By the time someone notices the Core Web Vitals dropped, the regression is already live. This MCP lets any developer paste a URL into Claude/Cursor and get a complete audit — lab data, field data from real Chrome users (CrUX), element-level CLS/LCP debugging — in seconds. It's the difference between catching a regression at your desk and discovering it in a Slack message from the SEO team three days later.
 
 ## ✨ Features
 
