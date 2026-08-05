@@ -30,7 +30,7 @@
     --orange: #f97316;
     --gradient: linear-gradient(135deg, #6366f1, #8b5cf6, #a78bfa);
     --gradient2: linear-gradient(135deg, #06b6d4, #6366f1);
-    --glow: 0 0 40px rgba(99, 102, 241, 0.3);
+    --glow: 0 0 30px rgba(99, 102, 241, 0.15);
   }
 
   * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -49,14 +49,8 @@
     line-height: 1.6;
   }
 
-  /* ============ CANVAS PARTICLES ============ */
-  #particles-canvas {
-    position: fixed;
-    top: 0; left: 0;
-    width: 100%; height: 100%;
-    z-index: 0;
-    pointer-events: none;
-  }
+  /* ============ CANVAS PARTICLES (disabled — was decorative noise) ============ */
+  #particles-canvas { display: none; }
 
   /* ============ NAV ============ */
   nav {
@@ -70,7 +64,7 @@
     display: flex; align-items: center; justify-content: space-between;
     transition: all .3s;
   }
-  nav.scrolled { background: rgba(10,10,15,.95); box-shadow: var(--glow); }
+  nav.scrolled { background: rgba(10,10,15,.95); }
   .nav-brand { display: flex; align-items: center; gap: .75rem; font-weight: 700; font-size: 1.1rem; }
   .nav-brand svg { width: 28px; height: 28px; }
   .nav-links { display: flex; gap: 1.5rem; list-style: none; }
@@ -100,7 +94,7 @@
   .hero::before {
     content: '';
     position: absolute; inset: 0;
-    background: radial-gradient(ellipse 80% 50% at 50% -20%, rgba(99,102,241,.15), transparent);
+    background: radial-gradient(ellipse 80% 50% at 50% -20%, rgba(99,102,241,.08), transparent);
     pointer-events: none;
   }
   .hero-content { max-width: 900px; position: relative; }
@@ -117,7 +111,6 @@
   .hero-badge .pulse {
     width: 8px; height: 8px;
     background: var(--green); border-radius: 50%;
-    animation: pulse 2s infinite;
   }
   @keyframes pulse { 0%,100% { opacity: 1; } 50% { opacity: .4; } }
 
@@ -159,9 +152,9 @@
   .btn-primary {
     background: var(--gradient);
     color: #fff;
-    box-shadow: 0 4px 24px rgba(99,102,241,.3);
+    box-shadow: 0 2px 12px rgba(99,102,241,.2);
   }
-  .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 8px 32px rgba(99,102,241,.45); }
+  .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 4px 20px rgba(99,102,241,.3); }
   .btn-secondary {
     background: rgba(255,255,255,.05);
     color: var(--text);
@@ -216,7 +209,7 @@
     border-radius: 16px;
     overflow: hidden;
     border: 1px solid var(--border);
-    box-shadow: 0 24px 80px rgba(0,0,0,.5), 0 0 60px rgba(99,102,241,.1);
+    box-shadow: 0 16px 48px rgba(0,0,0,.4);
   }
   .terminal-header {
     background: var(--bg3);
@@ -305,7 +298,7 @@
     opacity: 0;
     transition: opacity .3s;
   }
-  .tool-card:hover { border-color: var(--accent); transform: translateY(-4px); box-shadow: 0 12px 40px rgba(0,0,0,.3); }
+  .tool-card:hover { border-color: var(--accent); }
   .tool-card:hover::before { opacity: 1; }
   .tool-icon {
     width: 44px; height: 44px;
@@ -376,7 +369,7 @@
     position: relative;
     transition: all .3s;
   }
-  .workflow-step:hover { border-color: var(--accent); transform: translateY(-4px); }
+  .workflow-step:hover { border-color: var(--accent); }
   .step-number {
     width: 40px; height: 40px;
     background: var(--gradient);
@@ -400,8 +393,10 @@
   }
 
   /* ============ COMPARISON TABLE ============ */
+  .table-scroll { overflow-x: auto; -webkit-overflow-scrolling: touch; }
   .comparison-table {
     width: 100%;
+    min-width: 480px;
     max-width: 800px;
     margin: 0 auto;
     border-collapse: separate;
@@ -438,7 +433,7 @@
   .cta-section::before {
     content: '';
     position: absolute; inset: 0;
-    background: radial-gradient(ellipse 60% 50% at 50% 50%, rgba(99,102,241,.08), transparent);
+    background: radial-gradient(ellipse 60% 50% at 50% 50%, rgba(99,102,241,.05), transparent);
     pointer-events: none;
   }
   .cta-section h2 {
@@ -494,32 +489,50 @@
 
   /* ============ RESPONSIVE ============ */
   @media (max-width: 768px) {
-    .nav-links { display: none; }
-    .hero-stats { gap: 1.5rem; }
+    nav { padding: 0 1rem; }
+    .nav-brand { font-size: 1rem; gap: .5rem; }
+    .nav-cta { padding: .4rem .85rem; font-size: .8rem; }
+    .hero { padding: 5rem 1rem 3rem; }
+    .hero-actions { gap: .75rem; }
+    .btn { padding: .75rem 1.25rem; font-size: .9rem; }
+    .hero-stats {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1.5rem;
+      margin-top: 3rem;
+    }
+    .hero-stat .num { font-size: 1.5rem; }
+    section { padding: 4rem 1rem; }
+    .section-title { font-size: 1.6rem; }
+    .section-desc { font-size: .95rem; }
     .tools-grid { grid-template-columns: 1fr; }
-    .gauges-row { gap: 1.5rem; }
-    .workflow-steps { gap: 1rem; }
-    .workflow-step { flex: 0 0 260px; }
+    .tool-card { padding: 1.25rem; }
+    .gauges-row { gap: 1rem; }
+    .gauge-svg { width: 100px; height: 100px; }
+    .gauge-text { font-size: 1.5rem; }
+    .metrics-grid { grid-template-columns: 1fr 1fr; }
+    .terminal-body { padding: 1rem; font-size: .7rem; }
+    .terminal-body .term-line { white-space: normal; }
+    .chat-body { padding: 1rem; gap: .75rem; }
+    .chat-msg { max-width: 92%; font-size: .8rem; padding: .7rem .9rem; }
+    .workflow-steps { gap: 1rem; padding: 1rem 0; }
+    .workflow-step { flex: 0 0 240px; padding: 1.5rem; }
+    .comparison-table { font-size: .8rem; }
+    .comparison-table th, .comparison-table td { padding: .6rem .5rem; }
+    .cta-section { padding: 5rem 1rem; }
+    .install-block { font-size: .8rem; padding: .7rem 1rem; }
+    footer { padding: 2rem 1rem; }
   }
 
-  /* ============ ANIMATED GRADIENT ORB ============ */
-  .orb {
-    position: absolute;
-    border-radius: 50%;
-    filter: blur(80px);
-    opacity: .15;
-    pointer-events: none;
-    animation: orbFloat 20s ease-in-out infinite alternate;
+  @media (max-width: 400px) {
+    .hero h1 { font-size: 2rem; }
+    .metrics-grid { grid-template-columns: 1fr; }
+    .gauges-row { display: grid; grid-template-columns: 1fr 1fr; }
+    .workflow-step { flex: 0 0 90%; }
   }
-  .orb-1 { width: 500px; height: 500px; background: var(--accent); top: -200px; left: -100px; }
-  .orb-2 { width: 400px; height: 400px; background: var(--pink); bottom: -150px; right: -100px; animation-delay: -10s; }
-  .orb-3 { width: 300px; height: 300px; background: var(--cyan); top: 50%; left: 50%; animation-delay: -5s; }
-  @keyframes orbFloat {
-    0% { transform: translate(0, 0) scale(1); }
-    33% { transform: translate(40px, -30px) scale(1.1); }
-    66% { transform: translate(-20px, 20px) scale(.95); }
-    100% { transform: translate(30px, -10px) scale(1.05); }
-  }
+
+  /* ============ ORBS (disabled — was decorative blur noise) ============ */
+  .orb { display: none; }
 
   /* ============ TYPING EFFECT IN CHAT ============ */
   .chat-demo {
@@ -529,7 +542,7 @@
     border-radius: 16px;
     border: 1px solid var(--border);
     overflow: hidden;
-    box-shadow: 0 24px 80px rgba(0,0,0,.4);
+    box-shadow: 0 16px 48px rgba(0,0,0,.3);
   }
   .chat-header {
     background: var(--bg3);
@@ -556,6 +569,8 @@
     transition: all .4s;
   }
   .chat-msg.visible { opacity: 1; transform: translateY(0); }
+  .chat-msg { overflow-x: auto; }
+  .chat-msg table { font-size: .75rem; }
   .chat-user {
     align-self: flex-end;
     background: var(--accent);
@@ -1023,7 +1038,8 @@ CLS: 0.02 &#9989;</code>
       <p class="section-desc" style="margin: 0 auto 3rem;">Stop switching between browser tabs. Get everything through your AI assistant.</p>
     </div>
     <div class="reveal">
-      <table class="comparison-table">
+      <div class="table-scroll">
+        <table class="comparison-table">
         <thead>
           <tr>
             <th>Feature</th>
@@ -1094,6 +1110,7 @@ CLS: 0.02 &#9989;</code>
           </tr>
         </tbody>
       </table>
+      </div>
     </div>
   </div>
 </section>
@@ -1137,58 +1154,8 @@ CLS: 0.02 &#9989;</code>
 </footer>
 
 <script>
-// ============ PARTICLES ============
-const canvas = document.getElementById('particles-canvas');
-const ctx = canvas.getContext('2d');
-let particles = [];
-function resizeCanvas() { canvas.width = window.innerWidth; canvas.height = window.innerHeight; }
-window.addEventListener('resize', resizeCanvas);
-resizeCanvas();
-
-class Particle {
-  constructor() { this.reset(); }
-  reset() {
-    this.x = Math.random() * canvas.width;
-    this.y = Math.random() * canvas.height;
-    this.size = Math.random() * 1.5 + .5;
-    this.speedX = (Math.random() - .5) * .3;
-    this.speedY = (Math.random() - .5) * .3;
-    this.opacity = Math.random() * .3 + .1;
-  }
-  update() {
-    this.x += this.speedX;
-    this.y += this.speedY;
-    if (this.x < 0 || this.x > canvas.width || this.y < 0 || this.y > canvas.height) this.reset();
-  }
-  draw() {
-    ctx.beginPath();
-    ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
-    ctx.fillStyle = `rgba(99,102,241,${this.opacity})`;
-    ctx.fill();
-  }
-}
-for (let i = 0; i < 80; i++) particles.push(new Particle());
-function animateParticles() {
-  ctx.clearRect(0, 0, canvas.width, canvas.height);
-  particles.forEach(p => { p.update(); p.draw(); });
-  // draw lines between close particles
-  for (let i = 0; i < particles.length; i++) {
-    for (let j = i + 1; j < particles.length; j++) {
-      const dx = particles[i].x - particles[j].x;
-      const dy = particles[i].y - particles[j].y;
-      const dist = Math.sqrt(dx*dx + dy*dy);
-      if (dist < 120) {
-        ctx.beginPath();
-        ctx.moveTo(particles[i].x, particles[i].y);
-        ctx.lineTo(particles[j].x, particles[j].y);
-        ctx.strokeStyle = `rgba(99,102,241,${.05 * (1 - dist/120)})`;
-        ctx.stroke();
-      }
-    }
-  }
-  requestAnimationFrame(animateParticles);
-}
-animateParticles();
+// ============ PARTICLES (disabled — was decorative CPU drain) ============
+// Original 80-particle animation with O(n²) connection lines removed for performance.
 
 // ============ NAV SCROLL ============
 window.addEventListener('scroll', () => {
