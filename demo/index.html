@@ -4,33 +4,28 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>PageSpeed Insights MCP Server — Supercharge Your Web Performance</title>
-<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' y1='0' x2='1' y2='1'%3E%3Cstop stop-color='%236366f1'/%3E%3Cstop offset='1' stop-color='%238b5cf6'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='64' height='64' rx='14' fill='url(%23g)'/%3E%3Cpath d='M16 43V21l14 11-14 11z' fill='white'/%3E%3Cpath d='M35 25h14M35 32h10M35 39h12' stroke='white' stroke-width='4' stroke-linecap='round'/%3E%3C/svg%3E">
-<link rel="shortcut icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' y1='0' x2='1' y2='1'%3E%3Cstop stop-color='%236366f1'/%3E%3Cstop offset='1' stop-color='%238b5cf6'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='64' height='64' rx='14' fill='url(%23g)'/%3E%3Cpath d='M16 43V21l14 11-14 11z' fill='white'/%3E%3Cpath d='M35 25h14M35 32h10M35 39h12' stroke='white' stroke-width='4' stroke-linecap='round'/%3E%3C/svg%3E">
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%23ededed'/%3E%3Cpath d='M16 43V21l14 11-14 11z' fill='%23000'/%3E%3Cpath d='M35 25h14M35 32h10M35 39h12' stroke='%23000' stroke-width='4' stroke-linecap='round'/%3E%3C/svg%3E">
+<link rel="shortcut icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%23ededed'/%3E%3Cpath d='M16 43V21l14 11-14 11z' fill='%23000'/%3E%3Cpath d='M35 25h14M35 32h10M35 39h12' stroke='%23000' stroke-width='4' stroke-linecap='round'/%3E%3C/svg%3E">
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600;700&display=swap');
 
   :root {
-    --bg: #0a0a0f;
-    --bg2: #111118;
-    --bg3: #1a1a25;
-    --surface: #1e1e2e;
-    --border: #2a2a3a;
-    --text: #e4e4ef;
-    --text-dim: #8888a0;
-    --accent: #6366f1;
-    --accent2: #818cf8;
+    --bg: #000000;
+    --bg2: #0a0a0a;
+    --bg3: #141414;
+    --surface: #161616;
+    --surface-h: #1e1e1e;
+    --border: #232323;
+    --border-h: #333333;
+    --text: #ededed;
+    --text-dim: #777777;
+    --accent: #ffffff;
     --green: #22c55e;
-    --green-dim: #166534;
     --yellow: #eab308;
-    --yellow-dim: #854d0e;
     --red: #ef4444;
-    --red-dim: #991b1b;
     --cyan: #06b6d4;
     --pink: #ec4899;
     --orange: #f97316;
-    --gradient: linear-gradient(135deg, #6366f1, #8b5cf6, #a78bfa);
-    --gradient2: linear-gradient(135deg, #06b6d4, #6366f1);
-    --glow: 0 0 30px rgba(99, 102, 241, 0.15);
   }
 
   * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -38,7 +33,7 @@
   html {
     scroll-behavior: smooth;
     scrollbar-width: thin;
-    scrollbar-color: var(--accent) var(--bg);
+    scrollbar-color: var(--text) var(--bg);
   }
 
   body {
@@ -56,31 +51,32 @@
   nav {
     position: fixed; top: 0; left: 0; right: 0;
     z-index: 100;
-    backdrop-filter: blur(20px);
-    background: rgba(10,10,15,.75);
-    border-bottom: 1px solid rgba(99,102,241,.15);
+    backdrop-filter: blur(12px);
+    background: rgba(0,0,0,.8);
+    border-bottom: 1px solid var(--border);
     padding: 0 2rem;
-    height: 64px;
+    height: 56px;
     display: flex; align-items: center; justify-content: space-between;
-    transition: all .3s;
+    transition: background .2s;
   }
-  nav.scrolled { background: rgba(10,10,15,.95); }
-  .nav-brand { display: flex; align-items: center; gap: .75rem; font-weight: 700; font-size: 1.1rem; }
-  .nav-brand svg { width: 28px; height: 28px; }
+  nav.scrolled { background: rgba(0,0,0,.95); }
+  .nav-brand { display: flex; align-items: center; gap: .5rem; font-weight: 600; font-size: .95rem; color: var(--text); }
+  .nav-brand svg { width: 22px; height: 22px; }
   .nav-links { display: flex; gap: 1.5rem; list-style: none; }
   .nav-links a {
-    color: var(--text-dim); text-decoration: none; font-size: .875rem; font-weight: 500;
-    transition: color .2s;
+    color: var(--text-dim); text-decoration: none; font-size: .875rem; font-weight: 400;
+    transition: color .15s;
   }
-  .nav-links a:hover { color: var(--accent2); }
+  .nav-links a:hover { color: var(--text); }
   .nav-cta {
-    background: var(--gradient);
-    color: #fff; border: none; border-radius: 8px;
-    padding: .5rem 1.25rem; font-size: .875rem; font-weight: 600;
+    background: var(--text);
+    color: #000; border: none; border-radius: 6px;
+    padding: .4rem 1rem; font-size: .8rem; font-weight: 600;
     cursor: pointer; text-decoration: none;
-    transition: transform .2s, box-shadow .2s;
+    transition: opacity .15s;
+    display: inline-flex; align-items: center; gap: .4rem;
   }
-  .nav-cta:hover { transform: translateY(-1px); box-shadow: var(--glow); }
+  .nav-cta:hover { opacity: .85; }
 
   /* ============ HERO ============ */
   .hero {
@@ -91,88 +87,74 @@
     padding: 6rem 2rem 4rem;
     z-index: 1;
   }
-  .hero::before {
-    content: '';
-    position: absolute; inset: 0;
-    background: radial-gradient(ellipse 80% 50% at 50% -20%, rgba(99,102,241,.08), transparent);
-    pointer-events: none;
-  }
-  .hero-content { max-width: 900px; position: relative; }
+  .hero-content { max-width: 720px; position: relative; }
   .hero-badge {
     display: inline-flex; align-items: center; gap: .5rem;
-    background: rgba(99,102,241,.1);
-    border: 1px solid rgba(99,102,241,.25);
+    background: var(--surface);
+    border: 1px solid var(--border);
     border-radius: 100px;
-    padding: .4rem 1.2rem;
-    font-size: .8rem; font-weight: 500; color: var(--accent2);
+    padding: .35rem 1rem;
+    font-size: .75rem; font-weight: 500; color: var(--text-dim);
     margin-bottom: 2rem;
-    animation: fadeInUp .8s ease both;
   }
   .hero-badge .pulse {
-    width: 8px; height: 8px;
+    width: 6px; height: 6px;
     background: var(--green); border-radius: 50%;
   }
   @keyframes pulse { 0%,100% { opacity: 1; } 50% { opacity: .4; } }
 
   .hero h1 {
-    font-size: clamp(2.5rem, 6vw, 4.5rem);
-    font-weight: 900;
+    font-size: clamp(2.25rem, 5vw, 3.75rem);
+    font-weight: 700;
     line-height: 1.1;
     letter-spacing: -.03em;
     margin-bottom: 1.5rem;
-    animation: fadeInUp .8s ease .1s both;
+    color: var(--text);
   }
   .hero h1 .gradient-text {
-    background: var(--gradient);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
+    color: var(--text-dim);
+    font-weight: 600;
   }
   .hero p {
-    font-size: clamp(1rem, 2vw, 1.3rem);
+    font-size: clamp(1rem, 2vw, 1.15rem);
     color: var(--text-dim);
-    max-width: 680px;
+    max-width: 540px;
     margin: 0 auto 2.5rem;
-    animation: fadeInUp .8s ease .2s both;
   }
   .hero-actions {
-    display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap;
-    animation: fadeInUp .8s ease .3s both;
+    display: flex; gap: .75rem; justify-content: center; flex-wrap: wrap;
   }
   .btn {
     display: inline-flex; align-items: center; gap: .5rem;
-    padding: .85rem 2rem;
-    border-radius: 12px;
-    font-size: 1rem; font-weight: 600;
+    padding: .7rem 1.5rem;
+    border-radius: 8px;
+    font-size: .9rem; font-weight: 500;
     text-decoration: none;
     cursor: pointer;
-    transition: all .25s;
-    border: none;
+    transition: all .15s;
+    border: 1px solid transparent;
   }
   .btn-primary {
-    background: var(--gradient);
-    color: #fff;
-    box-shadow: 0 2px 12px rgba(99,102,241,.2);
+    background: var(--text);
+    color: #000;
   }
-  .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 4px 20px rgba(99,102,241,.3); }
+  .btn-primary:hover { opacity: .85; }
   .btn-secondary {
-    background: rgba(255,255,255,.05);
+    background: transparent;
     color: var(--text);
-    border: 1px solid var(--border);
+    border: 1px solid var(--border-h);
   }
-  .btn-secondary:hover { border-color: var(--accent); background: rgba(99,102,241,.05); }
+  .btn-secondary:hover { background: var(--surface); border-color: var(--text-dim); }
 
   .hero-stats {
     display: flex; justify-content: center; gap: 3rem; margin-top: 4rem;
-    animation: fadeInUp .8s ease .5s both;
   }
   .hero-stat { text-align: center; }
   .hero-stat .num {
-    font-size: 2rem; font-weight: 800;
-    background: var(--gradient);
-    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    font-size: 1.75rem; font-weight: 700;
+    color: var(--text);
   }
-  .hero-stat .label { font-size: .8rem; color: var(--text-dim); margin-top: .25rem; }
+  .hero-stat .label { font-size: .75rem; color: var(--text-dim); margin-top: .25rem; }
 
   @keyframes fadeInUp {
     from { opacity: 0; transform: translateY(30px); }
@@ -184,20 +166,21 @@
   .container { max-width: 1200px; margin: 0 auto; }
   .section-label {
     display: inline-flex; align-items: center; gap: .5rem;
-    font-size: .75rem; font-weight: 600; text-transform: uppercase; letter-spacing: .1em;
-    color: var(--accent2);
+    font-size: .75rem; font-weight: 500; text-transform: uppercase; letter-spacing: .08em;
+    color: var(--text-dim);
     margin-bottom: 1rem;
   }
   .section-title {
-    font-size: clamp(1.8rem, 4vw, 3rem);
-    font-weight: 800;
+    font-size: clamp(1.6rem, 3.5vw, 2.5rem);
+    font-weight: 700;
     line-height: 1.2;
+    letter-spacing: -.02em;
     margin-bottom: 1rem;
   }
   .section-desc {
     color: var(--text-dim);
-    font-size: 1.1rem;
-    max-width: 600px;
+    font-size: 1rem;
+    max-width: 560px;
     margin-bottom: 3rem;
   }
 
@@ -206,18 +189,17 @@
   .terminal-wrapper {
     max-width: 900px;
     margin: 0 auto;
-    border-radius: 16px;
+    border-radius: 10px;
     overflow: hidden;
     border: 1px solid var(--border);
-    box-shadow: 0 16px 48px rgba(0,0,0,.4);
   }
   .terminal-header {
-    background: var(--bg3);
+    background: var(--surface);
     padding: .75rem 1rem;
     display: flex; align-items: center; gap: .5rem;
     border-bottom: 1px solid var(--border);
   }
-  .terminal-dot { width: 12px; height: 12px; border-radius: 50%; }
+  .terminal-dot { width: 11px; height: 11px; border-radius: 50%; }
   .terminal-dot.red { background: #ff5f57; }
   .terminal-dot.yellow { background: #febc2e; }
   .terminal-dot.green { background: #28c840; }
@@ -227,7 +209,7 @@
     font-family: 'JetBrains Mono', monospace;
   }
   .terminal-body {
-    background: #0d0d14;
+    background: var(--bg);
     padding: 1.5rem;
     font-family: 'JetBrains Mono', monospace;
     font-size: .8rem;
@@ -238,84 +220,77 @@
   }
   .term-line { opacity: 0; transform: translateY(8px); transition: all .4s; white-space: pre-wrap; }
   .term-line.visible { opacity: 1; transform: translateY(0); }
-  .term-prompt { color: var(--green); }
-  .term-cmd { color: #fff; font-weight: 600; }
+  .term-prompt { color: var(--text-dim); }
+  .term-cmd { color: var(--text); font-weight: 500; }
   .term-comment { color: var(--text-dim); font-style: italic; }
   .term-output { color: var(--text-dim); }
   .term-success { color: var(--green); }
   .term-warn { color: var(--yellow); }
   .term-error { color: var(--red); }
-  .term-accent { color: var(--accent2); }
+  .term-accent { color: var(--text); }
   .term-cyan { color: var(--cyan); }
   .term-pink { color: var(--pink); }
   .term-orange { color: var(--orange); }
   .cursor-blink {
     display: inline-block; width: 8px; height: 16px;
-    background: var(--green);
+    background: var(--text);
     animation: blink 1s step-end infinite;
     vertical-align: middle; margin-left: 2px;
   }
   @keyframes blink { 50% { opacity: 0; } }
 
   .demo-controls {
-    display: flex; justify-content: center; gap: 1rem; margin-top: 2rem;
+    display: flex; justify-content: center; gap: .5rem; margin-top: 2rem;
   }
   .demo-btn {
-    padding: .6rem 1.5rem;
-    background: rgba(99,102,241,.1);
-    border: 1px solid rgba(99,102,241,.3);
-    color: var(--accent2);
-    border-radius: 8px;
-    font-size: .85rem; font-weight: 500;
+    padding: .5rem 1.1rem;
+    background: transparent;
+    border: 1px solid var(--border);
+    color: var(--text-dim);
+    border-radius: 6px;
+    font-size: .8rem; font-weight: 500;
     cursor: pointer;
-    transition: all .2s;
+    transition: all .15s;
     font-family: 'Inter', sans-serif;
   }
-  .demo-btn:hover { background: rgba(99,102,241,.2); border-color: var(--accent); }
-  .demo-btn.active { background: var(--accent); color: #fff; border-color: var(--accent); }
+  .demo-btn:hover { color: var(--text); border-color: var(--border-h); }
+  .demo-btn.active { background: var(--surface-h); color: var(--text); border-color: var(--border-h); }
 
   /* ============ TOOLS GRID ============ */
   .tools-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
-    gap: 1.25rem;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: 1px;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    overflow: hidden;
+    background: var(--border);
   }
   .tool-card {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 16px;
+    background: var(--bg);
+    border: none;
     padding: 1.5rem;
-    transition: all .3s;
+    transition: background .15s;
     cursor: default;
     position: relative;
-    overflow: hidden;
   }
-  .tool-card::before {
-    content: '';
-    position: absolute; top: 0; left: 0; right: 0;
-    height: 2px;
-    background: var(--gradient);
-    opacity: 0;
-    transition: opacity .3s;
-  }
-  .tool-card:hover { border-color: var(--accent); }
-  .tool-card:hover::before { opacity: 1; }
+  .tool-card:hover { background: var(--surface); }
   .tool-icon {
-    width: 44px; height: 44px;
-    border-radius: 12px;
+    width: 36px; height: 36px;
+    border-radius: 8px;
     display: flex; align-items: center; justify-content: center;
-    font-size: 1.3rem;
-    margin-bottom: 1rem;
+    font-size: 1.1rem;
+    margin-bottom: .85rem;
   }
-  .tool-card h3 { font-size: 1rem; font-weight: 700; margin-bottom: .5rem; }
-  .tool-card p { font-size: .85rem; color: var(--text-dim); line-height: 1.5; }
+  .tool-card h3 { font-size: .95rem; font-weight: 600; margin-bottom: .5rem; }
+  .tool-card p { font-size: .825rem; color: var(--text-dim); line-height: 1.5; }
   .tool-tag {
     display: inline-block;
-    background: rgba(99,102,241,.1);
-    color: var(--accent2);
-    padding: .15rem .6rem;
-    border-radius: 100px;
-    font-size: .7rem; font-weight: 500;
+    border: 1px solid var(--border);
+    color: var(--text-dim);
+    padding: .1rem .5rem;
+    border-radius: 4px;
+    font-size: .65rem; font-weight: 500;
     margin-top: .75rem;
   }
 
@@ -326,69 +301,73 @@
     margin-bottom: 3rem;
   }
   .gauge-item { text-align: center; }
-  .gauge-svg { width: 140px; height: 140px; }
-  .gauge-bg { fill: none; stroke: var(--bg3); stroke-width: 8; }
-  .gauge-fill { fill: none; stroke-width: 8; stroke-linecap: round; transition: stroke-dashoffset 2s ease; }
-  .gauge-text { font-size: 2rem; font-weight: 800; fill: var(--text); font-family: 'Inter', sans-serif; }
-  .gauge-label { font-size: .85rem; color: var(--text-dim); margin-top: .5rem; font-weight: 500; }
+  .gauge-svg { width: 120px; height: 120px; }
+  .gauge-bg { fill: none; stroke: var(--border); stroke-width: 6; }
+  .gauge-fill { fill: none; stroke-width: 6; stroke-linecap: round; transition: stroke-dashoffset 2s ease; }
+  .gauge-text { font-size: 1.75rem; font-weight: 700; fill: var(--text); font-family: 'Inter', sans-serif; }
+  .gauge-label { font-size: .8rem; color: var(--text-dim); margin-top: .5rem; font-weight: 500; }
 
   .metrics-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-    gap: 1rem;
+    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    gap: 1px;
     max-width: 900px;
     margin: 0 auto;
+    background: var(--border);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    overflow: hidden;
   }
   .metric-card {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 12px;
+    background: var(--bg);
+    border: none;
     padding: 1.25rem;
     text-align: center;
-    transition: transform .3s;
   }
-  .metric-card:hover { transform: translateY(-2px); }
-  .metric-value { font-size: 1.5rem; font-weight: 800; margin-bottom: .25rem; }
-  .metric-name { font-size: .75rem; color: var(--text-dim); text-transform: uppercase; letter-spacing: .05em; }
+  .metric-card:hover { background: var(--surface); }
+  .metric-value { font-size: 1.35rem; font-weight: 700; margin-bottom: .25rem; }
+  .metric-name { font-size: .7rem; color: var(--text-dim); text-transform: uppercase; letter-spacing: .05em; }
 
   /* ============ WORKFLOW SECTION ============ */
   .workflow-steps {
     display: flex;
-    gap: 2rem;
+    gap: 1.5rem;
     overflow-x: auto;
-    padding: 2rem 0;
+    padding: 1rem 0;
     scroll-snap-type: x mandatory;
   }
   .workflow-step {
-    flex: 0 0 300px;
+    flex: 0 0 280px;
     scroll-snap-align: start;
     background: var(--surface);
     border: 1px solid var(--border);
-    border-radius: 16px;
-    padding: 2rem;
+    border-radius: 10px;
+    padding: 1.5rem;
     position: relative;
-    transition: all .3s;
   }
-  .workflow-step:hover { border-color: var(--accent); }
+  .workflow-step:hover { border-color: var(--border-h); }
   .step-number {
-    width: 40px; height: 40px;
-    background: var(--gradient);
-    border-radius: 12px;
+    width: 32px; height: 32px;
+    background: var(--surface-h);
+    border: 1px solid var(--border);
+    border-radius: 8px;
     display: flex; align-items: center; justify-content: center;
-    font-weight: 800; font-size: 1.1rem;
-    margin-bottom: 1.25rem;
+    font-weight: 700; font-size: .9rem;
+    margin-bottom: 1rem;
+    color: var(--text);
   }
-  .workflow-step h3 { font-size: 1.1rem; font-weight: 700; margin-bottom: .5rem; }
+  .workflow-step h3 { font-size: 1rem; font-weight: 600; margin-bottom: .5rem; }
   .workflow-step p { font-size: .85rem; color: var(--text-dim); }
   .workflow-step code {
     display: block;
-    background: #0d0d14;
-    border-radius: 8px;
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 6px;
     padding: .75rem;
     margin-top: 1rem;
     font-family: 'JetBrains Mono', monospace;
     font-size: .75rem;
-    color: var(--green);
+    color: var(--text-dim);
     overflow-x: auto;
   }
 
@@ -401,71 +380,64 @@
     margin: 0 auto;
     border-collapse: separate;
     border-spacing: 0;
-    border-radius: 16px;
+    border-radius: 10px;
     overflow: hidden;
     border: 1px solid var(--border);
   }
   .comparison-table th {
-    background: var(--bg3);
-    padding: 1rem;
-    font-size: .8rem;
+    background: var(--surface);
+    padding: .85rem 1rem;
+    font-size: .75rem;
     text-transform: uppercase;
     letter-spacing: .05em;
     color: var(--text-dim);
-    font-weight: 600;
+    font-weight: 500;
     text-align: left;
   }
   .comparison-table td {
     padding: .85rem 1rem;
     border-top: 1px solid var(--border);
-    font-size: .9rem;
+    font-size: .875rem;
   }
-  .comparison-table tr:nth-child(even) td { background: rgba(255,255,255,.01); }
-  .check { color: var(--green); font-weight: 700; }
+  .comparison-table tr:nth-child(even) td { background: var(--bg2); }
+  .check { color: var(--green); font-weight: 600; }
   .cross { color: var(--text-dim); }
 
   /* ============ CTA SECTION ============ */
   .cta-section {
     text-align: center;
-    padding: 8rem 2rem;
+    padding: 6rem 2rem;
     position: relative;
   }
-  .cta-section::before {
-    content: '';
-    position: absolute; inset: 0;
-    background: radial-gradient(ellipse 60% 50% at 50% 50%, rgba(99,102,241,.05), transparent);
-    pointer-events: none;
-  }
   .cta-section h2 {
-    font-size: clamp(2rem, 5vw, 3.5rem);
-    font-weight: 900;
+    font-size: clamp(1.75rem, 4vw, 2.75rem);
+    font-weight: 700;
+    letter-spacing: -.02em;
     margin-bottom: 1.5rem;
   }
+  .cta-section h2 .gradient-text { color: var(--text-dim); font-weight: 600; }
   .cta-section p {
     color: var(--text-dim);
-    font-size: 1.15rem;
-    max-width: 500px;
+    font-size: 1rem;
+    max-width: 460px;
     margin: 0 auto 2.5rem;
   }
   .install-block {
     display: inline-flex; align-items: center; gap: .75rem;
-    background: #0d0d14;
+    background: var(--surface);
     border: 1px solid var(--border);
-    border-radius: 12px;
-    padding: .85rem 1.5rem;
+    border-radius: 8px;
+    padding: .7rem 1.25rem;
     font-family: 'JetBrains Mono', monospace;
-    font-size: .9rem;
+    font-size: .85rem;
     margin-bottom: 2rem;
     cursor: pointer;
-    transition: border-color .2s;
+    transition: border-color .15s;
   }
-  .install-block:hover { border-color: var(--accent); }
-  .install-block .dollar { color: var(--green); }
-  .install-block .copy-icon {
-    color: var(--text-dim);
-    transition: color .2s;
-  }
-  .install-block:hover .copy-icon { color: var(--accent2); }
+  .install-block:hover { border-color: var(--border-h); }
+  .install-block .dollar { color: var(--text-dim); }
+  .install-block .copy-icon { color: var(--text-dim); transition: color .15s; }
+  .install-block:hover .copy-icon { color: var(--text); }
 
   /* ============ FOOTER ============ */
   footer {
@@ -475,7 +447,7 @@
     color: var(--text-dim);
     font-size: .85rem;
   }
-  footer a { color: var(--accent2); text-decoration: none; }
+  footer a { color: var(--text-dim); text-decoration: none; }
   footer a:hover { text-decoration: underline; }
 
   /* ============ SCROLL REVEAL ============ */
@@ -539,31 +511,31 @@
     max-width: 700px;
     margin: 0 auto;
     background: var(--surface);
-    border-radius: 16px;
+    border-radius: 10px;
     border: 1px solid var(--border);
     overflow: hidden;
-    box-shadow: 0 16px 48px rgba(0,0,0,.3);
   }
   .chat-header {
-    background: var(--bg3);
+    background: var(--surface-h);
     padding: .75rem 1.25rem;
     display: flex; align-items: center; gap: .75rem;
     border-bottom: 1px solid var(--border);
   }
   .chat-avatar {
-    width: 32px; height: 32px; border-radius: 8px;
-    background: var(--gradient);
+    width: 28px; height: 28px; border-radius: 6px;
+    background: var(--text);
+    color: #000;
     display: flex; align-items: center; justify-content: center;
-    font-size: .9rem; font-weight: 700;
+    font-size: .8rem; font-weight: 700;
   }
-  .chat-header-text { font-size: .85rem; font-weight: 600; }
+  .chat-header-text { font-size: .8rem; font-weight: 600; }
   .chat-header-sub { font-size: .7rem; color: var(--text-dim); }
-  .chat-body { padding: 1.5rem; display: flex; flex-direction: column; gap: 1rem; min-height: 350px; }
+  .chat-body { padding: 1.25rem; display: flex; flex-direction: column; gap: .75rem; min-height: 350px; }
   .chat-msg {
     max-width: 85%;
-    padding: .85rem 1.1rem;
-    border-radius: 14px;
-    font-size: .85rem;
+    padding: .75rem 1rem;
+    border-radius: 10px;
+    font-size: .825rem;
     line-height: 1.5;
     opacity: 0; transform: translateY(10px);
     transition: all .4s;
@@ -573,33 +545,29 @@
   .chat-msg table { font-size: .75rem; }
   .chat-user {
     align-self: flex-end;
-    background: var(--accent);
-    color: #fff;
+    background: var(--text);
+    color: #000;
     border-bottom-right-radius: 4px;
   }
   .chat-ai {
     align-self: flex-start;
-    background: var(--bg3);
+    background: var(--bg2);
+    border: 1px solid var(--border);
     border-bottom-left-radius: 4px;
   }
   .chat-ai .chat-score {
     display: inline-flex; align-items: center; gap: .4rem;
-    background: rgba(34,197,94,.15);
-    color: var(--green);
-    padding: .2rem .6rem;
-    border-radius: 6px;
-    font-weight: 700;
-    font-size: .9rem;
-    margin: .5rem .25rem 0 0;
+    background: var(--surface-h);
+    border: 1px solid var(--border);
+    color: var(--text);
+    padding: .15rem .5rem;
+    border-radius: 4px;
+    font-weight: 600;
+    font-size: .8rem;
+    margin: .25rem .25rem 0 0;
   }
-  .chat-ai .chat-score.warn {
-    background: rgba(234,179,8,.15);
-    color: var(--yellow);
-  }
-  .chat-ai .chat-score.bad {
-    background: rgba(239,68,68,.15);
-    color: var(--red);
-  }
+  .chat-ai .chat-score.warn { color: var(--yellow); }
+  .chat-ai .chat-score.bad { color: var(--red); }
   .typing-indicator {
     align-self: flex-start;
     display: flex; gap: 4px;
@@ -643,10 +611,9 @@
 <nav id="main-nav">
   <div class="nav-brand">
     <svg viewBox="0 0 32 32" fill="none">
-      <rect width="32" height="32" rx="8" fill="url(#nav-grad)"/>
-      <path d="M8 22V10l8 6-8 6z" fill="#fff"/>
-      <path d="M18 12h6M18 16h4M18 20h5" stroke="#fff" stroke-width="2" stroke-linecap="round"/>
-      <defs><linearGradient id="nav-grad" x1="0" y1="0" x2="32" y2="32"><stop stop-color="#6366f1"/><stop offset="1" stop-color="#8b5cf6"/></linearGradient></defs>
+      <rect width="32" height="32" rx="8" fill="#ededed"/>
+      <path d="M8 22V10l8 6-8 6z" fill="#000"/>
+      <path d="M18 12h6M18 16h4M18 20h5" stroke="#000" stroke-width="2" stroke-linecap="round"/>
     </svg>
     PageSpeed MCP
   </div>
@@ -798,97 +765,97 @@
     </div>
     <div class="tools-grid reveal">
       <div class="tool-card">
-        <div class="tool-icon" style="background: rgba(99,102,241,.15); color: var(--accent2);">&#128640;</div>
+        <div class="tool-icon" style="background: var(--surface-h); color: var(--text-dim);">&#128640;</div>
         <h3>analyze_page_speed</h3>
         <p>Full Lighthouse analysis with performance scores, Core Web Vitals, and detailed metrics for any URL.</p>
         <span class="tool-tag">Core</span>
       </div>
       <div class="tool-card">
-        <div class="tool-icon" style="background: rgba(6,182,212,.15); color: var(--cyan);">&#9889;</div>
+        <div class="tool-icon" style="background: var(--surface-h); color: var(--text-dim);">&#9889;</div>
         <h3>get_performance_summary</h3>
         <p>Quick performance overview with key metrics and top optimization opportunities at a glance.</p>
         <span class="tool-tag">Quick</span>
       </div>
       <div class="tool-card">
-        <div class="tool-icon" style="background: rgba(34,197,94,.15); color: var(--green);">&#127919;</div>
+        <div class="tool-icon" style="background: var(--surface-h); color: var(--text-dim);">&#127919;</div>
         <h3>get_recommendations</h3>
         <p>AI-powered smart recommendations with priority scoring and actionable code fixes.</p>
         <span class="tool-tag">Smart</span>
       </div>
       <div class="tool-card">
-        <div class="tool-icon" style="background: rgba(249,115,22,.15); color: var(--orange);">&#128247;</div>
+        <div class="tool-icon" style="background: var(--surface-h); color: var(--text-dim);">&#128247;</div>
         <h3>get_visual_analysis</h3>
         <p>Screenshots, filmstrip timeline, and full-page captures showing load progression visually.</p>
         <span class="tool-tag">Visual</span>
       </div>
       <div class="tool-card">
-        <div class="tool-icon" style="background: rgba(236,72,153,.15); color: var(--pink);">&#127760;</div>
+        <div class="tool-icon" style="background: var(--surface-h); color: var(--text-dim);">&#127760;</div>
         <h3>get_network_analysis</h3>
         <p>Detailed request waterfall with timing, sizes, priorities, RTT, and server latency data.</p>
         <span class="tool-tag">Deep Dive</span>
       </div>
       <div class="tool-card">
-        <div class="tool-icon" style="background: rgba(234,179,8,.15); color: var(--yellow);">&#9889;</div>
+        <div class="tool-icon" style="background: var(--surface-h); color: var(--text-dim);">&#9889;</div>
         <h3>get_javascript_analysis</h3>
         <p>JS bootup time, main thread breakdown, unused code detection, and duplicate modules.</p>
         <span class="tool-tag">Performance</span>
       </div>
       <div class="tool-card">
-        <div class="tool-icon" style="background: rgba(239,68,68,.15); color: var(--red);">&#128444;&#65039;</div>
+        <div class="tool-icon" style="background: var(--surface-h); color: var(--text-dim);">&#128444;&#65039;</div>
         <h3>get_image_optimization_details</h3>
         <p>Find oversized images, lazy-load candidates, and modern format (WebP/AVIF) savings.</p>
         <span class="tool-tag">Optimization</span>
       </div>
       <div class="tool-card">
-        <div class="tool-icon" style="background: rgba(99,102,241,.15); color: var(--accent2);">&#128683;</div>
+        <div class="tool-icon" style="background: var(--surface-h); color: var(--text-dim);">&#128683;</div>
         <h3>get_render_blocking_details</h3>
         <p>Identify render-blocking CSS/JS, critical request chains, and total blocking time.</p>
         <span class="tool-tag">Critical Path</span>
       </div>
       <div class="tool-card">
-        <div class="tool-icon" style="background: rgba(6,182,212,.15); color: var(--cyan);">&#128268;</div>
+        <div class="tool-icon" style="background: var(--surface-h); color: var(--text-dim);">&#128268;</div>
         <h3>get_third_party_impact</h3>
         <p>Third-party script analysis grouped by provider with transfer sizes and blocking times.</p>
         <span class="tool-tag">Third-Party</span>
       </div>
       <div class="tool-card">
-        <div class="tool-icon" style="background: rgba(34,197,94,.15); color: var(--green);">&#127919;</div>
+        <div class="tool-icon" style="background: var(--surface-h); color: var(--text-dim);">&#127919;</div>
         <h3>get_element_analysis</h3>
         <p>DOM-level debugging: LCP element details, CLS-causing elements, lazy-loaded LCP warnings.</p>
         <span class="tool-tag">Debugging</span>
       </div>
       <div class="tool-card">
-        <div class="tool-icon" style="background: rgba(249,115,22,.15); color: var(--orange);">&#128202;</div>
+        <div class="tool-icon" style="background: var(--surface-h); color: var(--text-dim);">&#128202;</div>
         <h3>get_full_audit</h3>
         <p>Comprehensive audit across all categories: Performance, SEO, Accessibility, Best Practices.</p>
         <span class="tool-tag">Complete</span>
       </div>
       <div class="tool-card">
-        <div class="tool-icon" style="background: rgba(236,72,153,.15); color: var(--pink);">&#128200;</div>
+        <div class="tool-icon" style="background: var(--surface-h); color: var(--text-dim);">&#128200;</div>
         <h3>crux_summary</h3>
         <p>Real-world Chrome UX Report field data with Core Web Vitals from actual users.</p>
         <span class="tool-tag">Field Data</span>
       </div>
       <div class="tool-card">
-        <div class="tool-icon" style="background: rgba(234,179,8,.15); color: var(--yellow);">&#128260;</div>
+        <div class="tool-icon" style="background: var(--surface-h); color: var(--text-dim);">&#128260;</div>
         <h3>compare_pages</h3>
         <p>Side-by-side comparison of two URLs with metric-by-metric performance diff.</p>
         <span class="tool-tag">Compare</span>
       </div>
       <div class="tool-card">
-        <div class="tool-icon" style="background: rgba(99,102,241,.15); color: var(--accent2);">&#128209;</div>
+        <div class="tool-icon" style="background: var(--surface-h); color: var(--text-dim);">&#128209;</div>
         <h3>full_report</h3>
         <p>Unified report combining Lighthouse lab data with CrUX real-world field data.</p>
         <span class="tool-tag">Unified</span>
       </div>
       <div class="tool-card">
-        <div class="tool-icon" style="background: rgba(6,182,212,.15); color: var(--cyan);">&#128230;</div>
+        <div class="tool-icon" style="background: var(--surface-h); color: var(--text-dim);">&#128230;</div>
         <h3>batch_analyze</h3>
         <p>Analyze up to 10 URLs simultaneously with progress tracking and aggregate results.</p>
         <span class="tool-tag">Batch</span>
       </div>
       <div class="tool-card">
-        <div class="tool-icon" style="background: rgba(34,197,94,.15); color: var(--green);">&#128451;&#65039;</div>
+        <div class="tool-icon" style="background: var(--surface-h); color: var(--text-dim);">&#128451;&#65039;</div>
         <h3>clear_cache</h3>
         <p>Clear internal cache to force fresh API requests for all subsequent analyses.</p>
         <span class="tool-tag">Utility</span>
@@ -1044,7 +1011,7 @@ CLS: 0.02 &#9989;</code>
           <tr>
             <th>Feature</th>
             <th>Manual PageSpeed</th>
-            <th style="color: var(--accent2);">PageSpeed MCP</th>
+            <th>PageSpeed MCP</th>
           </tr>
         </thead>
         <tbody>
