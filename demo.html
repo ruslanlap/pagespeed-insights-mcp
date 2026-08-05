@@ -602,9 +602,49 @@
     font-size: .9rem; font-weight: 600; color: var(--text-dim);
   }
   .integration-item svg { width: 28px; height: 28px; }
+
+  .icon {
+    width: 1em; height: 1em;
+    fill: none; stroke: currentColor;
+    stroke-width: 2; stroke-linecap: round; stroke-linejoin: round;
+    vertical-align: middle;
+    display: inline-block;
+  }
+  .tool-icon .icon { width: 18px; height: 18px; }
+  .section-label .icon { width: 14px; height: 14px; }
+  .check .icon, .cross .icon { width: 16px; height: 16px; }
+
 </style>
 </head>
 <body>
+<svg style="display:none" aria-hidden="true">
+<symbol id="i-zap" viewBox="0 0 24 24"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></symbol>
+<symbol id="i-send" viewBox="0 0 24 24"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></symbol>
+<symbol id="i-target" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></symbol>
+<symbol id="i-camera" viewBox="0 0 24 24"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></symbol>
+<symbol id="i-globe" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></symbol>
+<symbol id="i-image" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></symbol>
+<symbol id="i-slash" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="4.93" y1="4.93" x2="19.07" y2="19.07"/></symbol>
+<symbol id="i-plug" viewBox="0 0 24 24"><path d="M9 2v6"/><path d="M15 2v6"/><path d="M6 8h12v3a6 6 0 0 1-12 0z"/><path d="M12 17v5"/></symbol>
+<symbol id="i-bar-chart" viewBox="0 0 24 24"><line x1="12" y1="20" x2="12" y2="10"/><line x1="18" y1="20" x2="18" y2="4"/><line x1="6" y1="20" x2="6" y2="16"/></symbol>
+<symbol id="i-trending-up" viewBox="0 0 24 24"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></symbol>
+<symbol id="i-refresh" viewBox="0 0 24 24"><polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></symbol>
+<symbol id="i-file-text" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></symbol>
+<symbol id="i-box" viewBox="0 0 24 24"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/></symbol>
+<symbol id="i-trash" viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></symbol>
+<symbol id="i-tool" viewBox="0 0 24 24"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></symbol>
+<symbol id="i-check" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></symbol>
+<symbol id="i-x" viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></symbol>
+<symbol id="i-check-circle" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></symbol>
+<symbol id="i-alert" viewBox="0 0 24 24"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></symbol>
+<symbol id="i-eye" viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></symbol>
+<symbol id="i-heart" viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></symbol>
+<symbol id="i-play" viewBox="0 0 24 24"><use href="#i-play"/></symbol>
+<symbol id="i-activity" viewBox="0 0 24 24"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></symbol>
+<symbol id="i-grid" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></symbol>
+<symbol id="i-clipboard" viewBox="0 0 24 24"><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><rect x="8" y="2" width="8" height="4" rx="1" ry="1"/></symbol>
+<symbol id="i-arrow-right" viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></symbol>
+</svg>
 
 <canvas id="particles-canvas"></canvas>
 
@@ -654,7 +694,7 @@
         Get Started
       </a>
       <a href="#demo" class="btn btn-secondary">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><use href="#i-play"/></svg>
         Watch Demo
       </a>
     </div>
@@ -712,7 +752,7 @@
 <section id="demo" class="demo-section">
   <div class="container">
     <div class="reveal" style="text-align: center;">
-      <div class="section-label">&#9889; Live Demo</div>
+      <div class="section-label"><svg class="icon"><use href="#i-zap"/></svg> Live Demo</div>
       <h2 class="section-title">See It In Action</h2>
       <p class="section-desc" style="margin: 0 auto 2rem;">Watch how PageSpeed MCP analyzes any website in seconds, right from your AI assistant.</p>
     </div>
@@ -760,103 +800,103 @@
 <section id="tools">
   <div class="container">
     <div class="reveal">
-      <div class="section-label">&#128295; Tool Suite</div>
+      <div class="section-label"><svg class="icon"><use href="#i-tool"/></svg> Tool Suite</div>
       <h2 class="section-title">16 Powerful Analysis Tools</h2>
       <p class="section-desc">Everything you need to diagnose, optimize, and monitor web performance — accessible through natural language.</p>
     </div>
     <div class="tools-grid reveal">
       <div class="tool-card">
-        <div class="tool-icon" style="background: var(--surface-h); color: var(--text-dim);">&#128640;</div>
+        <div class="tool-icon" style="background: var(--surface-h); color: var(--text-dim);"><svg class="icon"><use href="#i-zap"/></svg></div>
         <h3>analyze_page_speed</h3>
         <p>Full Lighthouse analysis with performance scores, Core Web Vitals, and detailed metrics for any URL.</p>
         <span class="tool-tag">Core</span>
       </div>
       <div class="tool-card">
-        <div class="tool-icon" style="background: var(--surface-h); color: var(--text-dim);">&#9889;</div>
+        <div class="tool-icon" style="background: var(--surface-h); color: var(--text-dim);"><svg class="icon"><use href="#i-zap"/></svg></div>
         <h3>get_performance_summary</h3>
         <p>Quick performance overview with key metrics and top optimization opportunities at a glance.</p>
         <span class="tool-tag">Quick</span>
       </div>
       <div class="tool-card">
-        <div class="tool-icon" style="background: var(--surface-h); color: var(--text-dim);">&#127919;</div>
+        <div class="tool-icon" style="background: var(--surface-h); color: var(--text-dim);"><svg class="icon"><use href="#i-target"/></svg></div>
         <h3>get_recommendations</h3>
         <p>AI-powered smart recommendations with priority scoring and actionable code fixes.</p>
         <span class="tool-tag">Smart</span>
       </div>
       <div class="tool-card">
-        <div class="tool-icon" style="background: var(--surface-h); color: var(--text-dim);">&#128247;</div>
+        <div class="tool-icon" style="background: var(--surface-h); color: var(--text-dim);"><svg class="icon"><use href="#i-camera"/></svg></div>
         <h3>get_visual_analysis</h3>
         <p>Screenshots, filmstrip timeline, and full-page captures showing load progression visually.</p>
         <span class="tool-tag">Visual</span>
       </div>
       <div class="tool-card">
-        <div class="tool-icon" style="background: var(--surface-h); color: var(--text-dim);">&#127760;</div>
+        <div class="tool-icon" style="background: var(--surface-h); color: var(--text-dim);"><svg class="icon"><use href="#i-globe"/></svg></div>
         <h3>get_network_analysis</h3>
         <p>Detailed request waterfall with timing, sizes, priorities, RTT, and server latency data.</p>
         <span class="tool-tag">Deep Dive</span>
       </div>
       <div class="tool-card">
-        <div class="tool-icon" style="background: var(--surface-h); color: var(--text-dim);">&#9889;</div>
+        <div class="tool-icon" style="background: var(--surface-h); color: var(--text-dim);"><svg class="icon"><use href="#i-zap"/></svg></div>
         <h3>get_javascript_analysis</h3>
         <p>JS bootup time, main thread breakdown, unused code detection, and duplicate modules.</p>
         <span class="tool-tag">Performance</span>
       </div>
       <div class="tool-card">
-        <div class="tool-icon" style="background: var(--surface-h); color: var(--text-dim);">&#128444;&#65039;</div>
+        <div class="tool-icon" style="background: var(--surface-h); color: var(--text-dim);"><svg class="icon"><use href="#i-image"/></svg></div>
         <h3>get_image_optimization_details</h3>
         <p>Find oversized images, lazy-load candidates, and modern format (WebP/AVIF) savings.</p>
         <span class="tool-tag">Optimization</span>
       </div>
       <div class="tool-card">
-        <div class="tool-icon" style="background: var(--surface-h); color: var(--text-dim);">&#128683;</div>
+        <div class="tool-icon" style="background: var(--surface-h); color: var(--text-dim);"><svg class="icon"><use href="#i-slash"/></svg></div>
         <h3>get_render_blocking_details</h3>
         <p>Identify render-blocking CSS/JS, critical request chains, and total blocking time.</p>
         <span class="tool-tag">Critical Path</span>
       </div>
       <div class="tool-card">
-        <div class="tool-icon" style="background: var(--surface-h); color: var(--text-dim);">&#128268;</div>
+        <div class="tool-icon" style="background: var(--surface-h); color: var(--text-dim);"><svg class="icon"><use href="#i-plug"/></svg></div>
         <h3>get_third_party_impact</h3>
         <p>Third-party script analysis grouped by provider with transfer sizes and blocking times.</p>
         <span class="tool-tag">Third-Party</span>
       </div>
       <div class="tool-card">
-        <div class="tool-icon" style="background: var(--surface-h); color: var(--text-dim);">&#127919;</div>
+        <div class="tool-icon" style="background: var(--surface-h); color: var(--text-dim);"><svg class="icon"><use href="#i-target"/></svg></div>
         <h3>get_element_analysis</h3>
         <p>DOM-level debugging: LCP element details, CLS-causing elements, lazy-loaded LCP warnings.</p>
         <span class="tool-tag">Debugging</span>
       </div>
       <div class="tool-card">
-        <div class="tool-icon" style="background: var(--surface-h); color: var(--text-dim);">&#128202;</div>
+        <div class="tool-icon" style="background: var(--surface-h); color: var(--text-dim);"><svg class="icon"><use href="#i-bar-chart"/></svg></div>
         <h3>get_full_audit</h3>
         <p>Comprehensive audit across all categories: Performance, SEO, Accessibility, Best Practices.</p>
         <span class="tool-tag">Complete</span>
       </div>
       <div class="tool-card">
-        <div class="tool-icon" style="background: var(--surface-h); color: var(--text-dim);">&#128200;</div>
+        <div class="tool-icon" style="background: var(--surface-h); color: var(--text-dim);"><svg class="icon"><use href="#i-trending-up"/></svg></div>
         <h3>crux_summary</h3>
         <p>Real-world Chrome UX Report field data with Core Web Vitals from actual users.</p>
         <span class="tool-tag">Field Data</span>
       </div>
       <div class="tool-card">
-        <div class="tool-icon" style="background: var(--surface-h); color: var(--text-dim);">&#128260;</div>
+        <div class="tool-icon" style="background: var(--surface-h); color: var(--text-dim);"><svg class="icon"><use href="#i-refresh"/></svg></div>
         <h3>compare_pages</h3>
         <p>Side-by-side comparison of two URLs with metric-by-metric performance diff.</p>
         <span class="tool-tag">Compare</span>
       </div>
       <div class="tool-card">
-        <div class="tool-icon" style="background: var(--surface-h); color: var(--text-dim);">&#128209;</div>
+        <div class="tool-icon" style="background: var(--surface-h); color: var(--text-dim);"><svg class="icon"><use href="#i-file-text"/></svg></div>
         <h3>full_report</h3>
         <p>Unified report combining Lighthouse lab data with CrUX real-world field data.</p>
         <span class="tool-tag">Unified</span>
       </div>
       <div class="tool-card">
-        <div class="tool-icon" style="background: var(--surface-h); color: var(--text-dim);">&#128230;</div>
+        <div class="tool-icon" style="background: var(--surface-h); color: var(--text-dim);"><svg class="icon"><use href="#i-box"/></svg></div>
         <h3>batch_analyze</h3>
         <p>Analyze up to 10 URLs simultaneously with progress tracking and aggregate results.</p>
         <span class="tool-tag">Batch</span>
       </div>
       <div class="tool-card">
-        <div class="tool-icon" style="background: var(--surface-h); color: var(--text-dim);">&#128451;&#65039;</div>
+        <div class="tool-icon" style="background: var(--surface-h); color: var(--text-dim);"><svg class="icon"><use href="#i-trash"/></svg></div>
         <h3>clear_cache</h3>
         <p>Clear internal cache to force fresh API requests for all subsequent analyses.</p>
         <span class="tool-tag">Utility</span>
@@ -869,7 +909,7 @@
 <section id="scores" class="gauges-section">
   <div class="container" style="text-align: center;">
     <div class="reveal">
-      <div class="section-label">&#128202; Live Metrics Preview</div>
+      <div class="section-label"><svg class="icon"><use href="#i-bar-chart"/></svg> Live Metrics Preview</div>
       <h2 class="section-title">Beautiful, Actionable Reports</h2>
       <p class="section-desc" style="margin: 0 auto 3rem;">Get Lighthouse scores and Core Web Vitals presented clearly, with color-coded results and priorities.</p>
     </div>
@@ -954,7 +994,7 @@
 <section id="how-it-works">
   <div class="container">
     <div class="reveal" style="text-align: center;">
-      <div class="section-label">&#128161; Getting Started</div>
+      <div class="section-label"><svg class="icon"><use href="#i-clipboard"/></svg> Getting Started</div>
       <h2 class="section-title">Up and Running in 60 Seconds</h2>
       <p class="section-desc" style="margin: 0 auto 3rem;">Three simple steps to unlock AI-powered web performance analysis.</p>
     </div>
@@ -986,12 +1026,12 @@
  for mobile devices"</code>
       </div>
       <div class="workflow-step">
-        <div class="step-number">&#10003;</div>
+        <div class="step-number"><svg class="icon"><use href="#i-check"/></svg></div>
         <h3>Get Insights</h3>
         <p>Receive comprehensive reports with scores, metrics, and prioritized recommendations.</p>
-        <code>Performance: 92/100 &#9989;
-LCP: 1.8s &#9989;
-CLS: 0.02 &#9989;</code>
+        <code>Performance: 92/100 OK
+LCP: 1.8s OK
+CLS: 0.02 OK</code>
       </div>
     </div>
   </div>
@@ -1001,7 +1041,7 @@ CLS: 0.02 &#9989;</code>
 <section id="compare" style="background: var(--bg2);">
   <div class="container" style="text-align: center;">
     <div class="reveal">
-      <div class="section-label">&#128640; Why PageSpeed MCP?</div>
+      <div class="section-label"><svg class="icon"><use href="#i-activity"/></svg> Why PageSpeed MCP?</div>
       <h2 class="section-title">Beyond Manual Testing</h2>
       <p class="section-desc" style="margin: 0 auto 3rem;">Stop switching between browser tabs. Get everything through your AI assistant.</p>
     </div>
@@ -1018,63 +1058,63 @@ CLS: 0.02 &#9989;</code>
         <tbody>
           <tr>
             <td>Natural Language Interface</td>
-            <td><span class="cross">&#10007;</span></td>
-            <td><span class="check">&#10003;</span></td>
+            <td><span class="cross"><svg class="icon"><use href="#i-x"/></svg></span></td>
+            <td><span class="check"><svg class="icon"><use href="#i-check"/></svg></span></td>
           </tr>
           <tr>
             <td>Batch URL Analysis (10+)</td>
-            <td><span class="cross">&#10007;</span></td>
-            <td><span class="check">&#10003;</span></td>
+            <td><span class="cross"><svg class="icon"><use href="#i-x"/></svg></span></td>
+            <td><span class="check"><svg class="icon"><use href="#i-check"/></svg></span></td>
           </tr>
           <tr>
             <td>Smart Recommendations</td>
-            <td><span class="cross">&#10007;</span></td>
-            <td><span class="check">&#10003;</span></td>
+            <td><span class="cross"><svg class="icon"><use href="#i-x"/></svg></span></td>
+            <td><span class="check"><svg class="icon"><use href="#i-check"/></svg></span></td>
           </tr>
           <tr>
             <td>Side-by-Side Comparison</td>
-            <td><span class="cross">&#10007;</span></td>
-            <td><span class="check">&#10003;</span></td>
+            <td><span class="cross"><svg class="icon"><use href="#i-x"/></svg></span></td>
+            <td><span class="check"><svg class="icon"><use href="#i-check"/></svg></span></td>
           </tr>
           <tr>
             <td>CrUX Real-World Data</td>
             <td>Basic</td>
-            <td><span class="check">&#10003; Detailed</span></td>
+            <td><span class="check"><svg class="icon"><use href="#i-check"/></svg> Detailed</span></td>
           </tr>
           <tr>
             <td>Element-Level Debugging</td>
-            <td><span class="cross">&#10007;</span></td>
-            <td><span class="check">&#10003;</span></td>
+            <td><span class="cross"><svg class="icon"><use href="#i-x"/></svg></span></td>
+            <td><span class="check"><svg class="icon"><use href="#i-check"/></svg></span></td>
           </tr>
           <tr>
             <td>Network Waterfall</td>
-            <td><span class="cross">&#10007;</span></td>
-            <td><span class="check">&#10003;</span></td>
+            <td><span class="cross"><svg class="icon"><use href="#i-x"/></svg></span></td>
+            <td><span class="check"><svg class="icon"><use href="#i-check"/></svg></span></td>
           </tr>
           <tr>
             <td>JS Profiling</td>
-            <td><span class="cross">&#10007;</span></td>
-            <td><span class="check">&#10003;</span></td>
+            <td><span class="cross"><svg class="icon"><use href="#i-x"/></svg></span></td>
+            <td><span class="check"><svg class="icon"><use href="#i-check"/></svg></span></td>
           </tr>
           <tr>
             <td>Third-Party Impact</td>
-            <td><span class="cross">&#10007;</span></td>
-            <td><span class="check">&#10003;</span></td>
+            <td><span class="cross"><svg class="icon"><use href="#i-x"/></svg></span></td>
+            <td><span class="check"><svg class="icon"><use href="#i-check"/></svg></span></td>
           </tr>
           <tr>
             <td>Intelligent Caching</td>
-            <td><span class="cross">&#10007;</span></td>
-            <td><span class="check">&#10003;</span></td>
+            <td><span class="cross"><svg class="icon"><use href="#i-x"/></svg></span></td>
+            <td><span class="check"><svg class="icon"><use href="#i-check"/></svg></span></td>
           </tr>
           <tr>
             <td>Docker Support</td>
             <td>N/A</td>
-            <td><span class="check">&#10003;</span></td>
+            <td><span class="check"><svg class="icon"><use href="#i-check"/></svg></span></td>
           </tr>
           <tr>
             <td>Localization (i18n)</td>
             <td>Limited</td>
-            <td><span class="check">&#10003; Full</span></td>
+            <td><span class="check"><svg class="icon"><use href="#i-check"/></svg> Full</span></td>
           </tr>
         </tbody>
       </table>
@@ -1113,7 +1153,7 @@ CLS: 0.02 &#9989;</code>
 <!-- FOOTER -->
 <footer>
   <p>
-    Built with &#10084;&#65039; by <a href="https://github.com/ruslanlap">@ruslanlap</a> &middot;
+    Built with <svg class="icon"><use href="#i-heart"/></svg> by <a href="https://github.com/ruslanlap">@ruslanlap</a> &middot;
     MIT License &middot;
     <a href="https://github.com/ruslanlap/pagespeed-insights-mcp">GitHub</a> &middot;
     <a href="https://www.npmjs.com/package/pagespeed-insights-mcp">npm</a> &middot;
@@ -1171,10 +1211,10 @@ const demos = {
         <span class="chat-score">SEO: 100</span>
       </div><br>
       <strong>Core Web Vitals:</strong><br>
-      &bull; LCP: 2.4s <span style="color:var(--yellow);">&#9888;</span><br>
-      &bull; CLS: 0.00 <span style="color:var(--green);">&#9989;</span><br>
-      &bull; FCP: 1.2s <span style="color:var(--green);">&#9989;</span><br>
-      &bull; TBT: 60ms <span style="color:var(--green);">&#9989;</span><br><br>
+      &bull; LCP: 2.4s <span style="color:var(--yellow);"><svg class="icon"><use href="#i-alert"/></svg></span><br>
+      &bull; CLS: 0.00 <span style="color:var(--green);"><svg class="icon"><use href="#i-check"/></svg></span><br>
+      &bull; FCP: 1.2s <span style="color:var(--green);"><svg class="icon"><use href="#i-check"/></svg></span><br>
+      &bull; TBT: 60ms <span style="color:var(--green);"><svg class="icon"><use href="#i-check"/></svg></span><br><br>
       <strong>Top Opportunities:</strong><br>
       &bull; Properly size images — save 1,069 KB<br>
       &bull; Serve images in next-gen formats<br>
@@ -1183,14 +1223,14 @@ const demos = {
   recommendations: [
     { type: 'user', text: 'Get smart recommendations for improving https://mysite.com performance' },
     { type: 'typing', delay: 1800 },
-    { type: 'ai', html: `<strong>&#127919; Smart Performance Recommendations</strong><br><br>
-      <span style="color:var(--red);font-weight:700;">&#128308; Critical Priority</span><br>
+    { type: 'ai', html: `<strong><svg class="icon"><use href="#i-target"/></svg> Smart Performance Recommendations</strong><br><br>
+      <span style="color:var(--red);font-weight:700;"><svg class="icon"><use href="#i-alert"/></svg> Critical Priority</span><br>
       &bull; <strong>Optimize LCP</strong> — Largest Contentful Paint is 4.2s (target: &lt;2.5s)<br>
       &bull; <strong>Reduce unused JavaScript</strong> — 342 KB savings possible<br><br>
-      <span style="color:var(--orange);font-weight:700;">&#128992; High Priority</span><br>
+      <span style="color:var(--orange);font-weight:700;"><svg class="icon"><use href="#i-alert"/></svg> High Priority</span><br>
       &bull; <strong>Serve images in WebP/AVIF</strong> — save 1.2 MB<br>
       &bull; <strong>Enable text compression</strong> — save 89 KB<br><br>
-      <span style="color:var(--yellow);font-weight:700;">&#128993; Medium Priority</span><br>
+      <span style="color:var(--yellow);font-weight:700;"><svg class="icon"><use href="#i-alert"/></svg> Medium Priority</span><br>
       &bull; <strong>Preconnect to origins</strong> — faster third-party loads<br>
       &bull; <strong>Add width/height to images</strong> — prevent CLS<br><br>
       <em style="color:var(--text-dim);">Each recommendation includes specific code fixes and estimated impact scores.</em>` },
@@ -1198,7 +1238,7 @@ const demos = {
   compare: [
     { type: 'user', text: 'Compare performance between https://mysite.com and https://competitor.com' },
     { type: 'typing', delay: 2000 },
-    { type: 'ai', html: `<strong>&#128260; Performance Comparison</strong><br><br>
+    { type: 'ai', html: `<strong><svg class="icon"><use href="#i-refresh"/></svg> Performance Comparison</strong><br><br>
       <table style="width:100%;font-size:.8rem;border-collapse:collapse;">
         <tr style="border-bottom:1px solid var(--border);">
           <td style="padding:.4rem;color:var(--text-dim);">Metric</td>
@@ -1207,7 +1247,7 @@ const demos = {
         </tr>
         <tr style="border-bottom:1px solid var(--border);">
           <td style="padding:.4rem;color:var(--text-dim);">Performance</td>
-          <td style="padding:.4rem;color:var(--green);font-weight:700;">89/100 &#128077;</td>
+          <td style="padding:.4rem;color:var(--green);font-weight:700;">89/100 </td>
           <td style="padding:.4rem;color:var(--yellow);">72/100</td>
         </tr>
         <tr style="border-bottom:1px solid var(--border);">
@@ -1226,7 +1266,7 @@ const demos = {
           <td style="padding:.4rem;color:var(--yellow);">280ms</td>
         </tr>
       </table><br>
-      <span style="color:var(--green);font-weight:600;">&#9989; mysite.com wins</span> in all key metrics!<br>
+      <span style="color:var(--green);font-weight:600;"><svg class="icon"><use href="#i-check"/></svg> mysite.com wins</span> in all key metrics!<br>
       <em style="color:var(--text-dim);">Competitor could improve by optimizing images and reducing JS bundle size.</em>` },
   ],
 };
@@ -1291,14 +1331,14 @@ const terminalDemos = {
     { text: '<span class="term-accent">[pagespeed-mcp]</span> <span class="term-output">Server started on stdio transport</span>', delay: 600 },
     { text: '<span class="term-accent">[pagespeed-mcp]</span> <span class="term-output">Registered 16 tools</span>', delay: 200 },
     { text: '', delay: 200 },
-    { text: '<span class="term-cyan">&#9654; tool/call</span> <span class="term-cmd">analyze_page_speed</span>', delay: 400 },
+    { text: '<span class="term-cyan">› tool/call</span> <span class="term-cmd">analyze_page_speed</span>', delay: 400 },
     { text: '  <span class="term-output">url: "https://example.com"</span>', delay: 100 },
     { text: '  <span class="term-output">strategy: "mobile"</span>', delay: 100 },
     { text: '  <span class="term-output">category: ["performance", "seo", "accessibility"]</span>', delay: 100 },
     { text: '', delay: 300 },
     { text: '<span class="term-accent">[pagespeed-mcp]</span> <span class="term-output">Starting PageSpeed analysis...</span>', delay: 500 },
     { text: '<span class="term-accent">[pagespeed-mcp]</span> <span class="term-output">Fetching from Google PageSpeed API...</span>', delay: 800 },
-    { text: '<span class="term-accent">[pagespeed-mcp]</span> <span class="term-success">&#10003; Analysis complete in 3.2s</span>', delay: 1000 },
+    { text: '<span class="term-accent">[pagespeed-mcp]</span> <span class="term-success">✓ Analysis complete in 3.2s</span>', delay: 1000 },
     { text: '', delay: 100 },
     { text: '<span class="term-success">&#9473;&#9473; Results &#9473;&#9473;&#9473;&#9473;&#9473;&#9473;&#9473;&#9473;&#9473;&#9473;&#9473;&#9473;&#9473;&#9473;&#9473;&#9473;&#9473;&#9473;&#9473;&#9473;</span>', delay: 200 },
     { text: '  <span class="term-output">Performance:</span>  <span class="term-warn">67/100</span>', delay: 100 },
@@ -1310,30 +1350,30 @@ const terminalDemos = {
     { text: '<span class="term-prompt">$</span> <span class="term-cmd">npx pagespeed-insights-mcp</span>', delay: 0 },
     { text: '<span class="term-accent">[pagespeed-mcp]</span> <span class="term-output">Server running...</span>', delay: 600 },
     { text: '', delay: 200 },
-    { text: '<span class="term-cyan">&#9654; tool/call</span> <span class="term-cmd">get_recommendations</span>', delay: 400 },
+    { text: '<span class="term-cyan">› tool/call</span> <span class="term-cmd">get_recommendations</span>', delay: 400 },
     { text: '  <span class="term-output">url: "https://mysite.com"</span>', delay: 100 },
     { text: '', delay: 300 },
     { text: '<span class="term-accent">[pagespeed-mcp]</span> <span class="term-output">Generating smart recommendations...</span>', delay: 800 },
     { text: '<span class="term-accent">[pagespeed-mcp]</span> <span class="term-output">Analyzing 47 Lighthouse audits...</span>', delay: 600 },
     { text: '<span class="term-accent">[pagespeed-mcp]</span> <span class="term-output">Scoring priorities...</span>', delay: 400 },
-    { text: '<span class="term-accent">[pagespeed-mcp]</span> <span class="term-success">&#10003; Generated 8 recommendations</span>', delay: 500 },
+    { text: '<span class="term-accent">[pagespeed-mcp]</span> <span class="term-success">✓ Generated 8 recommendations</span>', delay: 500 },
     { text: '', delay: 100 },
-    { text: '  <span class="term-error">&#9679; CRITICAL:</span> <span class="term-output">Reduce unused JavaScript (-342 KB)</span>', delay: 200 },
-    { text: '  <span class="term-orange">&#9679; HIGH:</span>     <span class="term-output">Serve images in WebP (-1.2 MB)</span>', delay: 200 },
-    { text: '  <span class="term-warn">&#9679; MEDIUM:</span>   <span class="term-output">Enable text compression (-89 KB)</span>', delay: 200 },
-    { text: '  <span class="term-success">&#9679; LOW:</span>      <span class="term-output">Preconnect to required origins</span>', delay: 200 },
+    { text: '  <span class="term-error">■ CRITICAL:</span> <span class="term-output">Reduce unused JavaScript (-342 KB)</span>', delay: 200 },
+    { text: '  <span class="term-orange">■ HIGH:</span>     <span class="term-output">Serve images in WebP (-1.2 MB)</span>', delay: 200 },
+    { text: '  <span class="term-warn">■ MEDIUM:</span>   <span class="term-output">Enable text compression (-89 KB)</span>', delay: 200 },
+    { text: '  <span class="term-success">■ LOW:</span>      <span class="term-output">Preconnect to required origins</span>', delay: 200 },
   ],
   compare: [
     { text: '<span class="term-prompt">$</span> <span class="term-cmd">npx pagespeed-insights-mcp</span>', delay: 0 },
     { text: '<span class="term-accent">[pagespeed-mcp]</span> <span class="term-output">Server running...</span>', delay: 600 },
     { text: '', delay: 200 },
-    { text: '<span class="term-cyan">&#9654; tool/call</span> <span class="term-cmd">compare_pages</span>', delay: 400 },
+    { text: '<span class="term-cyan">› tool/call</span> <span class="term-cmd">compare_pages</span>', delay: 400 },
     { text: '  <span class="term-output">urlA: "https://mysite.com"</span>', delay: 100 },
     { text: '  <span class="term-output">urlB: "https://competitor.com"</span>', delay: 100 },
     { text: '', delay: 300 },
     { text: '<span class="term-accent">[pagespeed-mcp]</span> <span class="term-output">Analyzing URL A...</span>', delay: 800 },
     { text: '<span class="term-accent">[pagespeed-mcp]</span> <span class="term-output">Analyzing URL B...</span>', delay: 800 },
-    { text: '<span class="term-accent">[pagespeed-mcp]</span> <span class="term-success">&#10003; Comparison complete</span>', delay: 500 },
+    { text: '<span class="term-accent">[pagespeed-mcp]</span> <span class="term-success">✓ Comparison complete</span>', delay: 500 },
     { text: '', delay: 100 },
     { text: '  <span class="term-output">            mysite.com   competitor.com</span>', delay: 200 },
     { text: '  <span class="term-output">Performance  </span><span class="term-success">89</span>           <span class="term-warn">72</span>', delay: 200 },
@@ -1341,7 +1381,7 @@ const terminalDemos = {
     { text: '  <span class="term-output">CLS          </span><span class="term-success">0.01</span>         <span class="term-warn">0.15</span>', delay: 200 },
     { text: '  <span class="term-output">TBT          </span><span class="term-success">45ms</span>         <span class="term-warn">280ms</span>', delay: 200 },
     { text: '', delay: 100 },
-    { text: '  <span class="term-success">&#9989; Winner: mysite.com (all metrics)</span>', delay: 300 },
+    { text: '  <span class="term-success">✓ Winner: mysite.com (all metrics)</span>', delay: 300 },
   ],
 };
 
