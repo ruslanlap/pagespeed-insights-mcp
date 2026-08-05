@@ -21,6 +21,7 @@ import {
   AnalyzePageSpeedSchema,
   PerformanceSummarySchema,
   CruxSummarySchema,
+  OriginCruxSchema,
   CompareUrlsSchema,
   BatchAnalyzeSchema,
   type AnalyzePageSpeedInput,
@@ -421,6 +422,23 @@ export class PageSpeedInsightsServer {
               required: ["url"]
             },
           },
+          {
+            name: "get_origin_crux",
+            description: "Get Chrome UX Report field data for an entire origin (domain-level), aggregating real-user Core Web Vitals across all pages — useful when a single URL lacks enough traffic for page-level data",
+            inputSchema: {
+              type: "object",
+              properties: {
+                origin: { type: "string", format: "uri", description: "The origin (scheme + host, e.g. https://example.com) to query" },
+                formFactor: {
+                  type: "string",
+                  enum: ["PHONE", "DESKTOP", "TABLET", "ALL"],
+                  default: "ALL",
+                  description: "Device form factor to filter field data"
+                }
+              },
+              required: ["origin"]
+            },
+          },
         ] satisfies Tool[],
       };
     });
@@ -463,6 +481,8 @@ export class PageSpeedInsightsServer {
           return await this.handleGetFullAudit(args);
         case "get_performance_map":
           return await this.handlePerformanceMap(args);
+        case "get_origin_crux":
+          return await this.handleGetOriginCrux(args);
         default:
           throw new Error(`Unknown tool: ${name}`);
       }
@@ -656,6 +676,69 @@ export class PageSpeedInsightsServer {
 
     map += "```\n";
     return map;
+  }
+
+  private async handleGetOriginCrux(args: any) {
+    const correlationId = randomUUID();
+    const logger = createRequestLogger(correlationId, "origin-crux");
+
+    try {
+      const input = OriginCruxSchema.parse(args);
+      logger.info({ origin: input.origin }, "Fetching origin CrUX data");
+
+      const cruxData = await this.client.getOriginCruxData(input, correlationId);
+      const summary = this.formatOriginCruxSummary(cruxData, input.origin);
+
+      return {
+        content: [
+          {
+            type: "text",
+            text: summary,
+          },
+        ],
+      };
+    } catch (error) {
+      const errorMessage = error instanceof Error ? error.message : "Unknown error occurred";
+      logger.error({ error: errorMessage }, "Origin CrUX request failed");
+      return {
+        content: [
+          {
+            type: "text",
+            text: `Error getting origin CrUX data: ${errorMessage}`,
+          },
+        ],
+        isError: true,
+      };
+    }
+  }
+
+  private formatOriginCruxSummary(cruxData: CruxRecord, origin: string): string {
+    if (!cruxData.record) {
+      return `# CrUX Origin Field Data\n\n**Origin:** ${origin}\n**Status:** No field data available (insufficient traffic)\n\nThis origin doesn't have enough real-world usage data in Chrome UX Report.`;
+    }
+
+    const { record } = cruxData;
+    let summary = `# CrUX Origin Field Data\n\n`;
+    summary += `**Origin:** ${origin}\n`;
+    summary += `**Form Factor:** ${record.key.formFactor}\n\n`;
+
+    const cwvMetrics = {
+      "largest_contentful_paint": "Largest Contentful Paint",
+      "interaction_to_next_paint": "Interaction to Next Paint",
+      "cumulative_layout_shift": "Cumulative Layout Shift",
+      "experimental_time_to_first_byte": "Time to First Byte",
+      "first_contentful_paint": "First Contentful Paint",
+    };
+
+    summary += `## Core Web Vitals (Real User Data)\n`;
+    Object.entries(cwvMetrics).forEach(([key, title]) => {
+      const metric = record.metrics?.[key];
+      if (metric) {
+        summary += `- **${title}**: ${metric.percentiles.p75}${key === "cumulative_layout_shift" ? "" : "ms"} (p75)\n`;
+      }
+    });
+
+    return summary;
   }
 
   private async handleCruxSummary(args: any) {

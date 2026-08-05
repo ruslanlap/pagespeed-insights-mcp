@@ -47,6 +47,11 @@ export const CruxSummarySchema = z.object({
   formFactor: z.enum(["PHONE", "DESKTOP", "TABLET"]).optional(),
 });
 
+export const OriginCruxSchema = z.object({
+  origin: UrlSchema,
+  formFactor: z.enum(["PHONE", "DESKTOP", "TABLET", "ALL"]).optional(),
+});
+
 export const CompareUrlsSchema = z.object({
   urlA: UrlSchema,
   urlB: UrlSchema,
@@ -64,5 +69,6 @@ export const BatchAnalyzeSchema = z.object({
 export type AnalyzePageSpeedInput = z.infer<typeof AnalyzePageSpeedSchema>;
 export type PerformanceSummaryInput = z.infer<typeof PerformanceSummarySchema>;
 export type CruxSummaryInput = z.infer<typeof CruxSummarySchema>;
+export type OriginCruxInput = z.infer<typeof OriginCruxSchema>;
 export type CompareUrlsInput = z.infer<typeof CompareUrlsSchema>;
 export type BatchAnalyzeInput = z.infer<typeof BatchAnalyzeSchema>;

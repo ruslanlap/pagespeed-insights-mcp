@@ -15,9 +15,9 @@
 [![Live Demo](https://img.shields.io/badge/demo-live-blueviolet.svg)](https://ruslanlap.github.io/pagespeed-insights-mcp/demo/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-**17-tool MCP server** for Google PageSpeed Insights & Chrome UX Report APIs. Analyze, compare, and optimize web performance directly through Claude, Cursor, or any MCP-compatible AI client.
+**18-tool MCP server** for Google PageSpeed Insights & Chrome UX Report APIs. Analyze, compare, and optimize web performance directly through Claude, Cursor, or any MCP-compatible AI client.
 
-> **🎬 [View Interactive Demo →](https://ruslanlap.github.io/pagespeed-insights-mcp/demo/)** — See all 17 tools in action with animated examples
+> **🎬 [View Interactive Demo →](https://ruslanlap.github.io/pagespeed-insights-mcp/demo/)** — See all 18 tools in action with animated examples
 > Fallback URL: [https://ruslanlap.github.io/pagespeed-insights-mcp/demo.html](https://ruslanlap.github.io/pagespeed-insights-mcp/demo.html)
 
 ## 📖 Table of Contents
@@ -540,7 +540,7 @@ Run a full audit including accessibility, SEO, and best practices for https://ex
 
 ## Available Tools
 
-17 tools across three categories:
+18 tools across three categories:
 
 ### Core Analysis
 
@@ -558,6 +558,7 @@ Run a full audit including accessibility, SEO, and best practices for https://ex
 | Tool | Description |
 |------|-------------|
 | `crux_summary` | Real-world Core Web Vitals from Chrome UX Report (field data) |
+| `get_origin_crux` | Domain-level (origin) Chrome UX Report field data across all pages |
 | `compare_pages` | Side-by-side performance comparison between two URLs |
 
 ### Advanced Diagnostics

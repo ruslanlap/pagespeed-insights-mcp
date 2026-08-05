@@ -336,4 +336,30 @@ describe("PageSpeedInsightsServer handlers", () => {
       expect(result.content[0].text).toContain("0.05");
     });
   });
+
+  describe("handleGetOriginCrux", () => {
+    it("requests domain-level field data via the origin key", async () => {
+      nock("https://chromeuxreport.googleapis.com")
+        .post("/v1/records:queryRecord")
+        .query(true)
+        .reply(200, {
+          record: {
+            key: { origin: "https://example.com", formFactor: "ALL" },
+            metrics: {
+              largest_contentful_paint: { histogram: [], percentiles: { p75: 1800 } },
+              cumulative_layout_shift: { histogram: [], percentiles: { p75: 0.02 } },
+            },
+          },
+        });
+
+      const result = await callHandler(server, "handleGetOriginCrux", {
+        origin: "https://example.com",
+      });
+
+      expect(result.isError).toBeFalsy();
+      expect(result.content[0].text).toContain("CrUX Origin Field Data");
+      expect(result.content[0].text).toContain("https://example.com");
+      expect(result.content[0].text).toContain("1800ms");
+    });
+  });
 });

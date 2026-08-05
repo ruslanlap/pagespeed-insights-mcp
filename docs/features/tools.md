@@ -120,6 +120,13 @@ Retrieves Chrome User Experience Report (CrUX) data.
 *   `url` (string, required): The URL to analyze.
 *   `formFactor` (string): "PHONE", "DESKTOP", or "TABLET".
 
+### `get_origin_crux`
+Retrieves domain-level (origin) Chrome UX Report field data — aggregates real-user Core Web Vitals across all pages of an origin. Useful when a single URL lacks enough traffic for page-level data.
+
+**Parameters:**
+*   `origin` (string, required): The origin (scheme + host, e.g. `https://example.com`) to query.
+*   `formFactor` (string): "PHONE", "DESKTOP", "TABLET", or "ALL".
+
 ### `clear_cache`
 Clears the internal cache to force fresh API requests for all subsequent analyses.
 

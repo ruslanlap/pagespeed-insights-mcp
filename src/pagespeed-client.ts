@@ -8,8 +8,9 @@ import { cache, createPSICacheKey, createCruxCacheKey } from "./cache.js";
 import type { 
   AnalyzePageSpeedInput, 
   CruxSummaryInput,
-  PageSpeedInsightsResponse 
-} from "./types.js";
+  OriginCruxInput,
+} from "./schemas.js";
+import type { PageSpeedInsightsResponse } from "./types.js";
 
 const pkg = createRequire(import.meta.url)("../package.json") as { version: string };
 const USER_AGENT = `pagespeed-insights-mcp/${pkg.version}`;
@@ -187,6 +188,60 @@ export class PageSpeedClient {
         clearTimeout(timeoutId);
         const errorMessage = error instanceof Error ? error.message : "Unknown error";
         logger.warn({ error: this.redact(errorMessage) }, "CrUX request failed");
+        throw error;
+      }
+    });
+  }
+
+  async getOriginCruxData(input: OriginCruxInput, correlationId: string): Promise<any> {
+    const logger = createRequestLogger(correlationId, "origin-crux");
+
+    return this.limiter(async () => {
+      const cacheKey = createCruxCacheKey(input.origin, input.formFactor || "ALL");
+
+      const cached = cache.get(cacheKey);
+      if (cached) {
+        logger.debug("Cache hit for origin CrUX request");
+        return cached;
+      }
+
+      logger.info({ origin: input.origin }, "Fetching origin CrUX data");
+
+      const requestBody: Record<string, unknown> = { origin: input.origin };
+      if (input.formFactor) requestBody.formFactor = input.formFactor;
+
+      const url = `https://chromeuxreport.googleapis.com/v1/records:queryRecord?key=${this.apiKey}`;
+
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), this.timeout);
+
+      try {
+        const response = await fetch(url, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "User-Agent": USER_AGENT,
+          },
+          body: JSON.stringify(requestBody),
+          signal: controller.signal,
+        });
+
+        clearTimeout(timeoutId);
+
+        if (!response.ok) {
+          const errorText = await response.text();
+          throw new Error(`CrUX API error: ${response.status} ${response.statusText} - ${errorText}`);
+        }
+
+        const data = await response.json();
+        cache.set(cacheKey, data, this.cacheTTL);
+
+        logger.info({ origin: input.origin }, "Origin CrUX request successful");
+        return data;
+      } catch (error) {
+        clearTimeout(timeoutId);
+        const errorMessage = error instanceof Error ? error.message : "Unknown error";
+        logger.warn({ error: this.redact(errorMessage) }, "Origin CrUX request failed");
         throw error;
       }
     });
