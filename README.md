@@ -1,5 +1,7 @@
 # PageSpeed Insights MCP Server
 
+[![MCP Toplist](https://mcptoplist.com/badge/glama%2Fruslanlap%2Fpagespeed-insights-mcp.svg)](https://mcptoplist.com/server/glama%2Fruslanlap%2Fpagespeed-insights-mcp)
+
 <p align="center">
   <img src="https://raw.githubusercontent.com/ruslanlap/pagespeed-insights-mcp/master/assets/1.png" alt="PageSpeed MCP chat demo" width="48%" />
   <img src="https://raw.githubusercontent.com/ruslanlap/pagespeed-insights-mcp/master/assets/2.png" alt="PageSpeed MCP terminal demo" width="48%" />
