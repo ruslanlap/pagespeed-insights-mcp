@@ -1,3 +1,15 @@
+# [1.5.0](https://github.com/ruslanlap/pagespeed-insights-mcp/compare/v1.4.1...v1.5.0) (2026-08-05)
+
+
+### Bug Fixes
+
+* resolve production dependency vulnerabilities (hono, fast-uri, ip-address) ([7d813e2](https://github.com/ruslanlap/pagespeed-insights-mcp/commit/7d813e2fab3cadbea54307b20a6c04364bedd21f))
+
+
+### Features
+
+* add get_origin_crux tool for domain-level Chrome UX Report field data ([8e1cb28](https://github.com/ruslanlap/pagespeed-insights-mcp/commit/8e1cb2893e9e977446b6238d4c1c5e7ba8ced92f))
+
 ## [1.4.1](https://github.com/ruslanlap/pagespeed-insights-mcp/compare/v1.4.0...v1.4.1) (2026-08-03)
 
 
