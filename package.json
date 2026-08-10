@@ -78,7 +78,7 @@
     "eslint": "^10.8.0",
     "nock": "^14.0.17",
     "prettier": "^3.9.6",
-    "semantic-release": "^25.0.8",
+    "semantic-release": "^25.0.9",
     "tsx": "^4.23.1",
     "typescript": "^5.8.0",
     "typescript-eslint": "^8.66.0",
