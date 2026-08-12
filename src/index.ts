@@ -1458,6 +1458,14 @@ export class PageSpeedInsightsServer {
           report += `- **${item.source}:** ${(item.wastedBytes / 1024).toFixed(1)} KB wasted\n`;
         });
       }
+
+      if (jsData.legacyJavaScript?.length > 0) {
+        report += `## Legacy JavaScript\n`;
+        report += `Found ${jsData.legacyJavaScript.length} legacy/polyfill modules:\n`;
+        jsData.legacyJavaScript.forEach(item => {
+          report += `- **${item.source}:** ${(item.wastedBytes / 1024).toFixed(1)} KB wasted\n`;
+        });
+      }
       
       return {
         content: [

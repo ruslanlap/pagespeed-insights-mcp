@@ -288,7 +288,8 @@ export class PerformanceRecommendationsEngine {
       // other null-score audits.
       const isInsightWithItems =
         auditId.endsWith('-insight') && (audit.details?.items?.length ?? 0) > 0;
-      if (!isInsightWithItems && (audit.score === 1 || audit.score === null)) return;
+      if (audit.score === 1) return; // score 1 = pass, skip regardless
+      if (!isInsightWithItems && audit.score === null) return;
 
       const baseRecommendation = this.auditMappings.get(auditId);
       if (!baseRecommendation) return;

@@ -223,6 +223,7 @@ export class ResponseParser {
       mainThreadWork: [] as MainThreadWorkItem[],
       unusedJavaScript: [] as UnusedResourceItem[],
       duplicatedJavaScript: [] as Array<{ source: string; totalBytes: number; wastedBytes: number }>,
+      legacyJavaScript: [] as Array<{ source: string; totalBytes: number; wastedBytes: number }>,
     };
 
     // Bootup time
@@ -280,13 +281,11 @@ export class ResponseParser {
     // Legacy JavaScript (optional supplementary audit, present in both versions).
     const legacyJsAudit = audits['legacy-javascript'] ?? audits['legacy-javascript-insight'];
     if (legacyJsAudit?.details?.items) {
-      const legacyItems = legacyJsAudit.details.items.map((item: any) => ({
+      jsData.legacyJavaScript = legacyJsAudit.details.items.map((item: any) => ({
         source: item.source || item.url || '',
-        totalBytes: item.totalBytes || 0,
-        wastedBytes: item.wastedBytes || 0,
+        totalBytes: item.totalBytes ?? 0,
+        wastedBytes: item.wastedBytes ?? 0,
       }));
-      // Merge onto duplicated list (duplicatedJavaScript array is the sink).
-      jsData.duplicatedJavaScript = [...jsData.duplicatedJavaScript, ...legacyItems];
     }
 
     return jsData;
@@ -392,11 +391,12 @@ export class ResponseParser {
 
       for (const sub of reasons) {
         const reason = String(sub.reason || '').toLowerCase();
+        const wastedBytes = sub.wastedBytes ?? item.wastedBytes ?? 0;
         const entry: ImageOptimizationItem = {
           url,
           totalBytes,
-          wastedBytes: sub.wastedBytes || item.wastedBytes || 0,
-          wastedPercent: 0,
+          wastedBytes,
+          wastedPercent: totalBytes > 0 ? Math.round((wastedBytes / totalBytes) * 100) : 0,
           node: item.node ? this.normalizeNode(item.node) : undefined,
         };
         if (reason.includes('resize')) {

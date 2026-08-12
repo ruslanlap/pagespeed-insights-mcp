@@ -225,11 +225,12 @@ describe("ResponseParser — Lighthouse 13 insight fallbacks", () => {
     expect(el.clsElements[0].node.selector).toBe("div.ad");
   });
 
-  it("merges duplicated-javascript-insight and legacy-javascript-insight", () => {
+  it("separates duplicated-javascript-insight and legacy-javascript-insight", () => {
     const js = ResponseParser.extractJavaScriptData(response);
-    expect(js.duplicatedJavaScript).toHaveLength(2);
+    expect(js.duplicatedJavaScript).toHaveLength(1);
     expect(js.duplicatedJavaScript[0].source).toBe("vendor.js");
-    expect(js.duplicatedJavaScript[1].source).toBe("polyfills.js");
+    expect(js.legacyJavaScript).toHaveLength(1);
+    expect(js.legacyJavaScript[0].source).toBe("polyfills.js");
   });
 });
 
