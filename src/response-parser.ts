@@ -62,6 +62,21 @@ export class ResponseParser {
       };
     }
 
+    // Lighthouse 13+: fullPageScreenshot moved from an audit to a top-level field.
+    if (!visualData.fullPageScreenshot) {
+      const topLevel = (response.lighthouseResult as any)?.fullPageScreenshot;
+      if (topLevel?.screenshot) {
+        visualData.fullPageScreenshot = {
+          screenshot: {
+            data: topLevel.screenshot.data,
+            width: topLevel.screenshot.width,
+            height: topLevel.screenshot.height,
+          },
+          nodes: topLevel.nodes || {},
+        };
+      }
+    }
+
     return visualData;
   }
 
@@ -81,6 +96,13 @@ export class ResponseParser {
     const lcpAudit = audits['largest-contentful-paint-element'];
     if (lcpAudit?.details?.items?.[0]?.node) {
       elementData.lcpElement = this.normalizeNode(lcpAudit.details.items[0].node);
+    } else {
+      // Lighthouse 13+: lcp-discovery-insight replaces largest-contentful-paint-element.
+      const lcpInsight = audits['lcp-discovery-insight'];
+      const lcpItem = lcpInsight?.details?.items?.find((i: any) => i?.node?.type === 'node');
+      if (lcpItem?.node) {
+        elementData.lcpElement = this.normalizeNode(lcpItem.node);
+      }
     }
 
     // Layout shift elements
@@ -92,12 +114,33 @@ export class ResponseParser {
           node: this.normalizeNode(item.node),
           score: item.score || 0,
         }));
+    } else {
+      // Lighthouse 13+: cls-culprits-insight. The first row is a summary whose
+      // node is a text cell ({type:"text", value:"Total"}); filter on node.type.
+      const clsInsight = audits['cls-culprits-insight'];
+      if (clsInsight?.details?.items) {
+        elementData.clsElements = clsInsight.details.items
+          .filter((item: any) => item.node?.type === 'node')
+          .map((item: any) => ({
+            node: this.normalizeNode(item.node),
+            score: item.score || 0,
+          }));
+      }
     }
 
     // Lazy loaded LCP
     const lazyLcpAudit = audits['lcp-lazy-loaded'];
     if (lazyLcpAudit?.details?.items?.[0]?.node) {
       elementData.lazyLoadedLcp = this.normalizeNode(lazyLcpAudit.details.items[0].node);
+    } else {
+      // Lighthouse 13+: lcp-discovery-insight carries a lazy-loaded flag.
+      const lcpInsight = audits['lcp-discovery-insight'];
+      const lazyItem = lcpInsight?.details?.items?.find(
+        (i: any) => i?.node?.type === 'node' && (i as any).lazyLoaded
+      );
+      if (lazyItem?.node) {
+        elementData.lazyLoadedLcp = this.normalizeNode(lazyItem.node);
+      }
     }
 
     return elementData;
@@ -222,8 +265,29 @@ export class ResponseParser {
         totalBytes: item.totalBytes || 0,
         wastedBytes: item.wastedBytes || 0,
       }));
+    } else {
+      // Lighthouse 13+: duplicated-javascript-insight / legacy-javascript-insight.
+      const dupInsight = audits['duplicated-javascript-insight'];
+      if (dupInsight?.details?.items) {
+        jsData.duplicatedJavaScript = dupInsight.details.items.map((item: any) => ({
+          source: item.source || item.url || '',
+          totalBytes: item.totalBytes || 0,
+          wastedBytes: item.wastedBytes || 0,
+        }));
+      }
     }
 
+    // Legacy JavaScript (optional supplementary audit, present in both versions).
+    const legacyJsAudit = audits['legacy-javascript'] ?? audits['legacy-javascript-insight'];
+    if (legacyJsAudit?.details?.items) {
+      const legacyItems = legacyJsAudit.details.items.map((item: any) => ({
+        source: item.source || item.url || '',
+        totalBytes: item.totalBytes || 0,
+        wastedBytes: item.wastedBytes || 0,
+      }));
+      // Merge onto duplicated list (duplicatedJavaScript array is the sink).
+      jsData.duplicatedJavaScript = [...jsData.duplicatedJavaScript, ...legacyItems];
+    }
 
     return jsData;
   }
@@ -290,7 +354,65 @@ export class ResponseParser {
       }));
     }
 
+    // Lighthouse 13+: all four legacy audits collapse into one
+    // image-delivery-insight, distinguished by each subItem's `reason` string.
+    const anyLegacy =
+      imageData.responsiveImages.length ||
+      imageData.offscreenImages.length ||
+      imageData.unoptimizedImages.length ||
+      imageData.modernFormats.length;
+    if (!anyLegacy) {
+      this.applyImageDeliveryInsight(audits['image-delivery-insight'], imageData);
+    }
+
     return imageData;
+  }
+
+  /**
+   * Split a Lighthouse 13 image-delivery-insight into the four legacy buckets
+   * by matching the `reason` text on each subItem ("resize", "compress",
+   * "modern"/"format", "lazy"/"offscreen"). Falls back to responsiveImages when
+   * the reason is unrecognized so data is never silently dropped.
+   */
+  private static applyImageDeliveryInsight(insight: any, imageData: {
+    responsiveImages: ImageOptimizationItem[];
+    offscreenImages: ImageOptimizationItem[];
+    unoptimizedImages: ImageOptimizationItem[];
+    modernFormats: ImageOptimizationItem[];
+  }) {
+    const items: any[] = insight?.details?.items ?? [];
+    for (const item of items) {
+      const url = item.url || '';
+      const totalBytes = item.totalBytes || 0;
+      const subItems: any[] = item.subItems?.items ?? [];
+      // If there are no subItems, the item-level reason (if any) still applies.
+      const reasons = subItems.length
+        ? subItems
+        : [{ reason: item.reason, wastedBytes: item.wastedBytes || 0 }];
+
+      for (const sub of reasons) {
+        const reason = String(sub.reason || '').toLowerCase();
+        const entry: ImageOptimizationItem = {
+          url,
+          totalBytes,
+          wastedBytes: sub.wastedBytes || item.wastedBytes || 0,
+          wastedPercent: 0,
+          node: item.node ? this.normalizeNode(item.node) : undefined,
+        };
+        if (reason.includes('resize')) {
+          imageData.responsiveImages.push(entry);
+        } else if (reason.includes('compress')) {
+          imageData.unoptimizedImages.push(entry);
+        } else if (reason.includes('modern') || reason.includes('format')) {
+          imageData.modernFormats.push(entry);
+        } else if (reason.includes('lazy') || reason.includes('offscreen')) {
+          imageData.offscreenImages.push(entry);
+        } else {
+          // ponytail: unknown reason — bucket as responsive rather than drop.
+          imageData.responsiveImages.push(entry);
+        }
+      }
+    }
   }
 
   /**
@@ -314,12 +436,35 @@ export class ResponseParser {
         wastedMs: item.wastedMs || 0,
       }));
       renderBlockingData.totalWastedMs = renderBlockingAudit.details.overallSavingsMs || 0;
+    } else {
+      // Lighthouse 13+: render-blocking-insight; overallSavingsMs → metricSavings.FCP.
+      const rbInsight = audits['render-blocking-insight'] as any;
+      if (rbInsight?.details?.items) {
+        renderBlockingData.resources = rbInsight.details.items.map((item: any) => ({
+          url: item.url || '',
+          totalBytes: item.totalBytes || 0,
+          wastedMs: item.wastedMs || 0,
+        }));
+        renderBlockingData.totalWastedMs =
+          rbInsight.details.metricSavings?.FCP ?? rbInsight.metricSavings?.FCP ?? 0;
+      }
     }
 
     // Critical request chains
     const criticalChainsAudit = audits['critical-request-chains'];
     if (criticalChainsAudit?.details) {
       renderBlockingData.criticalChains = criticalChainsAudit.details;
+    } else {
+      // Lighthouse 13+: network-dependency-tree-insight. Items carry a
+      // `value.chains` map ({url, transferSize, navStartToEndTime, children})
+      // with no `request` wrapper; expose it raw for downstream consumers.
+      const ndInsight = audits['network-dependency-tree-insight'];
+      if (ndInsight?.details?.items) {
+        renderBlockingData.criticalChains = {
+          type: 'network-dependency-tree',
+          chains: ndInsight.details.items.map((item: any) => item?.value?.chains).filter(Boolean),
+        };
+      }
     }
 
     return renderBlockingData;
@@ -352,9 +497,25 @@ export class ResponseParser {
       // Calculate totals
       thirdPartyData.totalTransferSize = thirdPartyData.summary.reduce((sum, item) => sum + item.transferSize, 0);
       thirdPartyData.totalBlockingTime = thirdPartyData.summary.reduce((sum, item) => sum + item.blockingTime, 0);
+    } else {
+      // Lighthouse 13+: third-parties-insight. blockingTime is gone; use 0.
+      const tpInsight = audits['third-parties-insight'];
+      if (tpInsight?.details?.items) {
+        thirdPartyData.summary = tpInsight.details.items.map((item: any) => ({
+          entity: item.entity || '',
+          transferSize: item.transferSize || 0,
+          blockingTime: 0,
+          mainThreadTime: item.mainThreadTime || 0,
+          subItems: item.subItems,
+        }));
+        thirdPartyData.totalTransferSize = thirdPartyData.summary.reduce(
+          (sum, item) => sum + item.transferSize, 0);
+        thirdPartyData.totalBlockingTime = 0;
+      }
     }
 
-    // Third party facades
+    // Third party facades — Lighthouse 13 removed this audit entirely; the
+    // legacy branch is a no-op when absent, so no insight fallback is needed.
     const facadesAudit = audits['third-party-facades'];
     if (facadesAudit?.details?.items) {
       thirdPartyData.facades = facadesAudit.details.items.map((item: any) => ({
