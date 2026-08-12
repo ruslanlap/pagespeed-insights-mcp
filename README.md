@@ -165,13 +165,9 @@ We have comprehensive documentation available online.
 
 ## 📝 Release Notes
 
-Current release: **v1.2.3**.
+Current release: **v1.5.0**.
 
-### v1.2.3 — Google Antigravity support
-
-- Added a Google Antigravity MCP configuration guide for `~/.gemini/config/mcp_config.json`.
-- Added an Antigravity-ready example configuration in [`examples/antigravity-config.json`](./examples/antigravity-config.json).
-- Tightened release automation so important MCP client integration documentation can trigger a patch release when commits use scoped conventional commit messages such as `docs(antigravity): ...`, `docs(integration): ...`, or `docs(config): ...`.
+> The badges at the top of this README update **automatically** on every release (npm version, GitHub package version, downloads). No manual edits needed.
 
 For the complete release history, see [`CHANGELOG.md`](./CHANGELOG.md).
 
