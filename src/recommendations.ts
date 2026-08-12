@@ -148,6 +148,72 @@ export class PerformanceRecommendationsEngine {
       ],
       moreInfo: 'Lazy loading images improves initial page load time'
     }],
+    // Lighthouse 13+ insight audit IDs — map onto existing guidance.
+    ['image-delivery-insight', {
+      title: '🖼️ Optimize image delivery',
+      impact: 'medium',
+      effort: 'medium',
+      category: 'performance',
+      howToFix: [
+        'Implement srcset attribute for different screen sizes',
+        'Convert images to modern formats (WebP/AVIF)',
+        'Compress and resize images to their display dimensions',
+        'Lazy-load offscreen images with loading="lazy"'
+      ],
+      moreInfo: 'Lighthouse 13 collapses responsive/offscreen/unoptimized/modern-format audits into one insight'
+    }],
+    ['render-blocking-insight', {
+      title: '🚫 Eliminate render-blocking resources',
+      impact: 'high',
+      effort: 'low',
+      category: 'performance',
+      howToFix: [
+        'Inline critical CSS in <head>',
+        'Load non-critical CSS asynchronously with rel="preload"',
+        'Defer non-critical JavaScript',
+        'Use resource hints like dns-prefetch and preconnect'
+      ],
+      moreInfo: 'Render-blocking resources delay First Contentful Paint'
+    }],
+    ['third-parties-insight', {
+      title: '🔌 Reduce third-party impact',
+      impact: 'medium',
+      effort: 'high',
+      category: 'performance',
+      howToFix: [
+        'Self-host critical third-party resources where possible',
+        'Delay third-party scripts until after first interaction',
+        'Use facades for embeds (video, social, widgets)',
+        'Audit which third parties actually add value'
+      ],
+      moreInfo: 'Third-party scripts consume main-thread time and transfer budget'
+    }],
+    ['duplicated-javascript-insight', {
+      title: '♻️ Remove duplicated JavaScript',
+      impact: 'medium',
+      effort: 'medium',
+      category: 'performance',
+      howToFix: [
+        'Deduplicate shared dependencies across bundles',
+        'Use bundler analysis to find duplicate modules',
+        'Centralize common libraries in a shared chunk',
+        'Pin dependency versions to avoid duplicate copies'
+      ],
+      moreInfo: 'Duplicated JavaScript wastes bytes and parse time'
+    }],
+    ['legacy-javascript-insight', {
+      title: '📜 Ship modern JavaScript',
+      impact: 'medium',
+      effort: 'medium',
+      category: 'performance',
+      howToFix: [
+        'Target modern browsers and drop legacy polyfills',
+        'Use module/nomodule pattern for differential serving',
+        'Remove unnecessary transpilation down to ES5',
+        'Audit babel/preset targets for overly old browsers'
+      ],
+      moreInfo: 'Legacy JavaScript polyfills bloat bundles for modern browsers'
+    }],
     // Accessibility audits
     ['color-contrast', {
       title: '🎨 Ensure sufficient color contrast',
@@ -216,7 +282,14 @@ export class PerformanceRecommendationsEngine {
 
     // Process failed audits and opportunities
     Object.entries(audits).forEach(([auditId, audit]) => {
-      if (!audit || audit.score === 1 || audit.score === null) return;
+      if (!audit) return;
+      // Lighthouse 13+ insight audits are informational (score: null) but still
+      // carry actionable items — surface them instead of skipping with the
+      // other null-score audits.
+      const isInsightWithItems =
+        auditId.endsWith('-insight') && (audit.details?.items?.length ?? 0) > 0;
+      if (audit.score === 1) return; // score 1 = pass, skip regardless
+      if (!isInsightWithItems && audit.score === null) return;
 
       const baseRecommendation = this.auditMappings.get(auditId);
       if (!baseRecommendation) return;
