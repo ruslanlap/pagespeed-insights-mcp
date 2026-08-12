@@ -1,3 +1,10 @@
+## [1.5.1](https://github.com/ruslanlap/pagespeed-insights-mcp/compare/v1.5.0...v1.5.1) (2026-08-12)
+
+
+### Bug Fixes
+
+* add Lighthouse 13 insight audit fallbacks ([#67](https://github.com/ruslanlap/pagespeed-insights-mcp/issues/67)) ([d129a95](https://github.com/ruslanlap/pagespeed-insights-mcp/commit/d129a95cec337cbe7d6545ebfe1d5d8d7f8876f1)), closes [#66](https://github.com/ruslanlap/pagespeed-insights-mcp/issues/66)
+
 # [1.5.0](https://github.com/ruslanlap/pagespeed-insights-mcp/compare/v1.4.1...v1.5.0) (2026-08-05)
 
 
