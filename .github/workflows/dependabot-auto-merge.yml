@@ -49,7 +49,7 @@ jobs:
             };
 
             const dependencyFromTitle = (title) =>
-              String(title).match(/^chore\(deps(?:-dev)?\): bump (.+?) from ([^ ]+) to ([^ ]+)$/i);
+              String(title).match(/^chore\(deps(?:-dev)?\): bump (.+?) from (\S+) to (\S+?)(?: in .+)?$/i);
 
             async function candidateNumbers() {
               if (context.eventName === "pull_request_target") {
