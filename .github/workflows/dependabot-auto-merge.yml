@@ -1,112 +1,155 @@
-name: Dependabot Auto-Merge
+name: Dependabot guard
 
 on:
-  pull_request:
+  pull_request_target:
+    types: [opened, reopened, synchronize, ready_for_review]
+  check_suite:
+    types: [completed]
+  schedule:
+    - cron: "17 3 * * *"
   workflow_dispatch:
-    branches: [master, main]
-  pull_request_review:
-    branches: [master, main]
 
 permissions:
   contents: write
   pull-requests: write
+  issues: write
   checks: read
+  statuses: read
+
+concurrency:
+  group: dependabot-guard
+  cancel-in-progress: false
 
 jobs:
-  # Job 1: Dependabot opens a PR → fetch metadata, wait for CI, auto-merge safe updates
-  dependabot-pr:
-    if: github.event_name == 'pull_request' && (github.actor == 'dependabot[bot]' || github.actor == 'app/dependabot')
+  review-and-merge:
     runs-on: ubuntu-latest
     steps:
-      - name: Fetch Dependabot metadata
-        id: metadata
-        uses: dependabot/fetch-metadata@v3
+      - name: Review safe Dependabot updates
+        uses: actions/github-script@v7
         with:
-          github-token: '${{ secrets.GITHUB_TOKEN }}'
+          script: |
+            const owner = context.repo.owner;
+            const repo = context.repo.repo;
+            const allowedFiles = new Set(["package.json", "package-lock.json", "npm-shrinkwrap.json"]);
+            const allowedConclusions = new Set(["success", "neutral", "skipped"]);
 
-      - name: Wait for all CI checks
-        id: wait
-        uses: lewagon/wait-on-check-action@v1.9.0
-        with:
-          ref: ${{ github.event.pull_request.head.sha }}
-          repo-token: ${{ secrets.GITHUB_TOKEN }}
-          wait-interval: 15
-          running-workflow-name: 'Dependabot Auto-Merge'
+            const version = (value) => {
+              const match = String(value).match(/^(\d+)\.(\d+)\.(\d+)/);
+              return match ? match.slice(1).map(Number) : null;
+            };
 
-      # CI PASSED → handle based on bump type
-      - name: 🟢 Auto-merge patch/minor (CI green)
-        if: success() &&
-            (steps.metadata.outputs.update-type == 'version-update:semver-patch' ||
-             steps.metadata.outputs.update-type == 'version-update:semver-minor')
-        run: |
-          echo "✅ CI passed — auto-merging ${{ steps.metadata.outputs.update-type }}"
-          gh pr merge "$PR_URL" --squash --delete-branch
-          echo "✅ Merged successfully"
-        env:
-          PR_URL: ${{ github.event.pull_request.html_url }}
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+            const compareVersions = (left, right) => {
+              const a = version(left);
+              const b = version(right);
+              if (!a || !b) return null;
+              for (let index = 0; index < 3; index += 1) {
+                if (a[index] !== b[index]) return a[index] - b[index];
+              }
+              return 0;
+            };
 
-      - name: 🟡 Major bump → request Copilot review
-        if: success() && steps.metadata.outputs.update-type == 'version-update:semver-major'
-        run: |
-          echo "⚠️ Major bump — requesting Copilot AI review..."
-          gh pr comment "$PR_URL" --body "/copilot review
+            const dependencyFromTitle = (title) =>
+              String(title).match(/^chore\(deps(?:-dev)?\): bump (.+?) from ([^ ]+) to ([^ ]+)$/i);
 
-          ⚠️ **Major version bump** (\`${{ steps.metadata.outputs.update-type }}\`).
-          Copilot AI review requested. Will auto-merge on approval."
-          gh pr edit "$PR_URL" --add-label "major-bump"
-        env:
-          PR_URL: ${{ github.event.pull_request.html_url }}
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+            async function candidateNumbers() {
+              if (context.eventName === "pull_request_target") {
+                return [context.payload.pull_request.number];
+              }
 
-      # CI FAILED → close the PR
-      - name: 🔴 Close PR on CI failure
-        if: failure()
-        run: |
-          gh pr close "$PR_URL" --delete-branch --comment "🔧 Auto-closed: CI failed for \`${{ steps.metadata.outputs.update-type || 'dependency' }}\` bump. Needs manual attention."
-        env:
-          PR_URL: ${{ github.event.pull_request.html_url }}
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+              if (context.eventName === "check_suite") {
+                return (context.payload.check_suite.pull_requests || []).map((pr) => pr.number);
+              }
 
-  # Job 2: Copilot submits a review → auto-merge if approved, flag if changes requested
-  copilot-review:
-    if: |
-      github.event_name == 'pull_request_review' &&
-      github.event.review.user.login == 'copilot-pull-request-reviewer[bot]'
-    runs-on: ubuntu-latest
-    steps:
-      - name: Check if PR is from Dependabot
-        id: check
-        run: |
-          PR_AUTHOR=$(gh pr view "$PR_URL" --json author --jq '.author.login')
-          echo "pr_author=$PR_AUTHOR" >> $GITHUB_OUTPUT
-          if [ "$PR_AUTHOR" = "dependabot[bot]" ]; then
-            echo "is_dependabot=true" >> $GITHUB_OUTPUT
-          else
-            echo "is_dependabot=false" >> $GITHUB_OUTPUT
-          fi
-        env:
-          PR_URL: ${{ github.event.pull_request.html_url }}
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+              const { data: pulls } = await github.rest.pulls.list({
+                owner, repo, state: "open", base: context.payload.repository.default_branch, per_page: 100,
+              });
+              return pulls
+                .filter((pr) => pr.user?.login === "dependabot[bot]")
+                .map((pr) => pr.number);
+            }
 
-      - name: 🟢 Auto-merge on Copilot approval
-        if: |
-          steps.check.outputs.is_dependabot == 'true' &&
-          github.event.review.state == 'APPROVED'
-        run: |
-          echo "✅ Copilot approved — auto-merging"
-          gh pr merge "$PR_URL" --squash --delete-branch
-        env:
-          PR_URL: ${{ github.event.pull_request.html_url }}
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+            async function closeSupersededPullRequests(current) {
+              const title = dependencyFromTitle(current.title);
+              if (!title) return;
+              const [, dependency, , currentVersion] = title;
+              const { data: pulls } = await github.rest.pulls.list({
+                owner, repo, state: "open", base: current.base.ref, per_page: 100,
+              });
 
-      - name: 🟠 Flag for manual review on Copilot changes requested
-        if: |
-          steps.check.outputs.is_dependabot == 'true' &&
-          github.event.review.state == 'CHANGES_REQUESTED'
-        run: |
-          gh pr comment "$PR_URL" --body "❌ **Copilot requested changes** — manual review needed for this major bump."
-          gh pr edit "$PR_URL" --add-label "needs-manual-review"
-        env:
-          PR_URL: ${{ github.event.pull_request.html_url }}
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+              for (const older of pulls) {
+                if (older.number === current.number || older.user?.login !== "dependabot[bot]") continue;
+                const olderTitle = dependencyFromTitle(older.title);
+                if (!olderTitle || olderTitle[1] !== dependency) continue;
+                const ordering = compareVersions(olderTitle[3], currentVersion);
+                if (ordering !== null && ordering < 0) {
+                  await github.rest.issues.createComment({
+                    owner, repo, issue_number: older.number,
+                    body: `Closing as superseded by #${current.number}, which updates \`${dependency}\` to a newer version.`,
+                  });
+                  await github.rest.pulls.update({
+                    owner, repo, pull_number: older.number, state: "closed",
+                  });
+                }
+              }
+            }
+
+            for (const number of [...new Set(await candidateNumbers())]) {
+              const { data: pr } = await github.rest.pulls.get({ owner, repo, pull_number: number });
+
+              if (
+                pr.state !== "open" ||
+                pr.draft ||
+                pr.user?.login !== "dependabot[bot]" ||
+                pr.base.ref !== context.payload.repository.default_branch
+              ) continue;
+
+              const title = dependencyFromTitle(pr.title);
+              if (!title) continue;
+              const [, dependency, fromVersion, toVersion] = title;
+              const before = version(fromVersion);
+              const after = version(toVersion);
+              if (!before || !after || before[0] !== after[0] || compareVersions(toVersion, fromVersion) <= 0) continue;
+
+              const { data: files } = await github.rest.pulls.listFiles({
+                owner, repo, pull_number: number, per_page: 100,
+              });
+              if (files.length === 0 || files.some((file) => !allowedFiles.has(file.filename))) continue;
+
+              const { data: checks } = await github.rest.checks.listForRef({
+                owner, repo, ref: pr.head.sha, per_page: 100,
+              });
+              const { data: status } = await github.rest.repos.getCombinedStatusForRef({
+                owner, repo, ref: pr.head.sha,
+              });
+
+              // This job appears in the check list while it is running. It is an
+              // orchestrator, not a validation check, so exclude it to avoid waiting
+              // for itself forever.
+              const validationChecks = checks.check_runs.filter(
+                (check) => check.name !== "Review safe Dependabot updates"
+              );
+              const checksFinished = validationChecks.length > 0 &&
+                validationChecks.every((check) =>
+                  check.status === "completed" && allowedConclusions.has(check.conclusion)
+                );
+              const statusesSucceeded = status.state === "success";
+
+              if (!checksFinished || !statusesSucceeded || pr.mergeable === false) continue;
+
+              try {
+                const { data: result } = await github.rest.pulls.merge({
+                  owner, repo, pull_number: number, merge_method: "squash",
+                  commit_title: `chore(deps): bump ${dependency} to ${toVersion}`,
+                });
+
+                if (result.merged) {
+                  await github.rest.issues.createComment({
+                    owner, repo, issue_number: number,
+                    body: `Merged automatically after CI passed. Safe update: \`${dependency}\` ${fromVersion} → ${toVersion}.`,
+                  });
+                  await closeSupersededPullRequests(pr);
+                }
+              } catch (error) {
+                core.warning(`Could not merge #${number}: ${error.message}`);
+              }
+            }
