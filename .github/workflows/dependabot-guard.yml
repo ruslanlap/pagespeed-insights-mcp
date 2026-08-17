@@ -122,8 +122,14 @@ jobs:
                 owner, repo, ref: pr.head.sha,
               });
 
-              const checksFinished = checks.check_runs.length > 0 &&
-                checks.check_runs.every((check) =>
+              // This job appears in the check list while it is running. It is an
+              // orchestrator, not a validation check, so exclude it to avoid waiting
+              // for itself forever.
+              const validationChecks = checks.check_runs.filter(
+                (check) => check.name !== "Review safe Dependabot updates"
+              );
+              const checksFinished = validationChecks.length > 0 &&
+                validationChecks.every((check) =>
                   check.status === "completed" && allowedConclusions.has(check.conclusion)
                 );
               const statusesSucceeded = status.state === "success";
