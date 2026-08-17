@@ -126,7 +126,7 @@ jobs:
               // orchestrator, not a validation check, so exclude it to avoid waiting
               // for itself forever.
               const validationChecks = checks.check_runs.filter(
-                (check) => check.name !== "Review safe Dependabot updates"
+                (check) => !["Review safe Dependabot updates", "review-and-merge"].includes(check.name)
               );
               const checksFinished = validationChecks.length > 0 &&
                 validationChecks.every((check) =>
