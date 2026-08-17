@@ -3,7 +3,8 @@ name: Dependabot guard
 on:
   pull_request_target:
     types: [opened, reopened, synchronize, ready_for_review]
-  check_suite:
+  workflow_run:
+    workflows: ["CI/CD"]
     types: [completed]
   schedule:
     - cron: "17 3 * * *"
@@ -22,6 +23,11 @@ concurrency:
 
 jobs:
   review-and-merge:
+    if: >-
+      github.event_name != 'workflow_run' ||
+      (github.event.workflow_run.conclusion == 'success' &&
+       github.event.workflow_run.event == 'pull_request' &&
+       github.event.workflow_run.pull_requests[0] != null)
     runs-on: ubuntu-latest
     steps:
       - name: Review safe Dependabot updates
@@ -56,8 +62,8 @@ jobs:
                 return [context.payload.pull_request.number];
               }
 
-              if (context.eventName === "check_suite") {
-                return (context.payload.check_suite.pull_requests || []).map((pr) => pr.number);
+              if (context.eventName === "workflow_run") {
+                return (context.payload.workflow_run.pull_requests || []).map((pr) => pr.number);
               }
 
               const { data: pulls } = await github.rest.pulls.list({
@@ -126,19 +132,23 @@ jobs:
               // orchestrator, not a validation check, so exclude it to avoid waiting
               // for itself forever.
               const validationChecks = checks.check_runs.filter(
-                (check) => !["Review safe Dependabot updates", "review-and-merge"].includes(check.name)
+                (check) =>
+                  check.name !== "review-and-merge" &&
+                  !check.name.endsWith(" / review-and-merge")
               );
               const checksFinished = validationChecks.length > 0 &&
                 validationChecks.every((check) =>
                   check.status === "completed" && allowedConclusions.has(check.conclusion)
                 );
-              const statusesSucceeded = status.state === "success";
+              const statusesSucceeded =
+                status.state === "success" ||
+                (status.state === "pending" && status.statuses.length === 0);
 
               if (!checksFinished || !statusesSucceeded || pr.mergeable === false) continue;
 
               try {
                 const { data: result } = await github.rest.pulls.merge({
-                  owner, repo, pull_number: number, merge_method: "squash",
+                  owner, repo, pull_number: number, sha: pr.head.sha, merge_method: "squash",
                   commit_title: `chore(deps): bump ${dependency} to ${toVersion}`,
                 });
 
