@@ -41,3 +41,5 @@ npx @modelcontextprotocol/inspector node dist/index.js   # для ручного
 
 ---
 Оновлюй цей файл при зміні архітектури MCP сервера або процесів релізу.
+## Release → MCP Registry (2026-08)
+Теги, створені GITHUB_TOKEN (semantic-release), НЕ трігерять tag-workflows. publish-mcp.yml має daily self-healing schedule + duplicate-guard; ручний dispatch синкає server.json з package.json автоматично.

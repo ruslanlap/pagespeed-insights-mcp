@@ -4,6 +4,12 @@ on:
   workflow_dispatch:
   push:
     tags: ["v*"]
+  schedule:
+    # Self-healing: tags created by the release bot (GITHUB_TOKEN semantics)
+    # do not trigger push events, so a release can slip past the tag trigger.
+    # Daily no-op check: sync server.json to package.json version, publish
+    # only if the registry is missing it.
+    - cron: "0 6 * * *"
 
 jobs:
   publish:
@@ -31,6 +37,13 @@ jobs:
         run: |
           VERSION=${GITHUB_REF#refs/tags/v}
           jq --arg v "$VERSION" '.version = $v | .packages[0].version = $v' server.json > server.tmp && mv server.tmp server.json
+
+      - name: Sync server.json version with package.json (schedule/dispatch)
+        if: ${{ !startsWith(github.ref, 'refs/tags/v') }}
+        run: |
+          VERSION=$(jq -r .version package.json)
+          jq --arg v "$VERSION" '.version = $v | .packages[0].version = $v' server.json > server.tmp && mv server.tmp server.json
+          echo "Synced server.json to ${VERSION}"
 
       - name: Publish server to MCP Registry
         run: |
