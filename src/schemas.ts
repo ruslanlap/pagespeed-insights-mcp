@@ -15,7 +15,7 @@ export const UrlSchema = z
     { message: "URL must use http:// or https:// scheme" }
   );
 
-export const StrategySchema = z.enum(["mobile", "desktop"]).default("mobile");
+export const StrategySchema = z.enum(["mobile", "desktop", "both"]).default("mobile");
 
 export const CategorySchema = z.enum([
   "performance",

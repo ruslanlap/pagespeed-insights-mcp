@@ -100,8 +100,18 @@ export class PageSpeedClient {
 
   async analyzePageSpeed(
     input: AnalyzePageSpeedInput, 
-    correlationId: string
+    correlationId: string,
+    onRunComplete?: () => void
   ): Promise<PageSpeedInsightsResponse> {
+    if (input.strategy === "both") {
+      const mobile = await this.analyzePageSpeed({ ...input, strategy: "mobile" }, correlationId, onRunComplete);
+      const desktop = await this.analyzePageSpeed({ ...input, strategy: "desktop" }, correlationId, onRunComplete);
+      return {
+        ...mobile,
+        desktopResult: desktop,
+        // ponytail: report renders desktopResult via its own multirun block; no deep merge
+      };
+    }
     const logger = createRequestLogger(correlationId, "analyze-page-speed");
     const runs = Math.max(1, Math.min(5, input.runs ?? 1));
     
@@ -145,10 +155,12 @@ export class PageSpeedClient {
       // Multirun: collect N analyses, wait out Google's ~1min re-analysis
       // window between calls so runs are genuinely distinct.
       const all: PageSpeedInsightsResponse[] = [data as PageSpeedInsightsResponse];
+      onRunComplete?.();
       for (let i = 1; i < runs; i++) {
         await new Promise((r) => setTimeout(r, 65_000));
         try {
           all.push(await this.makeRequest(url.toString(), correlationId) as PageSpeedInsightsResponse);
+          onRunComplete?.();
         } catch (e) {
           logger.warn({ run: i + 1, error: e instanceof Error ? e.message : String(e) }, "Run failed, continuing with fewer");
         }

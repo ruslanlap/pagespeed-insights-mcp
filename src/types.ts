@@ -61,6 +61,7 @@ export interface PageSpeedInsightsResponse {
   captchaResult?: string;
   kind?: string;
   id?: string;
+  desktopResult?: PageSpeedInsightsResponse;
   loadingExperience?: {
     id: string;
     metrics: Record<string, any>;
@@ -321,7 +322,7 @@ export interface MCP_Config {
 
 export interface AnalyzePageSpeedInput {
   url: string;
-  strategy: 'mobile' | 'desktop';
+  strategy: 'mobile' | 'desktop' | 'both';
   category?: ('performance' | 'accessibility' | 'best-practices' | 'seo' | 'pwa')[];
   locale: string;
   runs?: number;
@@ -335,6 +336,6 @@ export interface CruxSummaryInput {
 export interface CompareUrlsInput {
   urlA: string;
   urlB: string;
-  strategy: 'mobile' | 'desktop';
+  strategy: 'mobile' | 'desktop' | 'both';
   categories?: ('performance' | 'accessibility' | 'best-practices' | 'seo' | 'pwa')[];
 }

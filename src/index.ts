@@ -24,9 +24,12 @@ import {
   OriginCruxSchema,
   CompareUrlsSchema,
   BatchAnalyzeSchema,
+  UrlSchema,
   type AnalyzePageSpeedInput,
 } from "./schemas.js";
 import type { PageSpeedInsightsResponse, CruxRecord, ComparisonResult } from "./types.js";
+import { getBaseline, saveBaseline, compareBaselines } from "./baselines.js";
+import { z } from "zod";
 
 const pkg = createRequire(import.meta.url)("../package.json") as { version: string };
 
@@ -70,7 +73,7 @@ export class PageSpeedInsightsServer {
                 url: { type: "string", format: "uri", description: "The URL to analyze" },
                 strategy: { 
                   type: "string", 
-                  enum: ["mobile", "desktop"], 
+                  enum: ["mobile", "desktop", "both"], 
                   default: "mobile",
                   description: "Analysis strategy" 
                 },
@@ -101,7 +104,7 @@ export class PageSpeedInsightsServer {
                 url: { type: "string", format: "uri", description: "The URL to analyze" },
                 strategy: { 
                   type: "string", 
-                  enum: ["mobile", "desktop"], 
+                  enum: ["mobile", "desktop", "both"], 
                   default: "mobile",
                   description: "Analysis strategy" 
                 }
@@ -135,7 +138,7 @@ export class PageSpeedInsightsServer {
                 urlB: { type: "string", format: "uri", description: "Second URL to compare" },
                 strategy: { 
                   type: "string", 
-                  enum: ["mobile", "desktop"], 
+                  enum: ["mobile", "desktop", "both"], 
                   default: "mobile",
                   description: "Analysis strategy" 
                 },
@@ -161,7 +164,7 @@ export class PageSpeedInsightsServer {
                 url: { type: "string", format: "uri", description: "The URL to analyze" },
                 strategy: { 
                   type: "string", 
-                  enum: ["mobile", "desktop"], 
+                  enum: ["mobile", "desktop", "both"], 
                   default: "mobile",
                   description: "Analysis strategy" 
                 },
@@ -198,7 +201,7 @@ export class PageSpeedInsightsServer {
                 },
                 strategy: { 
                   type: "string", 
-                  enum: ["mobile", "desktop"], 
+                  enum: ["mobile", "desktop", "both"], 
                   default: "mobile",
                   description: "Analysis strategy" 
                 },
@@ -238,7 +241,7 @@ export class PageSpeedInsightsServer {
                 url: { type: "string", format: "uri", description: "The URL to analyze for recommendations" },
                 strategy: { 
                   type: "string", 
-                  enum: ["mobile", "desktop"], 
+                  enum: ["mobile", "desktop", "both"], 
                   default: "mobile",
                   description: "Analysis strategy" 
                 },
@@ -269,7 +272,7 @@ export class PageSpeedInsightsServer {
                 url: { type: "string", format: "uri", description: "The URL to analyze" },
                 strategy: { 
                   type: "string", 
-                  enum: ["mobile", "desktop"], 
+                  enum: ["mobile", "desktop", "both"], 
                   default: "mobile",
                   description: "Analysis strategy" 
                 }
@@ -286,7 +289,7 @@ export class PageSpeedInsightsServer {
                 url: { type: "string", format: "uri", description: "The URL to analyze" },
                 strategy: { 
                   type: "string", 
-                  enum: ["mobile", "desktop"], 
+                  enum: ["mobile", "desktop", "both"], 
                   default: "mobile",
                   description: "Analysis strategy" 
                 }
@@ -303,7 +306,7 @@ export class PageSpeedInsightsServer {
                 url: { type: "string", format: "uri", description: "The URL to analyze" },
                 strategy: { 
                   type: "string", 
-                  enum: ["mobile", "desktop"], 
+                  enum: ["mobile", "desktop", "both"], 
                   default: "mobile",
                   description: "Analysis strategy" 
                 }
@@ -320,7 +323,7 @@ export class PageSpeedInsightsServer {
                 url: { type: "string", format: "uri", description: "The URL to analyze" },
                 strategy: { 
                   type: "string", 
-                  enum: ["mobile", "desktop"], 
+                  enum: ["mobile", "desktop", "both"], 
                   default: "mobile",
                   description: "Analysis strategy" 
                 }
@@ -337,7 +340,7 @@ export class PageSpeedInsightsServer {
                 url: { type: "string", format: "uri", description: "The URL to analyze" },
                 strategy: { 
                   type: "string", 
-                  enum: ["mobile", "desktop"], 
+                  enum: ["mobile", "desktop", "both"], 
                   default: "mobile",
                   description: "Analysis strategy" 
                 }
@@ -354,7 +357,7 @@ export class PageSpeedInsightsServer {
                 url: { type: "string", format: "uri", description: "The URL to analyze" },
                 strategy: { 
                   type: "string", 
-                  enum: ["mobile", "desktop"], 
+                  enum: ["mobile", "desktop", "both"], 
                   default: "mobile",
                   description: "Analysis strategy" 
                 }
@@ -371,7 +374,7 @@ export class PageSpeedInsightsServer {
                 url: { type: "string", format: "uri", description: "The URL to analyze" },
                 strategy: { 
                   type: "string", 
-                  enum: ["mobile", "desktop"], 
+                  enum: ["mobile", "desktop", "both"], 
                   default: "mobile",
                   description: "Analysis strategy" 
                 }
@@ -388,7 +391,7 @@ export class PageSpeedInsightsServer {
                 url: { type: "string", format: "uri", description: "The URL to analyze" },
                 strategy: { 
                   type: "string", 
-                  enum: ["mobile", "desktop"], 
+                  enum: ["mobile", "desktop", "both"], 
                   default: "mobile",
                   description: "Analysis strategy" 
                 },
@@ -414,7 +417,7 @@ export class PageSpeedInsightsServer {
                 url: { type: "string", format: "uri", description: "The URL to analyze" },
                 strategy: { 
                   type: "string", 
-                  enum: ["mobile", "desktop"], 
+                  enum: ["mobile", "desktop", "both"], 
                   default: "mobile",
                   description: "Analysis strategy" 
                 }
@@ -439,14 +442,61 @@ export class PageSpeedInsightsServer {
               required: ["origin"]
             },
           },
+          {
+            name: "compare_baseline",
+            description:
+              "Answer 'did that change actually help'. FIRST call on a URL+strategy records the baseline and compares nothing; make your change, then call again. A verdict is only given where the two min-max ranges do NOT overlap — on an unchanged page the performance score has been measured running 27-37, so comparing medians alone reports improvements that are just the instrument moving. Reports both the median difference and the smaller figure the ranges actually guarantee (quote that one). Use runs>=3. Also flags a Lighthouse version change, which moves scores without the page moving.",
+            inputSchema: {
+              type: "object",
+              properties: {
+                url: { type: "string", format: "uri", description: "The URL to measure" },
+                strategy: { type: "string", enum: ["mobile", "desktop"], default: "mobile", description: "Part of the baseline identity" },
+                runs: { type: "integer", minimum: 2, maximum: 5, default: 3, description: "Distinct analyses per side. Default 3 (~2 min)" },
+                save_baseline: { type: "boolean", default: false, description: "Replace the baseline with THIS measurement (move the starting point). Default false: repeated calls keep comparing against the original baseline" }
+              },
+              required: ["url"]
+            },
+            annotations: { readOnlyHint: true }
+          },
         ] satisfies Tool[],
       };
     });
 
-    this.server.setRequestHandler(CallToolRequestSchema, async (request) => {
+    this.server.setRequestHandler(CallToolRequestSchema, async (request, extra) => {
       const { name, arguments: args } = request.params;
+      const progressToken = (request.params._meta as any | undefined)?.progressToken;
 
-      switch (name) {
+      // Long multirun calls (runs>1 → minutes) time out in most clients.
+      // Clients reset their timeout on progress notifications, so when a token
+      // is present we beat every 10s regardless — a single PSI call blocks for
+      // tens of seconds and no in-loop callback can cover that gap.
+      let keepalive: ReturnType<typeof setInterval> | undefined;
+      let done = 0;
+      const notify = async () => {
+        if (progressToken === undefined) return;
+        try {
+          await extra.sendNotification({
+            method: "notifications/progress",
+            params: { progressToken, progress: done, total: 100 },
+          });
+        } catch { /* client gone; the main call will fail anyway */ }
+      };
+      if (progressToken !== undefined) {
+        keepalive = setInterval(() => void notify(), 10_000);
+        (globalThis as any).__psiProgress = () => { done++; void notify(); };
+      }
+
+      try {
+        return await this.dispatchTool(name, args);
+      } finally {
+        if (keepalive) clearInterval(keepalive);
+        delete (globalThis as any).__psiProgress;
+      }
+    });
+  }
+
+  private async dispatchTool(name: string, args: any) {
+    switch (name) {
         case "analyze_page_speed":
           return await this.handleAnalyzePageSpeed(args);
         case "get_performance_summary":
@@ -483,10 +533,11 @@ export class PageSpeedInsightsServer {
           return await this.handlePerformanceMap(args);
         case "get_origin_crux":
           return await this.handleGetOriginCrux(args);
+        case "compare_baseline":
+          return await this.handleCompareBaseline(args);
         default:
           throw new Error(`Unknown tool: ${name}`);
       }
-    });
   }
 
   private async handleAnalyzePageSpeed(args: any) {
@@ -497,7 +548,7 @@ export class PageSpeedInsightsServer {
       const input = AnalyzePageSpeedSchema.parse(args);
       logger.info({ url: input.url, strategy: input.strategy }, "Starting PageSpeed analysis");
       
-      const result = await this.client.analyzePageSpeed(input, correlationId);
+      const result = await this.client.analyzePageSpeed(input, correlationId, (globalThis as any).__psiProgress as (() => void) | undefined);
       
       return {
         content: [
@@ -678,6 +729,75 @@ export class PageSpeedInsightsServer {
     return map;
   }
 
+  private async handleCompareBaseline(args: any) {
+    const correlationId = randomUUID();
+    const logger = createRequestLogger(correlationId, "compare-baseline");
+
+    try {
+      const input = z.object({
+        url: UrlSchema,
+        strategy: z.enum(["mobile", "desktop"]).default("mobile"),
+        runs: z.number().int().min(2).max(5).default(3),
+        save_baseline: z.boolean().default(false),
+      }).parse(args);
+
+      const result = await this.client.analyzePageSpeed(
+        { url: input.url, strategy: input.strategy, category: ["performance"], locale: "en", runs: input.runs },
+        correlationId,
+        (globalThis as any).__psiProgress as (() => void) | undefined
+      );
+      const mr = (result as any).multirun as
+        | { stats: any; scores: Record<string, any>; metrics: Record<string, any> }
+        | undefined;
+      if (!mr) {
+        return {
+          content: [{ type: "text", text: "Error: no multirun data — compare_baseline requires runs >= 2." }],
+          isError: true,
+        };
+      }
+
+      const lhVersion = result.lighthouseResult?.lighthouseVersion;
+      const existing = getBaseline(input.url, input.strategy);
+      let text: string;
+
+      if (!existing || input.save_baseline) {
+        const snap = saveBaseline(input.url, input.strategy, mr, lhVersion);
+        text = `# Baseline recorded\n\n**URL:** ${input.url} (${input.strategy})\n**Analyses:** ${mr.stats.analyses}/${mr.stats.requested} distinct, ${mr.stats.cachedReplays} replay(s) dropped\n**Recorded:** ${snap.recorded}\n\nNo comparison: nothing to compare against yet. Make your change, then call compare_baseline again.`;
+      } else {
+        const verdicts = compareBaselines(existing, {
+          recorded: new Date().toISOString(),
+          lighthouseVersion: lhVersion,
+          scores: mr.scores,
+          metrics: mr.metrics,
+        });
+        text = `# Baseline comparison\n\n**URL:** ${input.url} (${input.strategy})\n**Baseline:** ${existing.recorded} | **Now:** ${new Date().toISOString()}\n`;
+        if (existing.lighthouseVersion && lhVersion && existing.lighthouseVersion !== lhVersion) {
+          text += `\n⚠️ Lighthouse version changed (${existing.lighthouseVersion} → ${lhVersion}); scores move with it even when the page does not.\n`;
+        }
+        const anyVerdict = verdicts.filter((v) => v.verdict !== "no-verdict");
+        if (anyVerdict.length === 0) {
+          text += `\n**No verdict available:** all ranges overlap — the difference is inside the instrument's own wobble.\n`;
+        }
+        text += `\n| Metric | Before | After | Verdict | Guaranteed |\n|---|---|---|---|---|\n`;
+        for (const v of verdicts.slice(0, 20)) {
+          const fmt = (s: any) => `${Math.round(s.median)} [${Math.round(s.min)}–${Math.round(s.max)}]`;
+          text += `| ${v.metric} | ${fmt(v.before)} | ${fmt(v.after)} | ${v.verdict} | ${Math.round(v.guaranteedDelta)} |\n`;
+        }
+        text += `\n> Savings and ranges do not add up; use the order, not the sum. Quote guaranteed, not median.\n`;
+      }
+
+      logger.info({ url: input.url }, "compare_baseline done");
+      return { content: [{ type: "text", text }] };
+    } catch (error) {
+      const errorMessage = error instanceof Error ? error.message : "Unknown error occurred";
+      logger.error({ error: errorMessage }, "compare_baseline failed");
+      return {
+        content: [{ type: "text", text: `Error comparing baseline: ${errorMessage}` }],
+        isError: true,
+      };
+    }
+  }
+
   private async handleGetOriginCrux(args: any) {
     const correlationId = randomUUID();
     const logger = createRequestLogger(correlationId, "origin-crux");
@@ -688,7 +808,6 @@ export class PageSpeedInsightsServer {
 
       const cruxData = await this.client.getOriginCruxData(input, correlationId);
       const summary = this.formatOriginCruxSummary(cruxData, input.origin);
-
       return {
         content: [
           {
@@ -1031,6 +1150,18 @@ export class PageSpeedInsightsServer {
 
     if (performance) {
       report += `## Performance Score: ${Math.round(performance.score * 100)}/100\n\n`;
+    }
+
+    const desktop = data.desktopResult;
+    if (desktop?.lighthouseResult) {
+      const dPerf = desktop.lighthouseResult.categories?.performance;
+      const dMr = (desktop as any).multirun;
+      report += `## Desktop\n\n`;
+      if (dMr?.stats) {
+        report += `> ${dMr.stats.analyses}/${dMr.stats.requested} distinct analyses; median performance ${Math.round(dMr.scores["performance"]?.median ?? (dPerf ? dPerf.score * 100 : 0))}/100 (min ${Math.round(dMr.scores["performance"]?.min ?? 0)}, max ${Math.round(dMr.scores["performance"]?.max ?? 0)})\n\n`;
+      } else if (dPerf) {
+        report += `**Performance Score:** ${Math.round(dPerf.score * 100)}/100\n\n`;
+      }
     }
 
     report += `## Core Web Vitals\n`;

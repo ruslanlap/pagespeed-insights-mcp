@@ -4,7 +4,7 @@
 
 ## Специфіка проєкту
 - TypeScript + Node.js (>=20) MCP server на базі `@modelcontextprotocol/sdk` + Zod.
-- 16 інструментів для Google PageSpeed Insights + Chrome UX Report + Lighthouse.
+- 17 інструментів для Google PageSpeed Insights + Chrome UX Report + Lighthouse.
 - Публікація: npm + GitHub Packages (semantic-release).
 - Docker + docker-compose для локального запуску.
 - Тести: Vitest + nock. Лінтинг: ESLint + Prettier.

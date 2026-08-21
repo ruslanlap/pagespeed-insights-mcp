@@ -280,6 +280,26 @@ export class PerformanceRecommendationsEngine {
     const audits = lighthouse.audits || {};
     const performanceScore = lighthouse.categories?.performance?.score || 0;
 
+    // Audit weights read from THIS response, not hardcoded: Lighthouse has
+    // changed weights between versions, and a stale table would silently rank
+    // by last year's priorities. Everything not in the performance category's
+    // auditRefs weighs zero on the score.
+    const weights = new Map<string, number>();
+    for (const ref of lighthouse.categories?.performance?.auditRefs || []) {
+      if (ref.weight) weights.set(ref.id, ref.weight);
+    }
+
+    // Multirun noise filter: an audit that failed in one run and passed in
+    // another is the instrument moving, not a fact about the page. Only keep
+    // faults that failed in EVERY distinct analysis.
+    const failedInAllRuns = new Map<string, boolean>();
+    const runs: any[] = [(data as any).multirun?.runs].filter(Boolean).flat();
+    if (runs.length > 1) {
+      for (const auditId of Object.keys(audits)) {
+        failedInAllRuns.set(auditId, runs.every((r) => r?.audits?.[auditId]?.score !== null && r?.audits?.[auditId]?.score < 0.9));
+      }
+    }
+
     // Process failed audits and opportunities
     Object.entries(audits).forEach(([auditId, audit]) => {
       if (!audit) return;
@@ -290,6 +310,7 @@ export class PerformanceRecommendationsEngine {
         auditId.endsWith('-insight') && (audit.details?.items?.length ?? 0) > 0;
       if (audit.score === 1) return; // score 1 = pass, skip regardless
       if (!isInsightWithItems && audit.score === null) return;
+      if (failedInAllRuns.get(auditId) === false) return;
 
       const baseRecommendation = this.auditMappings.get(auditId);
       if (!baseRecommendation) return;
@@ -300,7 +321,7 @@ export class PerformanceRecommendationsEngine {
         description: audit.description || 'No description available',
         impact: baseRecommendation.impact || 'medium',
         effort: baseRecommendation.effort || 'medium',
-        priority: this.calculatePriority(audit, baseRecommendation),
+        priority: this.calculatePriority(audit, baseRecommendation, weights.get(auditId)),
         category: baseRecommendation.category || 'performance',
         potentialSavings: audit.displayValue || undefined,
         howToFix: baseRecommendation.howToFix || ['Check Lighthouse documentation for specific guidance'],
@@ -330,8 +351,14 @@ export class PerformanceRecommendationsEngine {
     };
   }
 
-  private calculatePriority(audit: any, baseRec: Partial<Recommendation>): number {
+  private calculatePriority(audit: any, baseRec: Partial<Recommendation>, weight?: number): number {
     let priority = 50; // Base priority
+
+    // Real Lighthouse weight (from this response) dominates: a big saving on
+    // an unweighted diagnostic does not move the score, so it is not first.
+    if (weight !== undefined) {
+      priority += Math.round(weight * 150);
+    }
 
     // Impact scoring
     switch (baseRec.impact) {

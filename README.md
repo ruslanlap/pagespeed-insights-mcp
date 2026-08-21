@@ -593,6 +593,7 @@ Complete page analysis with all Lighthouse metrics.
 - `category`: array of categories ["performance", "accessibility", "best-practices", "seo", "pwa"]
 - `locale`: locale for results (default: "en")
 - `runs`: 1–5 distinct analyses (default: 1). With `runs > 1` the report shows the **median with min-max spread** for every score and metric, drops cached replays (identical `fetchTime`), and says how many it dropped. A single Lighthouse run is noise — TBT routinely swings 3× on an unchanged page, so treat differences inside the spread as no change. Note: Google re-analyses a URL about once a minute, so each extra run waits ~65 s to be genuinely distinct.
+- `strategy`: also accepts `"both"` — runs mobile then desktop in one call and reports both.
 
 ### `get_performance_summary`
 
@@ -608,6 +609,22 @@ Generate smart performance recommendations with priority scoring and actionable 
 - `strategy`: "mobile" or "desktop" (default: "mobile")
 - `category`: array of categories to analyze (default: ["performance", "accessibility", "best-practices", "seo"])
 - `locale`: locale for results (default: "en")
+
+### `compare_baseline`
+
+Answer "did that change actually help" — with statistical honesty.
+
+- **First call** on a URL+strategy records the baseline (median + spread of `runs` distinct analyses, saved to `~/.pagespeed-mcp/baselines.json`) and compares nothing.
+- Make your change, **call again**: a verdict is only given where the two min-max ranges do **not** overlap. On an unchanged page the performance score has been measured running 27–37 — comparing medians alone reports improvements that are just the instrument moving.
+- Reports both the median difference and the smaller **guaranteed** figure the disjoint ranges actually give you. Quote the guaranteed one.
+- Flags a Lighthouse version change between baseline and now, which moves scores without the page moving.
+
+**Parameters:**
+
+- `url` (required): URL to measure
+- `strategy`: "mobile" or "desktop" (default: "mobile") — part of the baseline identity
+- `runs`: 2–5 distinct analyses per side (default: 3, ~2 min)
+- `save_baseline`: replace the baseline with this measurement (move the starting point; default: false)
 
 ### `clear_cache`
 
