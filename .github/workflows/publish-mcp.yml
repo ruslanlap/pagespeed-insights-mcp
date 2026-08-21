@@ -33,4 +33,10 @@ jobs:
           jq --arg v "$VERSION" '.version = $v | .packages[0].version = $v' server.json > server.tmp && mv server.tmp server.json
 
       - name: Publish server to MCP Registry
-        run: ./mcp-publisher publish
+        run: |
+          V=$(jq -r .version server.json)
+          if curl -sf "https://registry.modelcontextprotocol.io/v0.1/servers/io.github.ruslanlap%2Fpagespeed-insights-mcp/versions/${V}" >/dev/null; then
+            echo "Version ${V} already in registry, skipping publish"
+          else
+            ./mcp-publisher publish
+          fi
