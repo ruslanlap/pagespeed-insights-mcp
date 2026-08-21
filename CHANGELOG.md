@@ -1,3 +1,10 @@
+## [1.5.2](https://github.com/ruslanlap/pagespeed-insights-mcp/compare/v1.5.1...v1.5.2) (2026-08-21)
+
+
+### Bug Fixes
+
+* **ci:** address Dependabot guard review findings ([#74](https://github.com/ruslanlap/pagespeed-insights-mcp/issues/74)) ([214d34e](https://github.com/ruslanlap/pagespeed-insights-mcp/commit/214d34e9daab43de57b0a2f89991f8c8917d4cee))
+
 ## [1.5.1](https://github.com/ruslanlap/pagespeed-insights-mcp/compare/v1.5.0...v1.5.1) (2026-08-12)
 
 
