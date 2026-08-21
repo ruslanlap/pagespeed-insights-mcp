@@ -1,3 +1,10 @@
+# [1.6.0](https://github.com/ruslanlap/pagespeed-insights-mcp/compare/v1.5.3...v1.6.0) (2026-08-21)
+
+
+### Features
+
+* median-of-N analysis with replay dedup and lab-vs-field clarity ([348894a](https://github.com/ruslanlap/pagespeed-insights-mcp/commit/348894a6e489da58b7fe4f86840ce33f817f80f8))
+
 ## [1.5.3](https://github.com/ruslanlap/pagespeed-insights-mcp/compare/v1.5.2...v1.5.3) (2026-08-21)
 
 
