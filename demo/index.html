@@ -1,0 +1,1458 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PageSpeed Insights MCP Server — Supercharge Your Web Performance</title>
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' y1='0' x2='1' y2='1'%3E%3Cstop stop-color='%236366f1'/%3E%3Cstop offset='1' stop-color='%238b5cf6'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='64' height='64' rx='14' fill='url(%23g)'/%3E%3Cpath d='M16 43V21l14 11-14 11z' fill='white'/%3E%3Cpath d='M35 25h14M35 32h10M35 39h12' stroke='white' stroke-width='4' stroke-linecap='round'/%3E%3C/svg%3E">
+<link rel="shortcut icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' y1='0' x2='1' y2='1'%3E%3Cstop stop-color='%236366f1'/%3E%3Cstop offset='1' stop-color='%238b5cf6'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='64' height='64' rx='14' fill='url(%23g)'/%3E%3Cpath d='M16 43V21l14 11-14 11z' fill='white'/%3E%3Cpath d='M35 25h14M35 32h10M35 39h12' stroke='white' stroke-width='4' stroke-linecap='round'/%3E%3C/svg%3E">
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600;700&display=swap');
+
+  :root {
+    --bg: #0a0a0f;
+    --bg2: #111118;
+    --bg3: #1a1a25;
+    --surface: #1e1e2e;
+    --border: #2a2a3a;
+    --text: #e4e4ef;
+    --text-dim: #8888a0;
+    --accent: #6366f1;
+    --accent2: #818cf8;
+    --green: #22c55e;
+    --green-dim: #166534;
+    --yellow: #eab308;
+    --yellow-dim: #854d0e;
+    --red: #ef4444;
+    --red-dim: #991b1b;
+    --cyan: #06b6d4;
+    --pink: #ec4899;
+    --orange: #f97316;
+    --gradient: linear-gradient(135deg, #6366f1, #8b5cf6, #a78bfa);
+    --gradient2: linear-gradient(135deg, #06b6d4, #6366f1);
+    --glow: 0 0 40px rgba(99, 102, 241, 0.3);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  html {
+    scroll-behavior: smooth;
+    scrollbar-width: thin;
+    scrollbar-color: var(--accent) var(--bg);
+  }
+
+  body {
+    font-family: 'Inter', -apple-system, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    overflow-x: hidden;
+    line-height: 1.6;
+  }
+
+  /* ============ CANVAS PARTICLES ============ */
+  #particles-canvas {
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    z-index: 0;
+    pointer-events: none;
+  }
+
+  /* ============ NAV ============ */
+  nav {
+    position: fixed; top: 0; left: 0; right: 0;
+    z-index: 100;
+    backdrop-filter: blur(20px);
+    background: rgba(10,10,15,.75);
+    border-bottom: 1px solid rgba(99,102,241,.15);
+    padding: 0 2rem;
+    height: 64px;
+    display: flex; align-items: center; justify-content: space-between;
+    transition: all .3s;
+  }
+  nav.scrolled { background: rgba(10,10,15,.95); box-shadow: var(--glow); }
+  .nav-brand { display: flex; align-items: center; gap: .75rem; font-weight: 700; font-size: 1.1rem; }
+  .nav-brand svg { width: 28px; height: 28px; }
+  .nav-links { display: flex; gap: 1.5rem; list-style: none; }
+  .nav-links a {
+    color: var(--text-dim); text-decoration: none; font-size: .875rem; font-weight: 500;
+    transition: color .2s;
+  }
+  .nav-links a:hover { color: var(--accent2); }
+  .nav-cta {
+    background: var(--gradient);
+    color: #fff; border: none; border-radius: 8px;
+    padding: .5rem 1.25rem; font-size: .875rem; font-weight: 600;
+    cursor: pointer; text-decoration: none;
+    transition: transform .2s, box-shadow .2s;
+  }
+  .nav-cta:hover { transform: translateY(-1px); box-shadow: var(--glow); }
+
+  /* ============ HERO ============ */
+  .hero {
+    position: relative;
+    min-height: 100vh;
+    display: flex; align-items: center; justify-content: center;
+    text-align: center;
+    padding: 6rem 2rem 4rem;
+    z-index: 1;
+  }
+  .hero::before {
+    content: '';
+    position: absolute; inset: 0;
+    background: radial-gradient(ellipse 80% 50% at 50% -20%, rgba(99,102,241,.15), transparent);
+    pointer-events: none;
+  }
+  .hero-content { max-width: 900px; position: relative; }
+  .hero-badge {
+    display: inline-flex; align-items: center; gap: .5rem;
+    background: rgba(99,102,241,.1);
+    border: 1px solid rgba(99,102,241,.25);
+    border-radius: 100px;
+    padding: .4rem 1.2rem;
+    font-size: .8rem; font-weight: 500; color: var(--accent2);
+    margin-bottom: 2rem;
+    animation: fadeInUp .8s ease both;
+  }
+  .hero-badge .pulse {
+    width: 8px; height: 8px;
+    background: var(--green); border-radius: 50%;
+    animation: pulse 2s infinite;
+  }
+  @keyframes pulse { 0%,100% { opacity: 1; } 50% { opacity: .4; } }
+
+  .hero h1 {
+    font-size: clamp(2.5rem, 6vw, 4.5rem);
+    font-weight: 900;
+    line-height: 1.1;
+    letter-spacing: -.03em;
+    margin-bottom: 1.5rem;
+    animation: fadeInUp .8s ease .1s both;
+  }
+  .hero h1 .gradient-text {
+    background: var(--gradient);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+  .hero p {
+    font-size: clamp(1rem, 2vw, 1.3rem);
+    color: var(--text-dim);
+    max-width: 680px;
+    margin: 0 auto 2.5rem;
+    animation: fadeInUp .8s ease .2s both;
+  }
+  .hero-actions {
+    display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap;
+    animation: fadeInUp .8s ease .3s both;
+  }
+  .btn {
+    display: inline-flex; align-items: center; gap: .5rem;
+    padding: .85rem 2rem;
+    border-radius: 12px;
+    font-size: 1rem; font-weight: 600;
+    text-decoration: none;
+    cursor: pointer;
+    transition: all .25s;
+    border: none;
+  }
+  .btn-primary {
+    background: var(--gradient);
+    color: #fff;
+    box-shadow: 0 4px 24px rgba(99,102,241,.3);
+  }
+  .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 8px 32px rgba(99,102,241,.45); }
+  .btn-secondary {
+    background: rgba(255,255,255,.05);
+    color: var(--text);
+    border: 1px solid var(--border);
+  }
+  .btn-secondary:hover { border-color: var(--accent); background: rgba(99,102,241,.05); }
+
+  .hero-stats {
+    display: flex; justify-content: center; gap: 3rem; margin-top: 4rem;
+    animation: fadeInUp .8s ease .5s both;
+  }
+  .hero-stat { text-align: center; }
+  .hero-stat .num {
+    font-size: 2rem; font-weight: 800;
+    background: var(--gradient);
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+  }
+  .hero-stat .label { font-size: .8rem; color: var(--text-dim); margin-top: .25rem; }
+
+  @keyframes fadeInUp {
+    from { opacity: 0; transform: translateY(30px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* ============ SECTIONS ============ */
+  section { position: relative; z-index: 1; padding: 6rem 2rem; }
+  .container { max-width: 1200px; margin: 0 auto; }
+  .section-label {
+    display: inline-flex; align-items: center; gap: .5rem;
+    font-size: .75rem; font-weight: 600; text-transform: uppercase; letter-spacing: .1em;
+    color: var(--accent2);
+    margin-bottom: 1rem;
+  }
+  .section-title {
+    font-size: clamp(1.8rem, 4vw, 3rem);
+    font-weight: 800;
+    line-height: 1.2;
+    margin-bottom: 1rem;
+  }
+  .section-desc {
+    color: var(--text-dim);
+    font-size: 1.1rem;
+    max-width: 600px;
+    margin-bottom: 3rem;
+  }
+
+  /* ============ LIVE DEMO TERMINAL ============ */
+  .demo-section { background: var(--bg2); }
+  .terminal-wrapper {
+    max-width: 900px;
+    margin: 0 auto;
+    border-radius: 16px;
+    overflow: hidden;
+    border: 1px solid var(--border);
+    box-shadow: 0 24px 80px rgba(0,0,0,.5), 0 0 60px rgba(99,102,241,.1);
+  }
+  .terminal-header {
+    background: var(--bg3);
+    padding: .75rem 1rem;
+    display: flex; align-items: center; gap: .5rem;
+    border-bottom: 1px solid var(--border);
+  }
+  .terminal-dot { width: 12px; height: 12px; border-radius: 50%; }
+  .terminal-dot.red { background: #ff5f57; }
+  .terminal-dot.yellow { background: #febc2e; }
+  .terminal-dot.green { background: #28c840; }
+  .terminal-title {
+    flex: 1; text-align: center;
+    font-size: .75rem; color: var(--text-dim);
+    font-family: 'JetBrains Mono', monospace;
+  }
+  .terminal-body {
+    background: #0d0d14;
+    padding: 1.5rem;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: .8rem;
+    line-height: 1.8;
+    min-height: 420px;
+    position: relative;
+    overflow: hidden;
+  }
+  .term-line { opacity: 0; transform: translateY(8px); transition: all .4s; white-space: pre-wrap; }
+  .term-line.visible { opacity: 1; transform: translateY(0); }
+  .term-prompt { color: var(--green); }
+  .term-cmd { color: #fff; font-weight: 600; }
+  .term-comment { color: var(--text-dim); font-style: italic; }
+  .term-output { color: var(--text-dim); }
+  .term-success { color: var(--green); }
+  .term-warn { color: var(--yellow); }
+  .term-error { color: var(--red); }
+  .term-accent { color: var(--accent2); }
+  .term-cyan { color: var(--cyan); }
+  .term-pink { color: var(--pink); }
+  .term-orange { color: var(--orange); }
+  .cursor-blink {
+    display: inline-block; width: 8px; height: 16px;
+    background: var(--green);
+    animation: blink 1s step-end infinite;
+    vertical-align: middle; margin-left: 2px;
+  }
+  @keyframes blink { 50% { opacity: 0; } }
+
+  .demo-controls {
+    display: flex; justify-content: center; gap: 1rem; margin-top: 2rem;
+  }
+  .demo-btn {
+    padding: .6rem 1.5rem;
+    background: rgba(99,102,241,.1);
+    border: 1px solid rgba(99,102,241,.3);
+    color: var(--accent2);
+    border-radius: 8px;
+    font-size: .85rem; font-weight: 500;
+    cursor: pointer;
+    transition: all .2s;
+    font-family: 'Inter', sans-serif;
+  }
+  .demo-btn:hover { background: rgba(99,102,241,.2); border-color: var(--accent); }
+  .demo-btn.active { background: var(--accent); color: #fff; border-color: var(--accent); }
+
+  /* ============ TOOLS GRID ============ */
+  .tools-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+    gap: 1.25rem;
+  }
+  .tool-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 1.5rem;
+    transition: all .3s;
+    cursor: default;
+    position: relative;
+    overflow: hidden;
+  }
+  .tool-card::before {
+    content: '';
+    position: absolute; top: 0; left: 0; right: 0;
+    height: 2px;
+    background: var(--gradient);
+    opacity: 0;
+    transition: opacity .3s;
+  }
+  .tool-card:hover { border-color: var(--accent); transform: translateY(-4px); box-shadow: 0 12px 40px rgba(0,0,0,.3); }
+  .tool-card:hover::before { opacity: 1; }
+  .tool-icon {
+    width: 44px; height: 44px;
+    border-radius: 12px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.3rem;
+    margin-bottom: 1rem;
+  }
+  .tool-card h3 { font-size: 1rem; font-weight: 700; margin-bottom: .5rem; }
+  .tool-card p { font-size: .85rem; color: var(--text-dim); line-height: 1.5; }
+  .tool-tag {
+    display: inline-block;
+    background: rgba(99,102,241,.1);
+    color: var(--accent2);
+    padding: .15rem .6rem;
+    border-radius: 100px;
+    font-size: .7rem; font-weight: 500;
+    margin-top: .75rem;
+  }
+
+  /* ============ SCORE GAUGES ============ */
+  .gauges-section { background: var(--bg2); }
+  .gauges-row {
+    display: flex; justify-content: center; gap: 3rem; flex-wrap: wrap;
+    margin-bottom: 3rem;
+  }
+  .gauge-item { text-align: center; }
+  .gauge-svg { width: 140px; height: 140px; }
+  .gauge-bg { fill: none; stroke: var(--bg3); stroke-width: 8; }
+  .gauge-fill { fill: none; stroke-width: 8; stroke-linecap: round; transition: stroke-dashoffset 2s ease; }
+  .gauge-text { font-size: 2rem; font-weight: 800; fill: var(--text); font-family: 'Inter', sans-serif; }
+  .gauge-label { font-size: .85rem; color: var(--text-dim); margin-top: .5rem; font-weight: 500; }
+
+  .metrics-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1rem;
+    max-width: 900px;
+    margin: 0 auto;
+  }
+  .metric-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 1.25rem;
+    text-align: center;
+    transition: transform .3s;
+  }
+  .metric-card:hover { transform: translateY(-2px); }
+  .metric-value { font-size: 1.5rem; font-weight: 800; margin-bottom: .25rem; }
+  .metric-name { font-size: .75rem; color: var(--text-dim); text-transform: uppercase; letter-spacing: .05em; }
+
+  /* ============ WORKFLOW SECTION ============ */
+  .workflow-steps {
+    display: flex;
+    gap: 2rem;
+    overflow-x: auto;
+    padding: 2rem 0;
+    scroll-snap-type: x mandatory;
+  }
+  .workflow-step {
+    flex: 0 0 300px;
+    scroll-snap-align: start;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 2rem;
+    position: relative;
+    transition: all .3s;
+  }
+  .workflow-step:hover { border-color: var(--accent); transform: translateY(-4px); }
+  .step-number {
+    width: 40px; height: 40px;
+    background: var(--gradient);
+    border-radius: 12px;
+    display: flex; align-items: center; justify-content: center;
+    font-weight: 800; font-size: 1.1rem;
+    margin-bottom: 1.25rem;
+  }
+  .workflow-step h3 { font-size: 1.1rem; font-weight: 700; margin-bottom: .5rem; }
+  .workflow-step p { font-size: .85rem; color: var(--text-dim); }
+  .workflow-step code {
+    display: block;
+    background: #0d0d14;
+    border-radius: 8px;
+    padding: .75rem;
+    margin-top: 1rem;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: .75rem;
+    color: var(--green);
+    overflow-x: auto;
+  }
+
+  /* ============ COMPARISON TABLE ============ */
+  .comparison-table {
+    width: 100%;
+    max-width: 800px;
+    margin: 0 auto;
+    border-collapse: separate;
+    border-spacing: 0;
+    border-radius: 16px;
+    overflow: hidden;
+    border: 1px solid var(--border);
+  }
+  .comparison-table th {
+    background: var(--bg3);
+    padding: 1rem;
+    font-size: .8rem;
+    text-transform: uppercase;
+    letter-spacing: .05em;
+    color: var(--text-dim);
+    font-weight: 600;
+    text-align: left;
+  }
+  .comparison-table td {
+    padding: .85rem 1rem;
+    border-top: 1px solid var(--border);
+    font-size: .9rem;
+  }
+  .comparison-table tr:nth-child(even) td { background: rgba(255,255,255,.01); }
+  .check { color: var(--green); font-weight: 700; }
+  .cross { color: var(--text-dim); }
+
+  /* ============ CTA SECTION ============ */
+  .cta-section {
+    text-align: center;
+    padding: 8rem 2rem;
+    position: relative;
+  }
+  .cta-section::before {
+    content: '';
+    position: absolute; inset: 0;
+    background: radial-gradient(ellipse 60% 50% at 50% 50%, rgba(99,102,241,.08), transparent);
+    pointer-events: none;
+  }
+  .cta-section h2 {
+    font-size: clamp(2rem, 5vw, 3.5rem);
+    font-weight: 900;
+    margin-bottom: 1.5rem;
+  }
+  .cta-section p {
+    color: var(--text-dim);
+    font-size: 1.15rem;
+    max-width: 500px;
+    margin: 0 auto 2.5rem;
+  }
+  .install-block {
+    display: inline-flex; align-items: center; gap: .75rem;
+    background: #0d0d14;
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: .85rem 1.5rem;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: .9rem;
+    margin-bottom: 2rem;
+    cursor: pointer;
+    transition: border-color .2s;
+  }
+  .install-block:hover { border-color: var(--accent); }
+  .install-block .dollar { color: var(--green); }
+  .install-block .copy-icon {
+    color: var(--text-dim);
+    transition: color .2s;
+  }
+  .install-block:hover .copy-icon { color: var(--accent2); }
+
+  /* ============ FOOTER ============ */
+  footer {
+    border-top: 1px solid var(--border);
+    padding: 3rem 2rem;
+    text-align: center;
+    color: var(--text-dim);
+    font-size: .85rem;
+  }
+  footer a { color: var(--accent2); text-decoration: none; }
+  footer a:hover { text-decoration: underline; }
+
+  /* ============ SCROLL REVEAL ============ */
+  .reveal {
+    opacity: 0; transform: translateY(40px);
+    transition: opacity .8s ease, transform .8s ease;
+  }
+  .reveal.visible {
+    opacity: 1; transform: translateY(0);
+  }
+
+  /* ============ RESPONSIVE ============ */
+  @media (max-width: 768px) {
+    .nav-links { display: none; }
+    .hero-stats { gap: 1.5rem; }
+    .tools-grid { grid-template-columns: 1fr; }
+    .gauges-row { gap: 1.5rem; }
+    .workflow-steps { gap: 1rem; }
+    .workflow-step { flex: 0 0 260px; }
+  }
+
+  /* ============ ANIMATED GRADIENT ORB ============ */
+  .orb {
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(80px);
+    opacity: .15;
+    pointer-events: none;
+    animation: orbFloat 20s ease-in-out infinite alternate;
+  }
+  .orb-1 { width: 500px; height: 500px; background: var(--accent); top: -200px; left: -100px; }
+  .orb-2 { width: 400px; height: 400px; background: var(--pink); bottom: -150px; right: -100px; animation-delay: -10s; }
+  .orb-3 { width: 300px; height: 300px; background: var(--cyan); top: 50%; left: 50%; animation-delay: -5s; }
+  @keyframes orbFloat {
+    0% { transform: translate(0, 0) scale(1); }
+    33% { transform: translate(40px, -30px) scale(1.1); }
+    66% { transform: translate(-20px, 20px) scale(.95); }
+    100% { transform: translate(30px, -10px) scale(1.05); }
+  }
+
+  /* ============ TYPING EFFECT IN CHAT ============ */
+  .chat-demo {
+    max-width: 700px;
+    margin: 0 auto;
+    background: var(--surface);
+    border-radius: 16px;
+    border: 1px solid var(--border);
+    overflow: hidden;
+    box-shadow: 0 24px 80px rgba(0,0,0,.4);
+  }
+  .chat-header {
+    background: var(--bg3);
+    padding: .75rem 1.25rem;
+    display: flex; align-items: center; gap: .75rem;
+    border-bottom: 1px solid var(--border);
+  }
+  .chat-avatar {
+    width: 32px; height: 32px; border-radius: 8px;
+    background: var(--gradient);
+    display: flex; align-items: center; justify-content: center;
+    font-size: .9rem; font-weight: 700;
+  }
+  .chat-header-text { font-size: .85rem; font-weight: 600; }
+  .chat-header-sub { font-size: .7rem; color: var(--text-dim); }
+  .chat-body { padding: 1.5rem; display: flex; flex-direction: column; gap: 1rem; min-height: 350px; }
+  .chat-msg {
+    max-width: 85%;
+    padding: .85rem 1.1rem;
+    border-radius: 14px;
+    font-size: .85rem;
+    line-height: 1.5;
+    opacity: 0; transform: translateY(10px);
+    transition: all .4s;
+  }
+  .chat-msg.visible { opacity: 1; transform: translateY(0); }
+  .chat-user {
+    align-self: flex-end;
+    background: var(--accent);
+    color: #fff;
+    border-bottom-right-radius: 4px;
+  }
+  .chat-ai {
+    align-self: flex-start;
+    background: var(--bg3);
+    border-bottom-left-radius: 4px;
+  }
+  .chat-ai .chat-score {
+    display: inline-flex; align-items: center; gap: .4rem;
+    background: rgba(34,197,94,.15);
+    color: var(--green);
+    padding: .2rem .6rem;
+    border-radius: 6px;
+    font-weight: 700;
+    font-size: .9rem;
+    margin: .5rem .25rem 0 0;
+  }
+  .chat-ai .chat-score.warn {
+    background: rgba(234,179,8,.15);
+    color: var(--yellow);
+  }
+  .chat-ai .chat-score.bad {
+    background: rgba(239,68,68,.15);
+    color: var(--red);
+  }
+  .typing-indicator {
+    align-self: flex-start;
+    display: flex; gap: 4px;
+    padding: .85rem 1.1rem;
+    background: var(--bg3);
+    border-radius: 14px;
+    opacity: 0; transition: opacity .3s;
+  }
+  .typing-indicator.visible { opacity: 1; }
+  .typing-dot {
+    width: 6px; height: 6px;
+    background: var(--text-dim);
+    border-radius: 50%;
+    animation: typingBounce 1.4s infinite;
+  }
+  .typing-dot:nth-child(2) { animation-delay: .2s; }
+  .typing-dot:nth-child(3) { animation-delay: .4s; }
+  @keyframes typingBounce {
+    0%,60%,100% { transform: translateY(0); }
+    30% { transform: translateY(-5px); }
+  }
+
+  /* ============ INTEGRATIONS LOGOS ============ */
+  .integrations-row {
+    display: flex; justify-content: center; align-items: center; gap: 3rem; flex-wrap: wrap;
+    margin-top: 2rem;
+    opacity: .6;
+  }
+  .integration-item {
+    display: flex; align-items: center; gap: .5rem;
+    font-size: .9rem; font-weight: 600; color: var(--text-dim);
+  }
+  .integration-item svg { width: 28px; height: 28px; }
+</style>
+</head>
+<body>
+
+<canvas id="particles-canvas"></canvas>
+
+<!-- NAV -->
+<nav id="main-nav">
+  <div class="nav-brand">
+    <svg viewBox="0 0 32 32" fill="none">
+      <rect width="32" height="32" rx="8" fill="url(#nav-grad)"/>
+      <path d="M8 22V10l8 6-8 6z" fill="#fff"/>
+      <path d="M18 12h6M18 16h4M18 20h5" stroke="#fff" stroke-width="2" stroke-linecap="round"/>
+      <defs><linearGradient id="nav-grad" x1="0" y1="0" x2="32" y2="32"><stop stop-color="#6366f1"/><stop offset="1" stop-color="#8b5cf6"/></linearGradient></defs>
+    </svg>
+    PageSpeed MCP
+  </div>
+  <ul class="nav-links">
+    <li><a href="#demo">Demo</a></li>
+    <li><a href="#tools">Tools</a></li>
+    <li><a href="#scores">Metrics</a></li>
+    <li><a href="#how-it-works">How It Works</a></li>
+    <li><a href="#compare">Compare</a></li>
+  </ul>
+  <a href="https://github.com/ruslanlap/pagespeed-insights-mcp" class="nav-cta" target="_blank">
+    <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0016 8c0-4.42-3.58-8-8-8z"/></svg>
+    Star on GitHub
+  </a>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="orb orb-1"></div>
+  <div class="orb orb-2"></div>
+  <div class="hero-content">
+    <div class="hero-badge">
+      <span class="pulse"></span>
+      Open Source MCP Server &middot; v1.0.6
+    </div>
+    <h1>
+      Web Performance Analysis<br>
+      <span class="gradient-text">Powered by AI</span>
+    </h1>
+    <p>
+      The most comprehensive MCP server for Google PageSpeed Insights. 
+      Get Lighthouse audits, Core Web Vitals, smart recommendations, and deep diagnostics — all through natural language in Claude, Codex, or any MCP client.
+    </p>
+    <div class="hero-actions">
+      <a href="https://github.com/ruslanlap/pagespeed-insights-mcp" class="btn btn-primary" target="_blank">
+        <svg width="18" height="18" viewBox="0 0 16 16" fill="currentColor"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0016 8c0-4.42-3.58-8-8-8z"/></svg>
+        Get Started
+      </a>
+      <a href="#demo" class="btn btn-secondary">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+        Watch Demo
+      </a>
+    </div>
+    <div class="hero-stats">
+      <div class="hero-stat">
+        <div class="num" id="counter-tools">16</div>
+        <div class="label">Analysis Tools</div>
+      </div>
+      <div class="hero-stat">
+        <div class="num" id="counter-categories">5</div>
+        <div class="label">Audit Categories</div>
+      </div>
+      <div class="hero-stat">
+        <div class="num" id="counter-metrics">50+</div>
+        <div class="label">Metrics Tracked</div>
+      </div>
+      <div class="hero-stat">
+        <div class="num">MIT</div>
+        <div class="label">License</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- INTEGRATIONS -->
+<section style="padding: 2rem 2rem 4rem; z-index: 1; position: relative;">
+  <div class="container reveal">
+    <p style="text-align: center; color: var(--text-dim); font-size: .85rem; margin-bottom: 1.5rem;">Works with your favorite AI tools</p>
+    <div class="integrations-row">
+      <div class="integration-item">
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z"/></svg>
+        Claude Desktop
+      </div>
+      <div class="integration-item">
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12s5.37 12 12 12 12-5.37 12-12S18.63 0 12 0zm5.5 16.5h-11v-1h11v1zm0-3h-11v-1h11v1zm0-3h-11v-1h11v1zm0-3h-11v-1h11v1z"/></svg>
+        OpenAI Codex
+      </div>
+      <div class="integration-item">
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
+        Windsurf
+      </div>
+      <div class="integration-item">
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm-1-13h2v6h-2zm0 8h2v2h-2z"/></svg>
+        Any MCP Client
+      </div>
+      <div class="integration-item">
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg>
+        Docker
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- LIVE DEMO -->
+<section id="demo" class="demo-section">
+  <div class="container">
+    <div class="reveal" style="text-align: center;">
+      <div class="section-label">&#9889; Live Demo</div>
+      <h2 class="section-title">See It In Action</h2>
+      <p class="section-desc" style="margin: 0 auto 2rem;">Watch how PageSpeed MCP analyzes any website in seconds, right from your AI assistant.</p>
+    </div>
+
+    <div class="demo-controls reveal">
+      <button class="demo-btn active" data-demo="analyze" onclick="runDemo('analyze', this)">Full Analysis</button>
+      <button class="demo-btn" data-demo="recommendations" onclick="runDemo('recommendations', this)">Recommendations</button>
+      <button class="demo-btn" data-demo="compare" onclick="runDemo('compare', this)">Compare URLs</button>
+    </div>
+
+    <!-- Chat-style Demo -->
+    <div style="margin-top: 2rem;" class="reveal">
+      <div class="chat-demo" id="chat-demo">
+        <div class="chat-header">
+          <div class="chat-avatar">C</div>
+          <div>
+            <div class="chat-header-text">Claude + PageSpeed MCP</div>
+            <div class="chat-header-sub">pagespeed-insights-mcp connected</div>
+          </div>
+        </div>
+        <div class="chat-body" id="chat-body">
+          <!-- Messages injected by JS -->
+        </div>
+      </div>
+    </div>
+
+    <!-- Terminal Demo Below -->
+    <div style="margin-top: 3rem;" class="reveal">
+      <div class="terminal-wrapper">
+        <div class="terminal-header">
+          <span class="terminal-dot red"></span>
+          <span class="terminal-dot yellow"></span>
+          <span class="terminal-dot green"></span>
+          <span class="terminal-title">pagespeed-insights-mcp &mdash; stdio transport</span>
+        </div>
+        <div class="terminal-body" id="terminal-body">
+          <!-- Lines injected by JS -->
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- TOOLS -->
+<section id="tools">
+  <div class="container">
+    <div class="reveal">
+      <div class="section-label">&#128295; Tool Suite</div>
+      <h2 class="section-title">16 Powerful Analysis Tools</h2>
+      <p class="section-desc">Everything you need to diagnose, optimize, and monitor web performance — accessible through natural language.</p>
+    </div>
+    <div class="tools-grid reveal">
+      <div class="tool-card">
+        <div class="tool-icon" style="background: rgba(99,102,241,.15); color: var(--accent2);">&#128640;</div>
+        <h3>analyze_page_speed</h3>
+        <p>Full Lighthouse analysis with performance scores, Core Web Vitals, and detailed metrics for any URL.</p>
+        <span class="tool-tag">Core</span>
+      </div>
+      <div class="tool-card">
+        <div class="tool-icon" style="background: rgba(6,182,212,.15); color: var(--cyan);">&#9889;</div>
+        <h3>get_performance_summary</h3>
+        <p>Quick performance overview with key metrics and top optimization opportunities at a glance.</p>
+        <span class="tool-tag">Quick</span>
+      </div>
+      <div class="tool-card">
+        <div class="tool-icon" style="background: rgba(34,197,94,.15); color: var(--green);">&#127919;</div>
+        <h3>get_recommendations</h3>
+        <p>AI-powered smart recommendations with priority scoring and actionable code fixes.</p>
+        <span class="tool-tag">Smart</span>
+      </div>
+      <div class="tool-card">
+        <div class="tool-icon" style="background: rgba(249,115,22,.15); color: var(--orange);">&#128247;</div>
+        <h3>get_visual_analysis</h3>
+        <p>Screenshots, filmstrip timeline, and full-page captures showing load progression visually.</p>
+        <span class="tool-tag">Visual</span>
+      </div>
+      <div class="tool-card">
+        <div class="tool-icon" style="background: rgba(236,72,153,.15); color: var(--pink);">&#127760;</div>
+        <h3>get_network_analysis</h3>
+        <p>Detailed request waterfall with timing, sizes, priorities, RTT, and server latency data.</p>
+        <span class="tool-tag">Deep Dive</span>
+      </div>
+      <div class="tool-card">
+        <div class="tool-icon" style="background: rgba(234,179,8,.15); color: var(--yellow);">&#9889;</div>
+        <h3>get_javascript_analysis</h3>
+        <p>JS bootup time, main thread breakdown, unused code detection, and duplicate modules.</p>
+        <span class="tool-tag">Performance</span>
+      </div>
+      <div class="tool-card">
+        <div class="tool-icon" style="background: rgba(239,68,68,.15); color: var(--red);">&#128444;&#65039;</div>
+        <h3>get_image_optimization_details</h3>
+        <p>Find oversized images, lazy-load candidates, and modern format (WebP/AVIF) savings.</p>
+        <span class="tool-tag">Optimization</span>
+      </div>
+      <div class="tool-card">
+        <div class="tool-icon" style="background: rgba(99,102,241,.15); color: var(--accent2);">&#128683;</div>
+        <h3>get_render_blocking_details</h3>
+        <p>Identify render-blocking CSS/JS, critical request chains, and total blocking time.</p>
+        <span class="tool-tag">Critical Path</span>
+      </div>
+      <div class="tool-card">
+        <div class="tool-icon" style="background: rgba(6,182,212,.15); color: var(--cyan);">&#128268;</div>
+        <h3>get_third_party_impact</h3>
+        <p>Third-party script analysis grouped by provider with transfer sizes and blocking times.</p>
+        <span class="tool-tag">Third-Party</span>
+      </div>
+      <div class="tool-card">
+        <div class="tool-icon" style="background: rgba(34,197,94,.15); color: var(--green);">&#127919;</div>
+        <h3>get_element_analysis</h3>
+        <p>DOM-level debugging: LCP element details, CLS-causing elements, lazy-loaded LCP warnings.</p>
+        <span class="tool-tag">Debugging</span>
+      </div>
+      <div class="tool-card">
+        <div class="tool-icon" style="background: rgba(249,115,22,.15); color: var(--orange);">&#128202;</div>
+        <h3>get_full_audit</h3>
+        <p>Comprehensive audit across all categories: Performance, SEO, Accessibility, Best Practices.</p>
+        <span class="tool-tag">Complete</span>
+      </div>
+      <div class="tool-card">
+        <div class="tool-icon" style="background: rgba(236,72,153,.15); color: var(--pink);">&#128200;</div>
+        <h3>crux_summary</h3>
+        <p>Real-world Chrome UX Report field data with Core Web Vitals from actual users.</p>
+        <span class="tool-tag">Field Data</span>
+      </div>
+      <div class="tool-card">
+        <div class="tool-icon" style="background: rgba(234,179,8,.15); color: var(--yellow);">&#128260;</div>
+        <h3>compare_pages</h3>
+        <p>Side-by-side comparison of two URLs with metric-by-metric performance diff.</p>
+        <span class="tool-tag">Compare</span>
+      </div>
+      <div class="tool-card">
+        <div class="tool-icon" style="background: rgba(99,102,241,.15); color: var(--accent2);">&#128209;</div>
+        <h3>full_report</h3>
+        <p>Unified report combining Lighthouse lab data with CrUX real-world field data.</p>
+        <span class="tool-tag">Unified</span>
+      </div>
+      <div class="tool-card">
+        <div class="tool-icon" style="background: rgba(6,182,212,.15); color: var(--cyan);">&#128230;</div>
+        <h3>batch_analyze</h3>
+        <p>Analyze up to 10 URLs simultaneously with progress tracking and aggregate results.</p>
+        <span class="tool-tag">Batch</span>
+      </div>
+      <div class="tool-card">
+        <div class="tool-icon" style="background: rgba(34,197,94,.15); color: var(--green);">&#128451;&#65039;</div>
+        <h3>clear_cache</h3>
+        <p>Clear internal cache to force fresh API requests for all subsequent analyses.</p>
+        <span class="tool-tag">Utility</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SCORES / GAUGES -->
+<section id="scores" class="gauges-section">
+  <div class="container" style="text-align: center;">
+    <div class="reveal">
+      <div class="section-label">&#128202; Live Metrics Preview</div>
+      <h2 class="section-title">Beautiful, Actionable Reports</h2>
+      <p class="section-desc" style="margin: 0 auto 3rem;">Get Lighthouse scores and Core Web Vitals presented clearly, with color-coded results and priorities.</p>
+    </div>
+
+    <div class="gauges-row reveal" id="gauges-container">
+      <!-- Performance -->
+      <div class="gauge-item">
+        <svg class="gauge-svg" viewBox="0 0 120 120">
+          <circle class="gauge-bg" cx="60" cy="60" r="50"/>
+          <circle class="gauge-fill" cx="60" cy="60" r="50" stroke="#22c55e"
+            stroke-dasharray="314" stroke-dashoffset="314" data-target="67"
+            transform="rotate(-90 60 60)"/>
+          <text class="gauge-text" x="60" y="65" text-anchor="middle">67</text>
+        </svg>
+        <div class="gauge-label">Performance</div>
+      </div>
+      <!-- Accessibility -->
+      <div class="gauge-item">
+        <svg class="gauge-svg" viewBox="0 0 120 120">
+          <circle class="gauge-bg" cx="60" cy="60" r="50"/>
+          <circle class="gauge-fill" cx="60" cy="60" r="50" stroke="#22c55e"
+            stroke-dasharray="314" stroke-dashoffset="314" data-target="92"
+            transform="rotate(-90 60 60)"/>
+          <text class="gauge-text" x="60" y="65" text-anchor="middle">92</text>
+        </svg>
+        <div class="gauge-label">Accessibility</div>
+      </div>
+      <!-- Best Practices -->
+      <div class="gauge-item">
+        <svg class="gauge-svg" viewBox="0 0 120 120">
+          <circle class="gauge-bg" cx="60" cy="60" r="50"/>
+          <circle class="gauge-fill" cx="60" cy="60" r="50" stroke="#22c55e"
+            stroke-dasharray="314" stroke-dashoffset="314" data-target="96"
+            transform="rotate(-90 60 60)"/>
+          <text class="gauge-text" x="60" y="65" text-anchor="middle">96</text>
+        </svg>
+        <div class="gauge-label">Best Practices</div>
+      </div>
+      <!-- SEO -->
+      <div class="gauge-item">
+        <svg class="gauge-svg" viewBox="0 0 120 120">
+          <circle class="gauge-bg" cx="60" cy="60" r="50"/>
+          <circle class="gauge-fill" cx="60" cy="60" r="50" stroke="#22c55e"
+            stroke-dasharray="314" stroke-dashoffset="314" data-target="100"
+            transform="rotate(-90 60 60)"/>
+          <text class="gauge-text" x="60" y="65" text-anchor="middle">100</text>
+        </svg>
+        <div class="gauge-label">SEO</div>
+      </div>
+    </div>
+
+    <div class="metrics-grid reveal">
+      <div class="metric-card">
+        <div class="metric-value" style="color: var(--green);">1.2s</div>
+        <div class="metric-name">First Contentful Paint</div>
+      </div>
+      <div class="metric-card">
+        <div class="metric-value" style="color: var(--yellow);">2.4s</div>
+        <div class="metric-name">Largest Contentful Paint</div>
+      </div>
+      <div class="metric-card">
+        <div class="metric-value" style="color: var(--green);">0.00</div>
+        <div class="metric-name">Cumulative Layout Shift</div>
+      </div>
+      <div class="metric-card">
+        <div class="metric-value" style="color: var(--yellow);">4.8s</div>
+        <div class="metric-name">Speed Index</div>
+      </div>
+      <div class="metric-card">
+        <div class="metric-value" style="color: var(--green);">60ms</div>
+        <div class="metric-name">Total Blocking Time</div>
+      </div>
+      <div class="metric-card">
+        <div class="metric-value" style="color: var(--green);">120ms</div>
+        <div class="metric-name">Server Response Time</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- HOW IT WORKS -->
+<section id="how-it-works">
+  <div class="container">
+    <div class="reveal" style="text-align: center;">
+      <div class="section-label">&#128161; Getting Started</div>
+      <h2 class="section-title">Up and Running in 60 Seconds</h2>
+      <p class="section-desc" style="margin: 0 auto 3rem;">Three simple steps to unlock AI-powered web performance analysis.</p>
+    </div>
+    <div class="workflow-steps reveal">
+      <div class="workflow-step">
+        <div class="step-number">1</div>
+        <h3>Get Your API Key</h3>
+        <p>Enable PageSpeed Insights API in Google Cloud Console and create an API key.</p>
+        <code>export GOOGLE_API_KEY=your-key</code>
+      </div>
+      <div class="workflow-step">
+        <div class="step-number">2</div>
+        <h3>Configure Your Client</h3>
+        <p>Add the MCP server to your Claude Desktop, Codex, or any MCP-compatible client.</p>
+        <code>{
+  "mcpServers": {
+    "pagespeed-insights": {
+      "command": "npx",
+      "args": ["pagespeed-insights-mcp"]
+    }
+  }
+}</code>
+      </div>
+      <div class="workflow-step">
+        <div class="step-number">3</div>
+        <h3>Start Analyzing</h3>
+        <p>Just ask in natural language! "Analyze the performance of my website" — that's it.</p>
+        <code>"Analyze https://example.com
+ for mobile devices"</code>
+      </div>
+      <div class="workflow-step">
+        <div class="step-number">&#10003;</div>
+        <h3>Get Insights</h3>
+        <p>Receive comprehensive reports with scores, metrics, and prioritized recommendations.</p>
+        <code>Performance: 92/100 &#9989;
+LCP: 1.8s &#9989;
+CLS: 0.02 &#9989;</code>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- COMPARISON TABLE -->
+<section id="compare" style="background: var(--bg2);">
+  <div class="container" style="text-align: center;">
+    <div class="reveal">
+      <div class="section-label">&#128640; Why PageSpeed MCP?</div>
+      <h2 class="section-title">Beyond Manual Testing</h2>
+      <p class="section-desc" style="margin: 0 auto 3rem;">Stop switching between browser tabs. Get everything through your AI assistant.</p>
+    </div>
+    <div class="reveal">
+      <table class="comparison-table">
+        <thead>
+          <tr>
+            <th>Feature</th>
+            <th>Manual PageSpeed</th>
+            <th style="color: var(--accent2);">PageSpeed MCP</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Natural Language Interface</td>
+            <td><span class="cross">&#10007;</span></td>
+            <td><span class="check">&#10003;</span></td>
+          </tr>
+          <tr>
+            <td>Batch URL Analysis (10+)</td>
+            <td><span class="cross">&#10007;</span></td>
+            <td><span class="check">&#10003;</span></td>
+          </tr>
+          <tr>
+            <td>Smart Recommendations</td>
+            <td><span class="cross">&#10007;</span></td>
+            <td><span class="check">&#10003;</span></td>
+          </tr>
+          <tr>
+            <td>Side-by-Side Comparison</td>
+            <td><span class="cross">&#10007;</span></td>
+            <td><span class="check">&#10003;</span></td>
+          </tr>
+          <tr>
+            <td>CrUX Real-World Data</td>
+            <td>Basic</td>
+            <td><span class="check">&#10003; Detailed</span></td>
+          </tr>
+          <tr>
+            <td>Element-Level Debugging</td>
+            <td><span class="cross">&#10007;</span></td>
+            <td><span class="check">&#10003;</span></td>
+          </tr>
+          <tr>
+            <td>Network Waterfall</td>
+            <td><span class="cross">&#10007;</span></td>
+            <td><span class="check">&#10003;</span></td>
+          </tr>
+          <tr>
+            <td>JS Profiling</td>
+            <td><span class="cross">&#10007;</span></td>
+            <td><span class="check">&#10003;</span></td>
+          </tr>
+          <tr>
+            <td>Third-Party Impact</td>
+            <td><span class="cross">&#10007;</span></td>
+            <td><span class="check">&#10003;</span></td>
+          </tr>
+          <tr>
+            <td>Intelligent Caching</td>
+            <td><span class="cross">&#10007;</span></td>
+            <td><span class="check">&#10003;</span></td>
+          </tr>
+          <tr>
+            <td>Docker Support</td>
+            <td>N/A</td>
+            <td><span class="check">&#10003;</span></td>
+          </tr>
+          <tr>
+            <td>Localization (i18n)</td>
+            <td>Limited</td>
+            <td><span class="check">&#10003; Full</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section class="cta-section">
+  <div class="orb orb-3"></div>
+  <div class="container reveal" style="position: relative;">
+    <h2>Ready to <span class="gradient-text">Supercharge</span><br>Your Performance Workflow?</h2>
+    <p>Install in one command. Start analyzing in seconds.</p>
+    <div class="install-block" onclick="copyInstall(this)">
+      <span class="dollar">$</span>
+      <span>npx pagespeed-insights-mcp</span>
+      <svg class="copy-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>
+    </div>
+    <br><br>
+    <div style="display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap;">
+      <a href="https://github.com/ruslanlap/pagespeed-insights-mcp" class="btn btn-primary" target="_blank">
+        <svg width="18" height="18" viewBox="0 0 16 16" fill="currentColor"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0016 8c0-4.42-3.58-8-8-8z"/></svg>
+        View on GitHub
+      </a>
+      <a href="https://www.npmjs.com/package/pagespeed-insights-mcp" class="btn btn-secondary" target="_blank">
+        View on npm
+      </a>
+      <a href="https://ruslanlap.github.io/pagespeed-insights-mcp/" class="btn btn-secondary" target="_blank">
+        Documentation
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <p>
+    Built with &#10084;&#65039; by <a href="https://github.com/ruslanlap">@ruslanlap</a> &middot;
+    MIT License &middot;
+    <a href="https://github.com/ruslanlap/pagespeed-insights-mcp">GitHub</a> &middot;
+    <a href="https://www.npmjs.com/package/pagespeed-insights-mcp">npm</a> &middot;
+    <a href="https://ruslanlap.github.io/pagespeed-insights-mcp/">Docs</a>
+  </p>
+</footer>
+
+<script>
+// ============ PARTICLES ============
+const canvas = document.getElementById('particles-canvas');
+const ctx = canvas.getContext('2d');
+let particles = [];
+function resizeCanvas() { canvas.width = window.innerWidth; canvas.height = window.innerHeight; }
+window.addEventListener('resize', resizeCanvas);
+resizeCanvas();
+
+class Particle {
+  constructor() { this.reset(); }
+  reset() {
+    this.x = Math.random() * canvas.width;
+    this.y = Math.random() * canvas.height;
+    this.size = Math.random() * 1.5 + .5;
+    this.speedX = (Math.random() - .5) * .3;
+    this.speedY = (Math.random() - .5) * .3;
+    this.opacity = Math.random() * .3 + .1;
+  }
+  update() {
+    this.x += this.speedX;
+    this.y += this.speedY;
+    if (this.x < 0 || this.x > canvas.width || this.y < 0 || this.y > canvas.height) this.reset();
+  }
+  draw() {
+    ctx.beginPath();
+    ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+    ctx.fillStyle = `rgba(99,102,241,${this.opacity})`;
+    ctx.fill();
+  }
+}
+for (let i = 0; i < 80; i++) particles.push(new Particle());
+function animateParticles() {
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  particles.forEach(p => { p.update(); p.draw(); });
+  // draw lines between close particles
+  for (let i = 0; i < particles.length; i++) {
+    for (let j = i + 1; j < particles.length; j++) {
+      const dx = particles[i].x - particles[j].x;
+      const dy = particles[i].y - particles[j].y;
+      const dist = Math.sqrt(dx*dx + dy*dy);
+      if (dist < 120) {
+        ctx.beginPath();
+        ctx.moveTo(particles[i].x, particles[i].y);
+        ctx.lineTo(particles[j].x, particles[j].y);
+        ctx.strokeStyle = `rgba(99,102,241,${.05 * (1 - dist/120)})`;
+        ctx.stroke();
+      }
+    }
+  }
+  requestAnimationFrame(animateParticles);
+}
+animateParticles();
+
+// ============ NAV SCROLL ============
+window.addEventListener('scroll', () => {
+  document.getElementById('main-nav').classList.toggle('scrolled', window.scrollY > 50);
+});
+
+// ============ SCROLL REVEAL ============
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
+}, { threshold: .15 });
+document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+
+// ============ GAUGE ANIMATION ============
+const gaugeObserver = new IntersectionObserver((entries) => {
+  entries.forEach(e => {
+    if (e.isIntersecting) {
+      document.querySelectorAll('.gauge-fill').forEach(circle => {
+        const target = parseInt(circle.dataset.target);
+        const circumference = 314;
+        const offset = circumference - (target / 100) * circumference;
+        circle.style.strokeDashoffset = offset;
+        // color
+        if (target >= 90) circle.setAttribute('stroke', '#22c55e');
+        else if (target >= 50) circle.setAttribute('stroke', '#eab308');
+        else circle.setAttribute('stroke', '#ef4444');
+      });
+      gaugeObserver.disconnect();
+    }
+  });
+}, { threshold: .3 });
+gaugeObserver.observe(document.getElementById('gauges-container'));
+
+// ============ CHAT DEMO ============
+const demos = {
+  analyze: [
+    { type: 'user', text: 'Analyze the performance of https://example.com for mobile devices with all categories' },
+    { type: 'typing', delay: 1500 },
+    { type: 'ai', html: `<strong>PageSpeed Insights Analysis</strong><br><br>
+      <strong>URL:</strong> https://example.com<br>
+      <strong>Strategy:</strong> Mobile<br><br>
+      <div style="display:flex;gap:.5rem;flex-wrap:wrap;">
+        <span class="chat-score">Performance: 67</span>
+        <span class="chat-score">Accessibility: 92</span>
+        <span class="chat-score">Best Practices: 96</span>
+        <span class="chat-score">SEO: 100</span>
+      </div><br>
+      <strong>Core Web Vitals:</strong><br>
+      &bull; LCP: 2.4s <span style="color:var(--yellow);">&#9888;</span><br>
+      &bull; CLS: 0.00 <span style="color:var(--green);">&#9989;</span><br>
+      &bull; FCP: 1.2s <span style="color:var(--green);">&#9989;</span><br>
+      &bull; TBT: 60ms <span style="color:var(--green);">&#9989;</span><br><br>
+      <strong>Top Opportunities:</strong><br>
+      &bull; Properly size images — save 1,069 KB<br>
+      &bull; Serve images in next-gen formats<br>
+      &bull; Improve server response time` },
+  ],
+  recommendations: [
+    { type: 'user', text: 'Get smart recommendations for improving https://mysite.com performance' },
+    { type: 'typing', delay: 1800 },
+    { type: 'ai', html: `<strong>&#127919; Smart Performance Recommendations</strong><br><br>
+      <span style="color:var(--red);font-weight:700;">&#128308; Critical Priority</span><br>
+      &bull; <strong>Optimize LCP</strong> — Largest Contentful Paint is 4.2s (target: &lt;2.5s)<br>
+      &bull; <strong>Reduce unused JavaScript</strong> — 342 KB savings possible<br><br>
+      <span style="color:var(--orange);font-weight:700;">&#128992; High Priority</span><br>
+      &bull; <strong>Serve images in WebP/AVIF</strong> — save 1.2 MB<br>
+      &bull; <strong>Enable text compression</strong> — save 89 KB<br><br>
+      <span style="color:var(--yellow);font-weight:700;">&#128993; Medium Priority</span><br>
+      &bull; <strong>Preconnect to origins</strong> — faster third-party loads<br>
+      &bull; <strong>Add width/height to images</strong> — prevent CLS<br><br>
+      <em style="color:var(--text-dim);">Each recommendation includes specific code fixes and estimated impact scores.</em>` },
+  ],
+  compare: [
+    { type: 'user', text: 'Compare performance between https://mysite.com and https://competitor.com' },
+    { type: 'typing', delay: 2000 },
+    { type: 'ai', html: `<strong>&#128260; Performance Comparison</strong><br><br>
+      <table style="width:100%;font-size:.8rem;border-collapse:collapse;">
+        <tr style="border-bottom:1px solid var(--border);">
+          <td style="padding:.4rem;color:var(--text-dim);">Metric</td>
+          <td style="padding:.4rem;font-weight:600;">mysite.com</td>
+          <td style="padding:.4rem;font-weight:600;">competitor.com</td>
+        </tr>
+        <tr style="border-bottom:1px solid var(--border);">
+          <td style="padding:.4rem;color:var(--text-dim);">Performance</td>
+          <td style="padding:.4rem;color:var(--green);font-weight:700;">89/100 &#128077;</td>
+          <td style="padding:.4rem;color:var(--yellow);">72/100</td>
+        </tr>
+        <tr style="border-bottom:1px solid var(--border);">
+          <td style="padding:.4rem;color:var(--text-dim);">LCP</td>
+          <td style="padding:.4rem;color:var(--green);">1.8s</td>
+          <td style="padding:.4rem;color:var(--red);">3.9s</td>
+        </tr>
+        <tr style="border-bottom:1px solid var(--border);">
+          <td style="padding:.4rem;color:var(--text-dim);">CLS</td>
+          <td style="padding:.4rem;color:var(--green);">0.01</td>
+          <td style="padding:.4rem;color:var(--yellow);">0.15</td>
+        </tr>
+        <tr>
+          <td style="padding:.4rem;color:var(--text-dim);">TBT</td>
+          <td style="padding:.4rem;color:var(--green);">45ms</td>
+          <td style="padding:.4rem;color:var(--yellow);">280ms</td>
+        </tr>
+      </table><br>
+      <span style="color:var(--green);font-weight:600;">&#9989; mysite.com wins</span> in all key metrics!<br>
+      <em style="color:var(--text-dim);">Competitor could improve by optimizing images and reducing JS bundle size.</em>` },
+  ],
+};
+
+let chatAnimating = false;
+function runDemo(type, btnEl) {
+  if (chatAnimating) return;
+  chatAnimating = true;
+  
+  document.querySelectorAll('.demo-btn').forEach(b => b.classList.remove('active'));
+  if (btnEl) {
+    btnEl.classList.add('active');
+  } else {
+    const found = document.querySelector('.demo-btn[data-demo="' + type + '"]');
+    if (found) found.classList.add('active');
+  }
+  
+  const body = document.getElementById('chat-body');
+  body.innerHTML = '';
+  const messages = demos[type];
+  let delay = 0;
+
+  messages.forEach((msg, i) => {
+    if (msg.type === 'typing') {
+      delay += 400;
+      setTimeout(() => {
+        const el = document.createElement('div');
+        el.className = 'typing-indicator';
+        el.innerHTML = '<div class="typing-dot"></div><div class="typing-dot"></div><div class="typing-dot"></div>';
+        el.id = 'typing-' + i;
+        body.appendChild(el);
+        setTimeout(() => el.classList.add('visible'), 50);
+      }, delay);
+      delay += msg.delay;
+      setTimeout(() => {
+        const el = document.getElementById('typing-' + i);
+        if (el) el.remove();
+      }, delay);
+    } else {
+      delay += 300;
+      setTimeout(() => {
+        const el = document.createElement('div');
+        el.className = `chat-msg chat-${msg.type}`;
+        el.innerHTML = msg.html || msg.text;
+        body.appendChild(el);
+        setTimeout(() => el.classList.add('visible'), 50);
+        body.scrollTop = body.scrollHeight;
+      }, delay);
+    }
+  });
+
+  setTimeout(() => { chatAnimating = false; }, delay + 500);
+
+  // Also animate terminal
+  runTerminalDemo(type);
+}
+
+// ============ TERMINAL DEMO ============
+const terminalDemos = {
+  analyze: [
+    { text: '<span class="term-prompt">$</span> <span class="term-cmd">npx pagespeed-insights-mcp</span>', delay: 0 },
+    { text: '<span class="term-accent">[pagespeed-mcp]</span> <span class="term-output">Server started on stdio transport</span>', delay: 600 },
+    { text: '<span class="term-accent">[pagespeed-mcp]</span> <span class="term-output">Registered 16 tools</span>', delay: 200 },
+    { text: '', delay: 200 },
+    { text: '<span class="term-cyan">&#9654; tool/call</span> <span class="term-cmd">analyze_page_speed</span>', delay: 400 },
+    { text: '  <span class="term-output">url: "https://example.com"</span>', delay: 100 },
+    { text: '  <span class="term-output">strategy: "mobile"</span>', delay: 100 },
+    { text: '  <span class="term-output">category: ["performance", "seo", "accessibility"]</span>', delay: 100 },
+    { text: '', delay: 300 },
+    { text: '<span class="term-accent">[pagespeed-mcp]</span> <span class="term-output">Starting PageSpeed analysis...</span>', delay: 500 },
+    { text: '<span class="term-accent">[pagespeed-mcp]</span> <span class="term-output">Fetching from Google PageSpeed API...</span>', delay: 800 },
+    { text: '<span class="term-accent">[pagespeed-mcp]</span> <span class="term-success">&#10003; Analysis complete in 3.2s</span>', delay: 1000 },
+    { text: '', delay: 100 },
+    { text: '<span class="term-success">&#9473;&#9473; Results &#9473;&#9473;&#9473;&#9473;&#9473;&#9473;&#9473;&#9473;&#9473;&#9473;&#9473;&#9473;&#9473;&#9473;&#9473;&#9473;&#9473;&#9473;&#9473;&#9473;</span>', delay: 200 },
+    { text: '  <span class="term-output">Performance:</span>  <span class="term-warn">67/100</span>', delay: 100 },
+    { text: '  <span class="term-output">Accessibility:</span> <span class="term-success">92/100</span>', delay: 100 },
+    { text: '  <span class="term-output">SEO:</span>           <span class="term-success">100/100</span>', delay: 100 },
+    { text: '<span class="term-success">&#9473;&#9473;&#9473;&#9473;&#9473;&#9473;&#9473;&#9473;&#9473;&#9473;&#9473;&#9473;&#9473;&#9473;&#9473;&#9473;&#9473;&#9473;&#9473;&#9473;&#9473;&#9473;&#9473;&#9473;&#9473;&#9473;&#9473;</span>', delay: 100 },
+  ],
+  recommendations: [
+    { text: '<span class="term-prompt">$</span> <span class="term-cmd">npx pagespeed-insights-mcp</span>', delay: 0 },
+    { text: '<span class="term-accent">[pagespeed-mcp]</span> <span class="term-output">Server running...</span>', delay: 600 },
+    { text: '', delay: 200 },
+    { text: '<span class="term-cyan">&#9654; tool/call</span> <span class="term-cmd">get_recommendations</span>', delay: 400 },
+    { text: '  <span class="term-output">url: "https://mysite.com"</span>', delay: 100 },
+    { text: '', delay: 300 },
+    { text: '<span class="term-accent">[pagespeed-mcp]</span> <span class="term-output">Generating smart recommendations...</span>', delay: 800 },
+    { text: '<span class="term-accent">[pagespeed-mcp]</span> <span class="term-output">Analyzing 47 Lighthouse audits...</span>', delay: 600 },
+    { text: '<span class="term-accent">[pagespeed-mcp]</span> <span class="term-output">Scoring priorities...</span>', delay: 400 },
+    { text: '<span class="term-accent">[pagespeed-mcp]</span> <span class="term-success">&#10003; Generated 8 recommendations</span>', delay: 500 },
+    { text: '', delay: 100 },
+    { text: '  <span class="term-error">&#9679; CRITICAL:</span> <span class="term-output">Reduce unused JavaScript (-342 KB)</span>', delay: 200 },
+    { text: '  <span class="term-orange">&#9679; HIGH:</span>     <span class="term-output">Serve images in WebP (-1.2 MB)</span>', delay: 200 },
+    { text: '  <span class="term-warn">&#9679; MEDIUM:</span>   <span class="term-output">Enable text compression (-89 KB)</span>', delay: 200 },
+    { text: '  <span class="term-success">&#9679; LOW:</span>      <span class="term-output">Preconnect to required origins</span>', delay: 200 },
+  ],
+  compare: [
+    { text: '<span class="term-prompt">$</span> <span class="term-cmd">npx pagespeed-insights-mcp</span>', delay: 0 },
+    { text: '<span class="term-accent">[pagespeed-mcp]</span> <span class="term-output">Server running...</span>', delay: 600 },
+    { text: '', delay: 200 },
+    { text: '<span class="term-cyan">&#9654; tool/call</span> <span class="term-cmd">compare_pages</span>', delay: 400 },
+    { text: '  <span class="term-output">urlA: "https://mysite.com"</span>', delay: 100 },
+    { text: '  <span class="term-output">urlB: "https://competitor.com"</span>', delay: 100 },
+    { text: '', delay: 300 },
+    { text: '<span class="term-accent">[pagespeed-mcp]</span> <span class="term-output">Analyzing URL A...</span>', delay: 800 },
+    { text: '<span class="term-accent">[pagespeed-mcp]</span> <span class="term-output">Analyzing URL B...</span>', delay: 800 },
+    { text: '<span class="term-accent">[pagespeed-mcp]</span> <span class="term-success">&#10003; Comparison complete</span>', delay: 500 },
+    { text: '', delay: 100 },
+    { text: '  <span class="term-output">            mysite.com   competitor.com</span>', delay: 200 },
+    { text: '  <span class="term-output">Performance  </span><span class="term-success">89</span>           <span class="term-warn">72</span>', delay: 200 },
+    { text: '  <span class="term-output">LCP          </span><span class="term-success">1.8s</span>         <span class="term-error">3.9s</span>', delay: 200 },
+    { text: '  <span class="term-output">CLS          </span><span class="term-success">0.01</span>         <span class="term-warn">0.15</span>', delay: 200 },
+    { text: '  <span class="term-output">TBT          </span><span class="term-success">45ms</span>         <span class="term-warn">280ms</span>', delay: 200 },
+    { text: '', delay: 100 },
+    { text: '  <span class="term-success">&#9989; Winner: mysite.com (all metrics)</span>', delay: 300 },
+  ],
+};
+
+function runTerminalDemo(type) {
+  const body = document.getElementById('terminal-body');
+  body.innerHTML = '';
+  const lines = terminalDemos[type];
+  let delay = 0;
+
+  lines.forEach(line => {
+    delay += line.delay;
+    setTimeout(() => {
+      const el = document.createElement('div');
+      el.className = 'term-line';
+      el.innerHTML = line.text;
+      body.appendChild(el);
+      setTimeout(() => el.classList.add('visible'), 30);
+      body.scrollTop = body.scrollHeight;
+    }, delay);
+  });
+
+  // add cursor at end
+  delay += 300;
+  setTimeout(() => {
+    const el = document.createElement('div');
+    el.className = 'term-line';
+    el.innerHTML = '<span class="term-prompt">$</span> <span class="cursor-blink"></span>';
+    body.appendChild(el);
+    setTimeout(() => el.classList.add('visible'), 30);
+  }, delay);
+}
+
+// ============ COPY INSTALL ============
+function copyInstall(el) {
+  navigator.clipboard.writeText('npx pagespeed-insights-mcp');
+  el.querySelector('.copy-icon').innerHTML = '<polyline points="20 6 9 17 4 12" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/>';
+  el.style.borderColor = 'var(--green)';
+  setTimeout(() => {
+    el.querySelector('.copy-icon').innerHTML = '<rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/>';
+    el.style.borderColor = '';
+  }, 2000);
+}
+
+// ============ AUTO-START DEMO ============
+setTimeout(() => runDemo('analyze', null), 1500);
+</script>
+
+</body>
+</html>
