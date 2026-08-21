@@ -1,3 +1,10 @@
+## [1.5.3](https://github.com/ruslanlap/pagespeed-insights-mcp/compare/v1.5.2...v1.5.3) (2026-08-21)
+
+
+### Bug Fixes
+
+* server.json description <=100 chars (registry validation) ([127459a](https://github.com/ruslanlap/pagespeed-insights-mcp/commit/127459a7a6210a54d8c874c04bd8ceb5d7b88a9a))
+
 ## [1.5.2](https://github.com/ruslanlap/pagespeed-insights-mcp/compare/v1.5.1...v1.5.2) (2026-08-21)
 
 
