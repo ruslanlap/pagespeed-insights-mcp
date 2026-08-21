@@ -1,3 +1,10 @@
+# [1.7.0](https://github.com/ruslanlap/pagespeed-insights-mcp/compare/v1.6.0...v1.7.0) (2026-08-21)
+
+
+### Features
+
+* baseline comparison, progress keepalive, weighted findings, strategy both ([ed4e76a](https://github.com/ruslanlap/pagespeed-insights-mcp/commit/ed4e76a876e5ea6597e2fe0e2290650dd756a9b5))
+
 # [1.6.0](https://github.com/ruslanlap/pagespeed-insights-mcp/compare/v1.5.3...v1.6.0) (2026-08-21)
 
 
