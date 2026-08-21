@@ -6,7 +6,7 @@
     "url": "https://github.com/ruslanlap/pagespeed-insights-mcp",
     "source": "github"
   },
-  "version": "1.5.3",
+  "version": "1.7.0",
   "packages": [
     {
       "registryType": "npm",
