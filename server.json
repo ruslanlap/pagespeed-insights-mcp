@@ -6,12 +6,12 @@
     "url": "https://github.com/ruslanlap/pagespeed-insights-mcp",
     "source": "github"
   },
-  "version": "1.5.2",
+  "version": "1.5.3",
   "packages": [
     {
       "registryType": "npm",
       "identifier": "pagespeed-insights-mcp",
-      "version": "1.5.2",
+      "version": "1.5.3",
       "transport": {
         "type": "stdio"
       },
