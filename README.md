@@ -592,6 +592,7 @@ Complete page analysis with all Lighthouse metrics.
 - `strategy`: "mobile" or "desktop" (default: "mobile")
 - `category`: array of categories ["performance", "accessibility", "best-practices", "seo", "pwa"]
 - `locale`: locale for results (default: "en")
+- `runs`: 1–5 distinct analyses (default: 1). With `runs > 1` the report shows the **median with min-max spread** for every score and metric, drops cached replays (identical `fetchTime`), and says how many it dropped. A single Lighthouse run is noise — TBT routinely swings 3× on an unchanged page, so treat differences inside the spread as no change. Note: Google re-analyses a URL about once a minute, so each extra run waits ~65 s to be genuinely distinct.
 
 ### `get_performance_summary`
 

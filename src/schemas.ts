@@ -35,6 +35,16 @@ export const AnalyzePageSpeedSchema = z.object({
   strategy: StrategySchema,
   category: z.array(CategorySchema).optional().default(["performance"]),
   locale: LocaleSchema,
+  runs: z
+    .number()
+    .int()
+    .min(1)
+    .max(5)
+    .optional()
+    .describe(
+      "Distinct analyses to run (default 1). >1 reports median with min-max spread; " +
+      "cached replays (same fetchTime) are dropped and counted"
+    ),
 });
 
 export const PerformanceSummarySchema = z.object({

@@ -5,6 +5,7 @@ import { createRequire } from "module";
 import { getEnv } from "./env.js";
 import { createRequestLogger } from "./logger.js";
 import { cache, createPSICacheKey, createCruxCacheKey } from "./cache.js";
+import { summariseMultirun } from "./multirun.js";
 import type { 
   AnalyzePageSpeedInput, 
   CruxSummaryInput,
@@ -102,6 +103,7 @@ export class PageSpeedClient {
     correlationId: string
   ): Promise<PageSpeedInsightsResponse> {
     const logger = createRequestLogger(correlationId, "analyze-page-speed");
+    const runs = Math.max(1, Math.min(5, input.runs ?? 1));
     
     return this.limiter(async () => {
       const cacheKey = createPSICacheKey(
@@ -111,14 +113,17 @@ export class PageSpeedClient {
         input.locale
       );
       
-      // Try cache first
-      const cached = cache.get<PageSpeedInsightsResponse>(cacheKey);
-      if (cached) {
-        logger.debug("Cache hit for PSI request");
-        return cached;
+      // Try cache first (only for single-run requests: a multirun exists to
+      // measure fresh, replaying our own cache would defeat it)
+      if (runs === 1) {
+        const cached = cache.get<PageSpeedInsightsResponse>(cacheKey);
+        if (cached) {
+          logger.debug("Cache hit for PSI request");
+          return cached;
+        }
       }
       
-      logger.info({ url: input.url, strategy: input.strategy }, "Starting PSI analysis");
+      logger.info({ url: input.url, strategy: input.strategy, runs }, "Starting PSI analysis");
       
       const url = new URL("https://www.googleapis.com/pagespeedonline/v5/runPagespeed");
       url.searchParams.set("url", input.url);
@@ -131,9 +136,25 @@ export class PageSpeedClient {
       }
       
       const data = await this.makeRequest(url.toString(), correlationId);
-      cache.set(cacheKey, data, this.cacheTTL);
       
-      return data as PageSpeedInsightsResponse;
+      if (runs === 1) {
+        cache.set(cacheKey, data, this.cacheTTL);
+        return data as PageSpeedInsightsResponse;
+      }
+      
+      // Multirun: collect N analyses, wait out Google's ~1min re-analysis
+      // window between calls so runs are genuinely distinct.
+      const all: PageSpeedInsightsResponse[] = [data as PageSpeedInsightsResponse];
+      for (let i = 1; i < runs; i++) {
+        await new Promise((r) => setTimeout(r, 65_000));
+        try {
+          all.push(await this.makeRequest(url.toString(), correlationId) as PageSpeedInsightsResponse);
+        } catch (e) {
+          logger.warn({ run: i + 1, error: e instanceof Error ? e.message : String(e) }, "Run failed, continuing with fewer");
+        }
+      }
+      (all[0] as any).multirun = summariseMultirun(all);
+      return all[0];
     });
   }
 

@@ -324,6 +324,7 @@ export interface AnalyzePageSpeedInput {
   strategy: 'mobile' | 'desktop';
   category?: ('performance' | 'accessibility' | 'best-practices' | 'seo' | 'pwa')[];
   locale: string;
+  runs?: number;
 }
 
 export interface CruxSummaryInput {

@@ -1007,6 +1007,28 @@ export class PageSpeedInsightsServer {
     report += `**Strategy:** ${input.strategy}\n`;
     report += `**Analysis Time:** ${data.analysisUTCTimestamp}\n\n`;
 
+    const mr = (data as any).multirun;
+    if (mr) {
+      report += `## Measurement Confidence (${mr.stats.analyses}/${mr.stats.requested} distinct analyses)\n\n`;
+      report += `> Median of ${mr.stats.analyses} genuinely distinct analyses${mr.stats.cachedReplays > 0 ? `, ${mr.stats.cachedReplays} cached replay(s) dropped` : ""}. A single Lighthouse run is noise — treat differences inside the spreads below as no change.\n\n`;
+      const perf = mr.scores["performance"];
+      if (perf) {
+        report += `- **Performance Score**: ${Math.round(perf.median)}/100 (min ${Math.round(perf.min)}, max ${Math.round(perf.max)})\n`;
+      }
+      report += `\n`;
+    }
+
+    if (data.loadingExperience?.metrics) {
+      report += `## Field Data (real Chrome users, 28 days)\n\n`;
+      for (const [k, v] of Object.entries(data.loadingExperience.metrics)) {
+        const m = v as { category?: string; percentile?: Record<string, number> };
+        if (m.category) {
+          report += `- **${k}**: ${m.category}${m.percentile?.p75 !== undefined ? ` (p75: ${m.percentile.p75})` : ""}\n`;
+        }
+      }
+      report += `\n> Lab (Lighthouse) is a simulation on throttled hardware; field is what real users experienced. They answer different questions — don't merge them.\n\n`;
+    }
+
     if (performance) {
       report += `## Performance Score: ${Math.round(performance.score * 100)}/100\n\n`;
     }
