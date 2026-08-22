@@ -43,7 +43,7 @@ Most PageSpeed MCP servers wrap **one** tool: "run PSI on a URL." This server sh
 - **Practical extras**: caching for repeat runs and smart recommendations tuned for AI agents to act on
 - **Battle-tested**: published on npm, listed in the [Official MCP Registry](https://registry.modelcontextprotocol.io/) and [Glama](https://glama.ai/mcp/servers), CI-tested with Vitest
 
-> **🎬 [View Interactive Demo →](https://ruslanlap.github.io/pagespeed-insights-mcp/demo/)** — See all 19 tools in action with animated examples
+> **🎬 [View Interactive Demo →](https://ruslanlap.github.io/pagespeed-insights-mcp/demo/)** — See the tools in action with animated examples
 > Fallback URL: [https://ruslanlap.github.io/pagespeed-insights-mcp/demo.html](https://ruslanlap.github.io/pagespeed-insights-mcp/demo.html)
 
 ## 📖 Table of Contents
@@ -107,7 +107,7 @@ Most PageSpeed MCP servers wrap **one** tool: "run PSI on a URL." This server sh
 
 ---
 
-## ⚙️ Client Configuration Examples
+## ⚙️ Client Configuration
 
 ### Claude Desktop
 
@@ -591,6 +591,7 @@ Run a full audit including accessibility, SEO, and best practices for https://ex
 | `crux_summary` | Real-world Core Web Vitals from Chrome UX Report (field data) |
 | `get_origin_crux` | Domain-level (origin) Chrome UX Report field data across all pages |
 | `compare_pages` | Side-by-side performance comparison between two URLs |
+| `compare_baseline` | Compare current run against a stored baseline to track regressions over time |
 
 ### Advanced Diagnostics
 
