@@ -52,8 +52,8 @@ Most PageSpeed MCP servers wrap **one** tool: "run PSI on a URL." This server sh
 - [⚡ Quick Start (Copy & Paste)](#-quick-start-copy--paste)
 - [🔥 What Makes It Different](#-what-makes-it-different)
 - [⚙️ Client Configuration](#-client-configuration)
-- [📚 Documentation](#-documentation)
-- [📝 Release Notes](#-release-notes)
+- [📊 Example Output](#-example-output)
+[📝 Release Notes](#-release-notes)
 - [🎯 Why You Need This](#-why-you-need-this)
 - [✨ Features](#-features)
 - [🚀 Quick Installation](#-quick-installation)
@@ -138,6 +138,44 @@ env = { GOOGLE_API_KEY = "${GOOGLE_API_KEY}", NODE_ENV = "development" }
 Verification inside Grok session:
 - `/mcps` (or Ctrl+L → MCP tab) → ensure pagespeed-insights shows "running"
 - Use tools: `pagespeed-insights__analyze_page`, `pagespeed-insights__get_crux_data` etc. (namespaced)
+
+## 📊 Example Output
+
+Real `analyze_page_speed` result for **example.com** (mobile):
+
+| Category | Score | Status |
+|---|---|---|
+| **Performance** | **67/100** | 🟡 Needs Improvement |
+| **Accessibility** | **92/100** | 🟢 Good |
+| **Best Practices** | **96/100** | 🟢 Excellent |
+| **SEO** | **100/100** | 🟢 Perfect |
+
+**Core Web Vitals & key metrics:**
+
+| Metric | Value | Rating |
+|---|---|---|
+| First Contentful Paint | 1.2 s | 🟢 Excellent |
+| Largest Contentful Paint | 2.4 s | 🟡 Needs Improvement |
+| Speed Index | 4.8 s | 🟡 Needs Improvement |
+| Total Blocking Time | 60 ms | 🟢 Good |
+| Cumulative Layout Shift | 0.00 | 🟢 Perfect |
+
+<details>
+<summary>Top audit findings from this run</summary>
+
+| Audit | Score | Finding |
+|---|---|---|
+| Label Content Name Mismatch | 🔴 0/1 | 2 errors with accessible names |
+| Unsized Images | 🟡 0.5/1 | 1 image without explicit dimensions |
+| Color Contrast | 🟢 1/1 | Sufficient contrast |
+| Meta Viewport | 🟢 1/1 | Mobile optimized |
+| Document Title | 🟢 1/1 | Title present |
+| Meta Description | 🟢 1/1 | Description present |
+| Crawlability | 🟢 1/1 | Available for indexing |
+
+</details>
+
+> Results vary between runs — Lighthouse lab data is noisy. Run with `runs: 3-5` for medians.
 
 ## 📚 Documentation
 
