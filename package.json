@@ -48,7 +48,10 @@
     "cls",
     "ttfb"
   ],
-  "author": "PageSpeed Insights MCP Contributors",
+  "author": {
+    "name": "ruslanlap",
+    "url": "https://github.com/ruslanlap"
+  },
   "license": "Apache-2.0",
   "repository": {
     "type": "git",
