@@ -1,5 +1,25 @@
 # PageSpeed Insights MCP Server
 
+**19-tool MCP server** for Google PageSpeed Insights & Chrome UX Report APIs. Analyze, compare, and optimize web performance directly through Claude, Cursor, or any MCP-compatible AI client.
+
+## ⚡ Quick Start (Copy & Paste)
+
+```json
+{
+  "mcpServers": {
+    "pagespeed-insights": {
+      "command": "npx",
+      "args": ["-y", "pagespeed-insights-mcp"],
+      "env": { "GOOGLE_API_KEY": "your-google-api-key" }
+    }
+  }
+}
+```
+
+Get a free API key at [Google Cloud Console](https://developers.google.com/speed/docs/insights/v5/get-started) → paste into Claude Desktop's `claude_desktop_config.json` → restart. Done. ([Codex/OpenAI config](#codex--openai), [Docker](#option-3-docker))
+
+[![npm version](https://img.shields.io/npm/v/pagespeed-insights-mcp.svg)](https://www.npmjs.com/package/pagespeed-insights-mcp)
+[![npm downloads](https://img.shields.io/npm/dm/pagespeed-insights-mcp.svg)](https://www.npmjs.com/package/pagespeed-insights-mcp)
 [![MCP Toplist](https://mcptoplist.com/badge/io.github.ruslanlap%2Fpagespeed-insights-mcp.svg)](https://mcptoplist.com/server/io.github.ruslanlap%2Fpagespeed-insights-mcp)
 
 <p align="center">
@@ -7,17 +27,23 @@
   <img src="https://raw.githubusercontent.com/ruslanlap/pagespeed-insights-mcp/master/assets/2.png" alt="PageSpeed MCP terminal demo" width="48%" />
 </p>
 
-[![npm version](https://img.shields.io/npm/v/pagespeed-insights-mcp.svg)](https://www.npmjs.com/package/pagespeed-insights-mcp)
-[![npm downloads](https://img.shields.io/npm/dm/pagespeed-insights-mcp.svg)](https://www.npmjs.com/package/pagespeed-insights-mcp)
 [![GitHub Package Version](https://img.shields.io/github/package-json/v/ruslanlap/pagespeed-insights-mcp?label=github%20package)](https://github.com/ruslanlap/pagespeed-insights-mcp/pkgs/npm/pagespeed-insights-mcp)
 [![CI](https://github.com/ruslanlap/pagespeed-insights-mcp/actions/workflows/ci.yml/badge.svg)](https://github.com/ruslanlap/pagespeed-insights-mcp/actions/workflows/ci.yml)
 [![Documentation](https://img.shields.io/badge/docs-online-blue.svg)](https://ruslanlap.github.io/pagespeed-insights-mcp/)
 [![Live Demo](https://img.shields.io/badge/demo-live-blueviolet.svg)](https://ruslanlap.github.io/pagespeed-insights-mcp/demo/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-**18-tool MCP server** for Google PageSpeed Insights & Chrome UX Report APIs. Analyze, compare, and optimize web performance directly through Claude, Cursor, or any MCP-compatible AI client.
+## 🔥 What Makes It Different
 
-> **🎬 [View Interactive Demo →](https://ruslanlap.github.io/pagespeed-insights-mcp/demo/)** — See all 18 tools in action with animated examples
+Most PageSpeed MCP servers wrap **one** tool: "run PSI on a URL." This server ships **19 tools** covering the full performance workflow — not just a score, but an action plan:
+
+- **Full toolkit**: page analysis, CrUX real-user data (URL + origin), Lighthouse audits, multi-page & batch comparison, baselines, and regression tracking
+- **Deep diagnostics**: element-level, network, JavaScript, image optimization, render-blocking, and third-party impact analysis
+- **Actionable output**: a recommendations engine that turns raw Lighthouse data into prioritized fixes, plus visual analysis of screenshots
+- **Practical extras**: caching for repeat runs and smart recommendations tuned for AI agents to act on
+- **Battle-tested**: published on npm, listed in the [Official MCP Registry](https://registry.modelcontextprotocol.io/) and [Glama](https://glama.ai/mcp/servers), CI-tested with Vitest
+
+> **🎬 [View Interactive Demo →](https://ruslanlap.github.io/pagespeed-insights-mcp/demo/)** — See all 19 tools in action with animated examples
 > Fallback URL: [https://ruslanlap.github.io/pagespeed-insights-mcp/demo.html](https://ruslanlap.github.io/pagespeed-insights-mcp/demo.html)
 
 ## 📖 Table of Contents
