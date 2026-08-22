@@ -21,6 +21,7 @@ Get a free API key at [Google Cloud Console](https://developers.google.com/speed
 [![npm version](https://img.shields.io/npm/v/pagespeed-insights-mcp.svg)](https://www.npmjs.com/package/pagespeed-insights-mcp)
 [![npm downloads](https://img.shields.io/npm/dm/pagespeed-insights-mcp.svg)](https://www.npmjs.com/package/pagespeed-insights-mcp)
 [![MCP Toplist](https://mcptoplist.com/badge/io.github.ruslanlap%2Fpagespeed-insights-mcp.svg)](https://mcptoplist.com/server/io.github.ruslanlap%2Fpagespeed-insights-mcp)
+[![Glama MCP](https://glama.ai/mcp/servers/ruslanlap/pagespeed-insights-mcp/badge)](https://glama.ai/mcp/servers/ruslanlap/pagespeed-insights-mcp)
 
 <p align="center">
   <img src="https://raw.githubusercontent.com/ruslanlap/pagespeed-insights-mcp/master/assets/1.png" alt="PageSpeed MCP chat demo" width="48%" />
