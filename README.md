@@ -191,7 +191,13 @@ We have comprehensive documentation available online.
 
 ## 📝 Release Notes
 
-Current release: **v1.5.1**.
+Current release: **v1.7.0**.
+
+Recent highlights:
+
+- **v1.7.0** — baseline comparison (`compare_baseline`), progress keepalive, weighted findings, `strategy: both`
+- **v1.6.0** — median-of-N analysis with replay dedup and lab-vs-field clarity
+- **v1.5.x** — registry validation fixes, Dependabot guard hardening
 
 > The badges at the top of this README update **automatically** on every release (npm version, GitHub package version, downloads). No manual edits needed.
 
