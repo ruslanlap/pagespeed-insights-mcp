@@ -171,7 +171,8 @@ export class PageSpeedClient {
   }
 
   // Shared CrUX POST with retry — ponytail: one helper for both CrUX methods,
-  // add per-method knobs only if they ever diverge.
+  // add per-method knobs only if they ever diverge. Limiter acquired HERE only;
+  // callers must not wrap in this.limiter (nested acquisition deadlocks at limit 1).
   private async cruxPost(body: Record<string, unknown>, correlationId: string, label: string): Promise<any> {
     const logger = createRequestLogger(correlationId, label);
     return this.limiter(async () => {
@@ -194,7 +195,7 @@ export class PageSpeedClient {
               if (response.status >= 400 && response.status < 500) error.name = "ClientError";
               throw error;
             }
-            return response.json();
+            return await response.json();
           } catch (error) {
             clearTimeout(timeoutId);
             const msg = error instanceof Error ? error.message : "Unknown error";
@@ -211,50 +212,49 @@ export class PageSpeedClient {
     });
   }
 
+
   async getCruxData(input: CruxSummaryInput, correlationId: string): Promise<any> {
-    const logger = createRequestLogger("crux", "crux-summary");
+    const logger = createRequestLogger(correlationId, "crux-summary");
+    const cacheKey = createCruxCacheKey(input.url, input.formFactor);
 
-    return this.limiter(async () => {
-      const cacheKey = createCruxCacheKey(input.url, input.formFactor);
+    const cached = cache.get(cacheKey);
+    if (cached) {
+      logger.debug("Cache hit for CrUX request");
+      return cached;
+    }
 
-      const cached = cache.get(cacheKey);
-      if (cached) {
-        logger.debug("Cache hit for crux-summary");
-        return cached;
-      }
+    logger.info({ url: input.url }, "Fetching CrUX data");
 
-      logger.info({url: input.url}, "Fetching crux-summary");
+    const requestBody = {
+      url: input.url,
+      ...(input.formFactor && { formFactor: input.formFactor }),
+    };
+    const data = await this.cruxPost(requestBody, correlationId, "crux-summary");
+    cache.set(cacheKey, data, this.cacheTTL);
 
-      const requestBody = {
-        url: input.url,
-        ...(input.formFactor && { formFactor: input.formFactor }),
-      };
-      const data = await this.cruxPost(requestBody, "crux", "crux-summary");
-      cache.set(cacheKey, data, this.cacheTTL);
-      logger.info({url: input.url}, "CrUX request successful");
-      return data;
-    });
+    logger.info({ url: input.url }, "CrUX request successful");
+    return data;
   }
 
   async getOriginCruxData(input: OriginCruxInput, correlationId: string): Promise<any> {
-    const logger = createRequestLogger("crux", "origin-crux");
+    const logger = createRequestLogger(correlationId, "origin-crux");
+    const cacheKey = createCruxCacheKey(input.origin, input.formFactor || "ALL");
 
-    return this.limiter(async () => {
-      const cacheKey = createCruxCacheKey(input.origin, input.formFactor || "ALL");
+    const cached = cache.get(cacheKey);
+    if (cached) {
+      logger.debug("Cache hit for origin CrUX request");
+      return cached;
+    }
 
-      const cached = cache.get(cacheKey);
-      if (cached) {
-        logger.debug("Cache hit for origin-crux");
-        return cached;
-      }
+    logger.info({ origin: input.origin }, "Fetching origin CrUX data");
 
-      logger.info({origin: input.origin}, "Fetching origin-crux");
+    const requestBody: Record<string, unknown> = { origin: input.origin };
+    if (input.formFactor) requestBody.formFactor = input.formFactor;
 
-      const requestBody = { origin: input.origin, ...(input.formFactor && { formFactor: input.formFactor }) } as Record<string, unknown>;
-      const data = await this.cruxPost(requestBody, "crux", "origin-crux");
-      cache.set(cacheKey, data, this.cacheTTL);
-      logger.info({origin: input.origin}, "Origin CrUX request successful");
-      return data;
-    });
+    const data = await this.cruxPost(requestBody, correlationId, "origin-crux");
+    cache.set(cacheKey, data, this.cacheTTL);
+
+    logger.info({ origin: input.origin }, "Origin CrUX request successful");
+    return data;
   }
 }
