@@ -170,113 +170,91 @@ export class PageSpeedClient {
     });
   }
 
+  // Shared CrUX POST with retry — ponytail: one helper for both CrUX methods,
+  // add per-method knobs only if they ever diverge.
+  private async cruxPost(body: Record<string, unknown>, correlationId: string, label: string): Promise<any> {
+    const logger = createRequestLogger(correlationId, label);
+    return this.limiter(async () => {
+      const url = `https://chromeuxreport.googleapis.com/v1/records:queryRecord?key=${this.apiKey}`;
+      return pRetry(
+        async () => {
+          const controller = new AbortController();
+          const timeoutId = setTimeout(() => controller.abort(), this.timeout);
+          try {
+            const response = await fetch(url, {
+              method: "POST",
+              headers: { "Content-Type": "application/json", "User-Agent": USER_AGENT },
+              body: JSON.stringify(body),
+              signal: controller.signal,
+            });
+            clearTimeout(timeoutId);
+            if (!response.ok) {
+              const errorText = await response.text();
+              const error = new Error(`CrUX API error: ${response.status} ${response.statusText} - ${errorText}`);
+              if (response.status >= 400 && response.status < 500) error.name = "ClientError";
+              throw error;
+            }
+            return response.json();
+          } catch (error) {
+            clearTimeout(timeoutId);
+            const msg = error instanceof Error ? error.message : "Unknown error";
+            logger.warn({ error: this.redact(msg) }, `${label} failed`);
+            throw error;
+          }
+        },
+        {
+          retries: this.retryAttempts,
+          onFailedAttempt: (error) => { if (error.name === "ClientError") throw error; },
+          factor: 2, minTimeout: 1000, maxTimeout: 10000,
+        }
+      );
+    });
+  }
+
   async getCruxData(input: CruxSummaryInput, correlationId: string): Promise<any> {
-    const logger = createRequestLogger(correlationId, "crux-summary");
-    
+    const logger = createRequestLogger("crux", "crux-summary");
+
     return this.limiter(async () => {
       const cacheKey = createCruxCacheKey(input.url, input.formFactor);
-      
+
       const cached = cache.get(cacheKey);
       if (cached) {
-        logger.debug("Cache hit for CrUX request");
+        logger.debug("Cache hit for crux-summary");
         return cached;
       }
-      
-      logger.info({ url: input.url }, "Fetching CrUX data");
-      
+
+      logger.info({url: input.url}, "Fetching crux-summary");
+
       const requestBody = {
         url: input.url,
         ...(input.formFactor && { formFactor: input.formFactor }),
       };
-      
-      const url = `https://chromeuxreport.googleapis.com/v1/records:queryRecord?key=${this.apiKey}`;
-      
-      const controller = new AbortController();
-      const timeoutId = setTimeout(() => controller.abort(), this.timeout);
-      
-      try {
-        const response = await fetch(url, {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            "User-Agent": USER_AGENT,
-          },
-          body: JSON.stringify(requestBody),
-          signal: controller.signal,
-        });
-        
-        clearTimeout(timeoutId);
-        
-        if (!response.ok) {
-          const errorText = await response.text();
-          throw new Error(`CrUX API error: ${response.status} ${response.statusText} - ${errorText}`);
-        }
-        
-        const data = await response.json();
-        cache.set(cacheKey, data, this.cacheTTL);
-        
-        logger.info({ url: input.url }, "CrUX request successful");
-        return data;
-      } catch (error) {
-        clearTimeout(timeoutId);
-        const errorMessage = error instanceof Error ? error.message : "Unknown error";
-        logger.warn({ error: this.redact(errorMessage) }, "CrUX request failed");
-        throw error;
-      }
+      const data = await this.cruxPost(requestBody, "crux", "crux-summary");
+      cache.set(cacheKey, data, this.cacheTTL);
+      logger.info({url: input.url}, "CrUX request successful");
+      return data;
     });
   }
 
   async getOriginCruxData(input: OriginCruxInput, correlationId: string): Promise<any> {
-    const logger = createRequestLogger(correlationId, "origin-crux");
+    const logger = createRequestLogger("crux", "origin-crux");
 
     return this.limiter(async () => {
       const cacheKey = createCruxCacheKey(input.origin, input.formFactor || "ALL");
 
       const cached = cache.get(cacheKey);
       if (cached) {
-        logger.debug("Cache hit for origin CrUX request");
+        logger.debug("Cache hit for origin-crux");
         return cached;
       }
 
-      logger.info({ origin: input.origin }, "Fetching origin CrUX data");
+      logger.info({origin: input.origin}, "Fetching origin-crux");
 
-      const requestBody: Record<string, unknown> = { origin: input.origin };
-      if (input.formFactor) requestBody.formFactor = input.formFactor;
-
-      const url = `https://chromeuxreport.googleapis.com/v1/records:queryRecord?key=${this.apiKey}`;
-
-      const controller = new AbortController();
-      const timeoutId = setTimeout(() => controller.abort(), this.timeout);
-
-      try {
-        const response = await fetch(url, {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            "User-Agent": USER_AGENT,
-          },
-          body: JSON.stringify(requestBody),
-          signal: controller.signal,
-        });
-
-        clearTimeout(timeoutId);
-
-        if (!response.ok) {
-          const errorText = await response.text();
-          throw new Error(`CrUX API error: ${response.status} ${response.statusText} - ${errorText}`);
-        }
-
-        const data = await response.json();
-        cache.set(cacheKey, data, this.cacheTTL);
-
-        logger.info({ origin: input.origin }, "Origin CrUX request successful");
-        return data;
-      } catch (error) {
-        clearTimeout(timeoutId);
-        const errorMessage = error instanceof Error ? error.message : "Unknown error";
-        logger.warn({ error: this.redact(errorMessage) }, "Origin CrUX request failed");
-        throw error;
-      }
+      const requestBody = { origin: input.origin, ...(input.formFactor && { formFactor: input.formFactor }) } as Record<string, unknown>;
+      const data = await this.cruxPost(requestBody, "crux", "origin-crux");
+      cache.set(cacheKey, data, this.cacheTTL);
+      logger.info({origin: input.origin}, "Origin CrUX request successful");
+      return data;
     });
   }
 }
