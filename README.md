@@ -142,41 +142,35 @@ Verification inside Grok session:
 
 ## 📊 Example Output
 
-Real `analyze_page_speed` result for **example.com** (mobile):
+Real `analyze_page_speed` result for **github.com** (mobile, single run):
+
+**Lighthouse lab scores:**
 
 | Category | Score | Status |
 |---|---|---|
-| **Performance** | **67/100** | 🟡 Needs Improvement |
-| **Accessibility** | **92/100** | 🟢 Good |
-| **Best Practices** | **96/100** | 🟢 Excellent |
-| **SEO** | **100/100** | 🟢 Perfect |
+| **Performance (mobile)** | **54/100** | 🔴 Poor |
+| **Performance (desktop)** | **52/100** | 🔴 Poor |
 
-**Core Web Vitals & key metrics:**
+**Core metrics (mobile):**
 
 | Metric | Value | Rating |
 |---|---|---|
-| First Contentful Paint | 1.2 s | 🟢 Excellent |
-| Largest Contentful Paint | 2.4 s | 🟡 Needs Improvement |
-| Speed Index | 4.8 s | 🟡 Needs Improvement |
-| Total Blocking Time | 60 ms | 🟢 Good |
-| Cumulative Layout Shift | 0.00 | 🟢 Perfect |
+| First Contentful Paint | 11.9 s | 🔴 Poor |
+| Largest Contentful Paint | 13.4 s | 🔴 Poor |
+| Total Blocking Time | 30 ms | 🟢 Excellent |
+| Cumulative Layout Shift | 0.07 | 🟢 Good |
+| Speed Index | 11.9 s | 🔴 Poor |
 
-<details>
-<summary>Top audit findings from this run</summary>
+**CrUX field data — real users, github.com origin (phone):**
 
-| Audit | Score | Finding |
-|---|---|---|
-| Label Content Name Mismatch | 🔴 0/1 | 2 errors with accessible names |
-| Unsized Images | 🟡 0.5/1 | 1 image without explicit dimensions |
-| Color Contrast | 🟢 1/1 | Sufficient contrast |
-| Meta Viewport | 🟢 1/1 | Mobile optimized |
-| Document Title | 🟢 1/1 | Title present |
-| Meta Description | 🟢 1/1 | Description present |
-| Crawlability | 🟢 1/1 | Available for indexing |
+| Metric | p75 (real users) |
+|---|---|
+| First Contentful Paint | 1.9 s |
+| Largest Contentful Paint | 2.2 s |
+| Interaction to Next Paint | 243 ms |
+| Cumulative Layout Shift | 0.02 |
 
-</details>
-
-> Results vary between runs — Lighthouse lab data is noisy. Run with `runs: 3-5` for medians.
+> Lab vs field: Lighthouse throttles the connection (hence 54/100 mobile), while CrUX shows how actual GitHub visitors experience it — both views come straight from this server's tools.
 
 ## 📚 Documentation
 
