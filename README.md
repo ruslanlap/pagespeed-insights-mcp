@@ -335,7 +335,7 @@ To use this MCP server, you need a Google API key with the PageSpeed Insights AP
 
 ## ⚙️ Claude Desktop Configuration
 
-Config paths: **macOS** `~/Library/Application Support/Claude/claude_desktop_config.json` · **Windows** `%APPDATA%\Claude\claude_desktop_config.json` · **Linux** `~/.config/claude/claude_desktop_config.json` — see [⚙️ Client Configuration](#%EF%B8%8F-client-configuration) above for the JSON. **Restart Claude Desktop** after editing.
+Config paths: **macOS** `~/Library/Application Support/Claude/claude_desktop_config.json` · **Windows** `%APPDATA%\Claude\claude_desktop_config.json` · **Linux** `~/.config/claude/claude_desktop_config.json` — see [⚙️ Client Configuration](#️-client-configuration) above for the JSON. **Restart Claude Desktop** after editing.
 
 ## 💻 Usage
 
