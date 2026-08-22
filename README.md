@@ -142,7 +142,7 @@ Verification inside Grok session:
 
 ## 📊 Example Output
 
-Real `analyze_page_speed` result for **github.com** (mobile, single run):
+Real `analyze_page_speed` results for **github.com** — two runs: `strategy: "mobile"` (metrics table) and `strategy: "both"` (mobile + desktop category scores). CrUX numbers come from `get_origin_crux`:
 
 **Lighthouse lab scores:**
 
@@ -170,6 +170,8 @@ Real `analyze_page_speed` result for **github.com** (mobile, single run):
 | Interaction to Next Paint | 243 ms |
 | Cumulative Layout Shift | 0.02 |
 
+> Results vary between runs — Lighthouse lab data is noisy (a single run is one sample). Use `runs: 3-5` for medians.
+>
 > Lab vs field: Lighthouse throttles the connection (hence 54/100 mobile), while CrUX shows how actual GitHub visitors experience it — both views come straight from this server's tools.
 
 ## 📚 Documentation
