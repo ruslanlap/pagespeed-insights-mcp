@@ -31,7 +31,7 @@ Get a free API key at [Google Cloud Console](https://developers.google.com/speed
 [![CI](https://github.com/ruslanlap/pagespeed-insights-mcp/actions/workflows/ci.yml/badge.svg)](https://github.com/ruslanlap/pagespeed-insights-mcp/actions/workflows/ci.yml)
 [![Documentation](https://img.shields.io/badge/docs-online-blue.svg)](https://ruslanlap.github.io/pagespeed-insights-mcp/)
 [![Live Demo](https://img.shields.io/badge/demo-live-blueviolet.svg)](https://ruslanlap.github.io/pagespeed-insights-mcp/demo/)
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![License: Apache-2.0](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
 
 ## 🔥 What Makes It Different
 
@@ -49,63 +49,24 @@ Most PageSpeed MCP servers wrap **one** tool: "run PSI on a URL." This server sh
 ## 📖 Table of Contents
 
 - [⚡ Quick Start (Copy & Paste)](#-quick-start-copy--paste)
-  - [Claude Desktop](#claude-desktop)
-  - [Codex / OpenAI](#codex--openai)
+- [🔥 What Makes It Different](#-what-makes-it-different)
+- [⚙️ Client Configuration](#-client-configuration)
 - [📚 Documentation](#-documentation)
 - [📝 Release Notes](#-release-notes)
 - [🎯 Why You Need This](#-why-you-need-this)
 - [✨ Features](#-features)
-  - [Core Features](#core-features)
-  - [Advanced Analysis Tools (New!)](#advanced-analysis-tools-new)
 - [🚀 Quick Installation](#-quick-installation)
-  - [Option 1: Automatic Installation (Recommended)](#option-1-automatic-installation-recommended)
-  - [Option 2: Via npm or GitHub Packages](#option-2-via-npm-or-github-packages)
-    - [From npm (Public Registry)](#from-npm-public-registry)
-    - [From GitHub Packages](#from-github-packages)
-  - [🔧 Configuration](#-configuration)
-  - [📝 MCP Configuration Examples](#-mcp-configuration-examples)
-    - [For Claude Desktop](#for-claude-desktop-with-pino-pretty-logging)
-    - [For Codex](#for-codex-with-pino-pretty-logging)
-  - [Claude Desktop Configuration](#claude-desktop-configuration)
-  - [Google Antigravity](#google-antigravity)
-  - [Option 3: Docker](#option-3-docker)
 - [🔑 Getting Google API Key](#-getting-google-api-key)
 - [⚙️ Claude Desktop Configuration](#-claude-desktop-configuration)
-  - [Automatic Configuration](#automatic-configuration)
-  - [Manual Configuration](#manual-configuration)
-    - [For npm / Global Installation](#for-npm-installation-and-global-installation)
-    - [For GitHub Packages](#for-github-packages-installation)
-    - [For Docker](#for-docker)
 - [💻 Usage](#-usage)
-  - [🔍 Full Page Analysis](#-full-page-analysis)
-  - [📱 Mobile Device Analysis](#-mobile-device-analysis)
-  - [⚡ Quick Performance Overview](#-quick-performance-overview)
-  - [🖥️ Desktop Analysis](#-desktop-analysis)
-  - [🌐 Multi-Category Analysis](#-multi-category-analysis)
-  - [🎯 Smart Performance Recommendations](#-smart-performance-recommendations)
-  - [💾 Cache Management](#-cache-management)
-  - [📸 Visual Analysis](#-visual-analysis)
-  - [🎯 Element-Level Debugging](#-element-level-debugging)
-  - [🌐 Network Waterfall Analysis](#-network-waterfall-analysis)
-  - [⚡ JavaScript Performance](#-javascript-performance)
-  - [🖼️ Image Optimization Opportunities](#-image-optimization-opportunities)
-  - [🚫 Render-Blocking Resources](#-render-blocking-resources)
-  - [🔌 Third-Party Script Impact](#-third-party-script-impact)
-  - [📊 Full Lighthouse Audit](#-full-lighthouse-audit)
-- [🛠️ Available Tools](#available-tools)
-  - [Core Analysis](#core-analysis)
-  - [CrUX & Comparison](#crux--comparison)
-  - [Advanced Diagnostics](#advanced-diagnostics)
-- [📊 Complete Ratings for example.com](#complete-ratings-for-examplecom)
-- [💻 Development](#development)
-- [🔧 Troubleshooting](#troubleshooting)
-- [📋 Requirements](#requirements)
-- [🔒 Security](#security)
-- [🙏 Acknowledgments](#acknowledgments)
-- [📄 License](#license)
-- [💬 Support](#support)
-
----
+- [Available Tools](#available-tools)
+- [Development](#development)
+- [Troubleshooting](#troubleshooting)
+- [Requirements](#requirements)
+- [Security](#security)
+- [Acknowledgments](#acknowledgments)
+- [License](#license)
+- [Support](#support)
 
 ## ⚙️ Client Configuration
 
@@ -337,41 +298,7 @@ env = { GOOGLE_API_KEY = "your-google-api-key-here" }
 
 > **Note:** These examples include `pino-pretty` for better log formatting. For production use without pretty logs, see the [Logging section](#logging--pino-pretty-in-mcp-environments) below.
 
-### Claude Desktop Configuration
-
-To use this MCP server with Claude Desktop, add the following to your Claude Desktop configuration file:
-
-```json
-{
-  "mcpServers": {
-    "pagespeed-insights": {
-      "command": "npx",
-      "args": ["-y", "-p", "pino-pretty", "-p", "pagespeed-insights-mcp", "pagespeed-insights-mcp"],
-      "env": {
-        "GOOGLE_API_KEY": "your-google-api-key-here"
-      }
-    }
-  }
-}
-```
-
 ### Google Antigravity
-
-To use this MCP server with Google Antigravity, add the following configuration to your global settings file (`~/.gemini/config/mcp_config.json`):
-
-```json
-{
-  "mcpServers": {
-    "pagespeed-insights": {
-      "command": "npx",
-      "args": ["-y", "-p", "pino-pretty", "-p", "pagespeed-insights-mcp", "pagespeed-insights-mcp"],
-      "env": {
-        "GOOGLE_API_KEY": "YOUR_GOOGLE_API_KEY"
-      }
-    }
-  }
-}
-```
 
 Example configuration files are available in the [examples](./examples/) directory.
 
@@ -408,78 +335,7 @@ To use this MCP server, you need a Google API key with the PageSpeed Insights AP
 
 ## ⚙️ Claude Desktop Configuration
 
-### Automatic Configuration
-
-If you used the `scripts/install.sh` script, the configuration was created automatically.
-
-### Manual Configuration
-
-Add the configuration to your Claude Desktop file:
-
-**macOS:** `~/Library/Application Support/Claude/claude_desktop_config.json`  
-**Windows:** `%APPDATA%\Claude\claude_desktop_config.json`  
-**Linux:** `~/.config/claude/claude_desktop_config.json`
-
-#### For npm installation and global installation
-
-```json
-{
-  "mcpServers": {
-    "pagespeed-insights": {
-      "command": "npx",
-      "args": ["-y", "-p", "pino-pretty", "-p", "pagespeed-insights-mcp", "pagespeed-insights-mcp"],
-      "env": {
-        "GOOGLE_API_KEY": "your-google-api-key-here"
-      }
-    }
-  }
-}
-```
-
-#### For GitHub Packages installation
-
-```json
-{
-  "mcpServers": {
-    "pagespeed-insights": {
-      "command": "npx",
-      "args": [
-        "-y",
-        "-p",
-        "pino-pretty",
-        "-p",
-        "@ruslanlap/pagespeed-insights-mcp",
-        "pagespeed-insights-mcp"
-      ],
-      "env": {
-        "GOOGLE_API_KEY": "your-google-api-key-here"
-      }
-    }
-  }
-}
-```
-
-#### For Docker:
-
-```json
-{
-  "mcpServers": {
-    "pagespeed-insights": {
-      "command": "docker",
-      "args": [
-        "run",
-        "--rm",
-        "-i",
-        "--env",
-        "GOOGLE_API_KEY=your-google-api-key-here",
-        "pagespeed-insights-mcp"
-      ]
-    }
-  }
-}
-```
-
-**Restart Claude Desktop** after configuration!
+Config paths: **macOS** `~/Library/Application Support/Claude/claude_desktop_config.json` · **Windows** `%APPDATA%\Claude\claude_desktop_config.json` · **Linux** `~/.config/claude/claude_desktop_config.json` — see [⚙️ Client Configuration](#%EF%B8%8F-client-configuration) above for the JSON. **Restart Claude Desktop** after editing.
 
 ## 💻 Usage
 
@@ -855,114 +711,6 @@ Analyze performance for multiple URLs with progress tracking.
 
 answer example from Claude Desktop with pagespeed-insights-mcp 🔥🔥🔥
 
-## Complete Ratings for example.com
-
-Now I have the full analysis! Here are all the ratings:
-
-### 📊 **Main Lighthouse Scores**
-
-| Category           | Score       | Status               |
-| ------------------ | ----------- | -------------------- |
-| **Performance**    | **67/100**  | 🟡 Needs Improvement |
-| **Accessibility**  | **92/100**  | 🟢 Good              |
-| **Best Practices** | **96/100**  | 🟢 Excellent         |
-| **SEO**            | **100/100** | 🟢 Perfect           |
-
-### ⚡ **Detailed Performance Metrics**
-
-| Metric                       | Value | Score                         |
-| ---------------------------- | ----- | ----------------------------- |
-| **First Contentful Paint**   | 1.2s  | 🟢 Excellent (98/100)         |
-| **Largest Contentful Paint** | 2.4s  | 🟡 Needs Improvement (75/100) |
-| **Speed Index**              | 4.8s  | 🟡 Needs Improvement (67/100) |
-| **Total Blocking Time**      | 60ms  | 🟢 Good (94/100)              |
-| **Cumulative Layout Shift**  | 0     | 🟢 Perfect (100/100)          |
-
-### ♿ **Detailed Accessibility Scores (92/100)**
-
-| Audit                           | Score    | Description                |
-| ------------------------------- | -------- | -------------------------- |
-| **Label Content Name Mismatch** | 🔴 0/1   | 2 errors with aria-label   |
-| **Unsized Images**              | 🟡 0.5/1 | 1 image without dimensions |
-| **Color Contrast**              | 🟢 1/1   | Sufficient contrast        |
-| **Button Names**                | 🟢 1/1   | Accessible button names    |
-| **Link Names**                  | 🟢 1/1   | Accessible link names      |
-| **ARIA Roles**                  | 🟢 1/1   | Correct ARIA roles         |
-| **HTML Lang**                   | 🟢 1/1   | Valid lang attribute       |
-| **Meta Viewport**               | 🟢 1/1   | Proper viewport            |
-| **Image Alt Text**              | 🟢 1/1   | Correct alt attributes     |
-| **List Items**                  | 🟢 1/1   | Proper list structure      |
-
-### 🏆 **Detailed Best Practices Scores (96/100)**
-
-| Audit                        | Score  | Status                   |
-| ---------------------------- | ------ | ------------------------ |
-| **Uses HTTPS**               | 🟢 ✓   | HTTPS is used            |
-| **HTTP Status Code**         | 🟢 1/1 | Correct 200 status       |
-| **No Console Errors**        | 🟢 1/1 | No console errors        |
-| **Valid Source Maps**        | 🟢 1/1 | Valid source maps        |
-| **No Notification Requests** | 🟢 1/1 | No notification requests |
-| **Charset Declaration**      | 🟢 1/1 | Correct encoding         |
-| **No Inspector Issues**      | 🟢 1/1 | No DevTools issues       |
-
-### 🔍 **Detailed SEO Scores (100/100)**
-
-| Audit                | Score  | Status                      |
-| -------------------- | ------ | --------------------------- |
-| **Meta Viewport**    | 🟢 1/1 | Mobile optimized            |
-| **Document Title**   | 🟢 1/1 | Title present               |
-| **Meta Description** | 🟢 1/1 | Description present         |
-| **HTTP Status Code** | 🟢 1/1 | Successful status           |
-| **Link Text**        | 🟢 1/1 | Descriptive link texts      |
-| **Crawlability**     | 🟢 1/1 | Available for indexing      |
-| **HTML Lang**        | 🟢 1/1 | Valid document language     |
-| **Hreflang**         | 🟢 1/1 | Correct hreflang attributes |
-
-### 🔧 **Main Performance Issues**
-
-| Issue                         | Affects       | Potential Savings |
-| ----------------------------- | ------------- | ----------------- |
-| **Improperly sized images**   | LCP, FCP      | 1,069 KB, 170ms   |
-| **Inefficient caching**       | Overall speed | 1,445 KB          |
-| **Forced Reflows**            | Smoothness    | 46.8ms            |
-| **JavaScript execution time** | TBT           | 338ms             |
-
-### 📈 **Network Metrics**
-
-| Metric                   | Value                  |
-| ------------------------ | ---------------------- |
-| **Server Response Time** | 120ms (🟢 Good)        |
-| **Network RTT**          | Minimal                |
-| **Main Thread Work**     | 0.9s                   |
-| **DOM Size**             | 453 elements (optimal) |
-
-### 💡 **Priority Recommendations**
-
-1. **🔴 High Priority:**
-   - Optimize image sizes (save 1+ MB)
-   - Fix aria-label mismatches for accessibility
-2. **🟡 Medium Priority:**
-   - Improve caching policy (TTL >600s)
-   - Add width/height attributes for images
-3. **🟢 Low Priority:**
-   - Optimize forced reflows in JavaScript
-
-### 🎯 **Summary**
-
-**Overall Rating: Good with potential for improvement**
-
-- **SEO**: Perfect (100/100) 🏆
-- **Best Practices**: Excellent (96/100) 🏆
-- **Accessibility**: Good (92/100) ✅
-- **Performance**: Needs attention (67/100) ⚠️
-
-The site has excellent SEO optimization and follows best practices, but needs image optimization to improve performance.
-
-**Parameters:**
-
-- `url` (required): URL of the page to analyze
-- `strategy`: "mobile" or "desktop" (default: "mobile")
-
 ## Development
 
 For better log formatting during development, it is recommended to install `pino-pretty` globally:
@@ -1055,7 +803,7 @@ A very special thank you to [@system-conf](https://github.com/system-conf) for t
 
 ## License
 
-MIT
+Apache-2.0 — see [LICENSE](./LICENSE). Patents granted by contributors under the Apache License 2.0.
 
 ## Support
 
