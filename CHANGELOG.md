@@ -1,3 +1,10 @@
+## [1.7.1](https://github.com/ruslanlap/pagespeed-insights-mcp/compare/v1.7.0...v1.7.1) (2026-08-24)
+
+
+### Bug Fixes
+
+* **tools:** complete MCP annotations + usage-guideline descriptions for all 19 tools ([#91](https://github.com/ruslanlap/pagespeed-insights-mcp/issues/91)) ([7afc2f8](https://github.com/ruslanlap/pagespeed-insights-mcp/commit/7afc2f840c20c3327a5bb3a786a1db2149565079))
+
 # [1.7.0](https://github.com/ruslanlap/pagespeed-insights-mcp/compare/v1.6.0...v1.7.0) (2026-08-21)
 
 
