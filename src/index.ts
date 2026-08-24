@@ -251,7 +251,7 @@ export class PageSpeedInsightsServer {
               properties: {},
               additionalProperties: false
             },
-            annotations: { readOnlyHint: false, destructiveHint: false, idempotentHint: true, openWorldHint: true }
+            annotations: { readOnlyHint: false, destructiveHint: false, idempotentHint: true, openWorldHint: false }  // in-memory cache only — no network/filesystem
           },
           {
             name: "get_recommendations",
