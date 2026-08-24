@@ -66,7 +66,7 @@ export class PageSpeedInsightsServer {
         tools: [
           {
             name: "analyze_page_speed",
-            description: "Run comprehensive Google PageSpeed Insights analysis with Lighthouse metrics",
+            description: "Run a full Lighthouse analysis of one URL via Google PageSpeed Insights: category scores, key metrics, and detailed audit results. The most complete single-page tool; use get_performance_summary for a quick health check or get_recommendations when you want a prioritized fix list instead of raw audits. Results are cached \u2014 call clear_cache to force a fresh run. With runs>1 returns the median of distinct runs and drops cached replays.",
             inputSchema: {
               type: "object",
               properties: {
@@ -75,7 +75,7 @@ export class PageSpeedInsightsServer {
                   type: "string", 
                   enum: ["mobile", "desktop", "both"], 
                   default: "mobile",
-                  description: "Analysis strategy" 
+                  description: "Device to simulate: mobile (default), desktop, or both" 
                 },
                 category: {
                   type: "array",
@@ -94,10 +94,11 @@ export class PageSpeedInsightsServer {
               },
               required: ["url"]
             },
-          },
+            annotations: { readOnlyHint: true, openWorldHint: true }
+            },
           {
             name: "get_performance_summary",
-            description: "Get simplified performance metrics and opportunities for a webpage",
+            description: "Quick performance health check for one URL: key Lighthouse metrics (FCP, LCP, TBT, CLS, Speed Index) and top opportunities, without full audit detail. Use analyze_page_speed when you need all categories and raw audits, or get_recommendations for a prioritized fix list.",
             inputSchema: {
               type: "object",
               properties: {
@@ -106,15 +107,16 @@ export class PageSpeedInsightsServer {
                   type: "string", 
                   enum: ["mobile", "desktop", "both"], 
                   default: "mobile",
-                  description: "Analysis strategy" 
+                  description: "Device to simulate: mobile (default), desktop, or both" 
                 }
               },
               required: ["url"]
             },
-          },
+            annotations: { readOnlyHint: true, openWorldHint: true }
+            },
           {
             name: "crux_summary",
-            description: "Get Chrome User Experience Report real-world field data for Core Web Vitals",
+            description: "Return real-user Core Web Vitals (LCP, INP, CLS, FCP, TTFB) for one URL from the Chrome UX Report \u2014 field data from actual Chrome visits, not a lab run. Use get_origin_crux for domain-level aggregation or analyze_page_speed for Lighthouse lab measurements. URLs with insufficient real-user traffic return no data.",
             inputSchema: {
               type: "object",
               properties: {
@@ -127,10 +129,11 @@ export class PageSpeedInsightsServer {
               },
               required: ["url"]
             },
-          },
+            annotations: { readOnlyHint: true, openWorldHint: true }
+            },
           {
             name: "compare_pages",
-            description: "Compare performance metrics between two URLs side-by-side",
+            description: "Run Lighthouse on two URLs and compare them side by side with metric-level diffs (scores, FCP, LCP, TBT, CLS). Use compare_baseline instead to compare the SAME URL before vs after a change.",
             inputSchema: {
               type: "object",
               properties: {
@@ -140,7 +143,7 @@ export class PageSpeedInsightsServer {
                   type: "string", 
                   enum: ["mobile", "desktop", "both"], 
                   default: "mobile",
-                  description: "Analysis strategy" 
+                  description: "Device to simulate: mobile (default), desktop, or both" 
                 },
                 categories: {
                   type: "array",
@@ -154,10 +157,11 @@ export class PageSpeedInsightsServer {
               },
               required: ["urlA", "urlB"]
             },
-          },
+            annotations: { readOnlyHint: true, openWorldHint: true }
+            },
           {
             name: "full_report",
-            description: "Unified report combining Lighthouse lab data with CrUX field data",
+            description: "Combine Lighthouse lab data with CrUX real-user field data for one URL in a single report \u2014 shows both how the page tests in the lab and how real users experience it. Use analyze_page_speed for lab-only results or crux_summary for field-only.",
             inputSchema: {
               type: "object",
               properties: {
@@ -166,7 +170,7 @@ export class PageSpeedInsightsServer {
                   type: "string", 
                   enum: ["mobile", "desktop", "both"], 
                   default: "mobile",
-                  description: "Analysis strategy" 
+                  description: "Device to simulate: mobile (default), desktop, or both" 
                 },
                 category: {
                   type: "array",
@@ -185,10 +189,11 @@ export class PageSpeedInsightsServer {
               },
               required: ["url"]
             },
-          },
+            annotations: { readOnlyHint: true, openWorldHint: true }
+            },
           {
             name: "batch_analyze",
-            description: "Analyze performance for multiple URLs with progress tracking",
+            description: "Analyze up to 10 URLs in parallel and return ranked results with progress notifications. For a single URL use analyze_page_speed; to diff exactly two URLs use compare_pages.",
             inputSchema: {
               type: "object",
               properties: {
@@ -203,7 +208,7 @@ export class PageSpeedInsightsServer {
                   type: "string", 
                   enum: ["mobile", "desktop", "both"], 
                   default: "mobile",
-                  description: "Analysis strategy" 
+                  description: "Device to simulate: mobile (default), desktop, or both" 
                 },
                 category: {
                   type: "array",
@@ -222,19 +227,21 @@ export class PageSpeedInsightsServer {
               },
               required: ["urls"]
             },
-          },
+            annotations: { readOnlyHint: true, openWorldHint: true }
+            },
           {
             name: "clear_cache",
-            description: "Clear the internal cache to force fresh API requests",
+            description: "Drop all cached PageSpeed results so the next analysis call fetches fresh data from the Google API. Call after changing the page when cached numbers are stale; repeat calls are safe and change nothing else.",
             inputSchema: {
               type: "object",
               properties: {},
               additionalProperties: false
             },
+            annotations: { readOnlyHint: false, destructiveHint: false, idempotentHint: true, openWorldHint: true }
           },
           {
             name: "get_recommendations",
-            description: "Generate smart performance recommendations with priority scoring and actionable fixes",
+            description: "Turn Lighthouse results into a prioritized, actionable fix list with impact scores and estimated savings. Use after analyze_page_speed when you want 'what to fix first' rather than raw audits.",
             inputSchema: {
               type: "object",
               properties: {
@@ -243,7 +250,7 @@ export class PageSpeedInsightsServer {
                   type: "string", 
                   enum: ["mobile", "desktop", "both"], 
                   default: "mobile",
-                  description: "Analysis strategy" 
+                  description: "Device to simulate: mobile (default), desktop, or both" 
                 },
                 category: {
                   type: "array",
@@ -262,10 +269,11 @@ export class PageSpeedInsightsServer {
               },
               required: ["url"]
             },
+            annotations: { readOnlyHint: true, openWorldHint: true }
           },
           {
             name: "get_visual_analysis",
-            description: "Get screenshots and visual timeline showing how the page loads (final screenshot, filmstrip frames, full-page screenshot)",
+            description: "Return screenshots and a filmstrip timeline of the page loading: final screenshot, filmstrip frames at each stage, and a full-page screenshot. Use get_element_analysis to pinpoint the DOM nodes causing slow rendering.",
             inputSchema: {
               type: "object",
               properties: {
@@ -274,15 +282,16 @@ export class PageSpeedInsightsServer {
                   type: "string", 
                   enum: ["mobile", "desktop", "both"], 
                   default: "mobile",
-                  description: "Analysis strategy" 
+                  description: "Device to simulate: mobile (default), desktop, or both" 
                 }
               },
               required: ["url"]
             },
-          },
+            annotations: { readOnlyHint: true, openWorldHint: true }
+            },
           {
             name: "get_element_analysis",
-            description: "Get specific DOM elements causing performance issues (LCP element, CLS elements, lazy-loaded issues)",
+            description: "Identify the specific DOM elements causing performance issues: the LCP element, CLS-causing elements, and lazy-load problems, with selectors and impact. Use get_network_analysis for request-level causes.",
             inputSchema: {
               type: "object",
               properties: {
@@ -291,15 +300,16 @@ export class PageSpeedInsightsServer {
                   type: "string", 
                   enum: ["mobile", "desktop", "both"], 
                   default: "mobile",
-                  description: "Analysis strategy" 
+                  description: "Device to simulate: mobile (default), desktop, or both" 
                 }
               },
               required: ["url"]
             },
-          },
+            annotations: { readOnlyHint: true, openWorldHint: true }
+            },
           {
             name: "get_network_analysis",
-            description: "Get detailed network waterfall showing all requests with timing, size, and priority",
+            description: "Return the full network waterfall for a page: every request with timing, transferred size, priority, and resource type. Use get_render_blocking_details to focus only on blocking resources or get_third_party_impact to group by provider.",
             inputSchema: {
               type: "object",
               properties: {
@@ -308,15 +318,16 @@ export class PageSpeedInsightsServer {
                   type: "string", 
                   enum: ["mobile", "desktop", "both"], 
                   default: "mobile",
-                  description: "Analysis strategy" 
+                  description: "Device to simulate: mobile (default), desktop, or both" 
                 }
               },
               required: ["url"]
             },
-          },
+            annotations: { readOnlyHint: true, openWorldHint: true }
+            },
           {
             name: "get_javascript_analysis",
-            description: "Get JavaScript execution breakdown showing bootup time, unused code, and main thread work",
+            description: "Break down JavaScript cost per script: bootup time, main-thread work, unused bytes, and duplicated modules. Use get_element_analysis for render-blocking DOM causes or get_network_analysis for request timings.",
             inputSchema: {
               type: "object",
               properties: {
@@ -325,15 +336,16 @@ export class PageSpeedInsightsServer {
                   type: "string", 
                   enum: ["mobile", "desktop", "both"], 
                   default: "mobile",
-                  description: "Analysis strategy" 
+                  description: "Device to simulate: mobile (default), desktop, or both" 
                 }
               },
               required: ["url"]
             },
-          },
+            annotations: { readOnlyHint: true, openWorldHint: true }
+            },
           {
             name: "get_image_optimization_details",
-            description: "Get specific images needing optimization with exact savings potential",
+            description: "List images needing optimization \u2014 improperly sized, offscreen, or unencoded \u2014 with estimated byte and load-time savings per image. Use get_visual_analysis to see how the page actually renders.",
             inputSchema: {
               type: "object",
               properties: {
@@ -342,15 +354,16 @@ export class PageSpeedInsightsServer {
                   type: "string", 
                   enum: ["mobile", "desktop", "both"], 
                   default: "mobile",
-                  description: "Analysis strategy" 
+                  description: "Device to simulate: mobile (default), desktop, or both" 
                 }
               },
               required: ["url"]
             },
-          },
+            annotations: { readOnlyHint: true, openWorldHint: true }
+            },
           {
             name: "get_render_blocking_details",
-            description: "Get render-blocking resources and critical request chains showing loading dependencies",
+            description: "List render-blocking CSS/JS and the critical request chain showing which resources delay first render. A focused subset of get_network_analysis (which returns the full waterfall).",
             inputSchema: {
               type: "object",
               properties: {
@@ -359,15 +372,16 @@ export class PageSpeedInsightsServer {
                   type: "string", 
                   enum: ["mobile", "desktop", "both"], 
                   default: "mobile",
-                  description: "Analysis strategy" 
+                  description: "Device to simulate: mobile (default), desktop, or both" 
                 }
               },
               required: ["url"]
             },
-          },
+            annotations: { readOnlyHint: true, openWorldHint: true }
+            },
           {
             name: "get_third_party_impact",
-            description: "Get third-party script impact analysis grouped by entity (Google, Facebook, etc.)",
+            description: "Measure third-party script impact grouped by provider (Google, Facebook, etc.): blocking time, main-thread time, and transfer size per entity. Use get_network_analysis for per-request data instead of per-provider.",
             inputSchema: {
               type: "object",
               properties: {
@@ -376,15 +390,16 @@ export class PageSpeedInsightsServer {
                   type: "string", 
                   enum: ["mobile", "desktop", "both"], 
                   default: "mobile",
-                  description: "Analysis strategy" 
+                  description: "Device to simulate: mobile (default), desktop, or both" 
                 }
               },
               required: ["url"]
             },
-          },
+            annotations: { readOnlyHint: true, openWorldHint: true }
+            },
           {
             name: "get_full_audit",
-            description: "Get comprehensive audit results for all categories (performance, accessibility, SEO, best practices, PWA)",
+            description: "Run Lighthouse across the selected categories and return every failing audit with details and diagnostics. Use analyze_page_speed for category scores and key metrics; this tool is the drill-down into individual failed audits.",
             inputSchema: {
               type: "object",
               properties: {
@@ -393,7 +408,7 @@ export class PageSpeedInsightsServer {
                   type: "string", 
                   enum: ["mobile", "desktop", "both"], 
                   default: "mobile",
-                  description: "Analysis strategy" 
+                  description: "Device to simulate: mobile (default), desktop, or both" 
                 },
                 categories: {
                   type: "array",
@@ -407,10 +422,11 @@ export class PageSpeedInsightsServer {
               },
               required: ["url"]
             },
-          },
+            annotations: { readOnlyHint: true, openWorldHint: true }
+            },
           {
             name: "get_performance_map",
-            description: "Generate a Mermaid flowchart visualizing the performance score, Core Web Vitals status, and top optimization opportunities in a single visual map",
+            description: "Generate a Mermaid flowchart combining the performance score, Core Web Vitals status, and top optimization opportunities into one shareable visual map. Use get_performance_summary for the plain numbers.",
             inputSchema: {
               type: "object",
               properties: {
@@ -419,15 +435,16 @@ export class PageSpeedInsightsServer {
                   type: "string", 
                   enum: ["mobile", "desktop", "both"], 
                   default: "mobile",
-                  description: "Analysis strategy" 
+                  description: "Device to simulate: mobile (default), desktop, or both" 
                 }
               },
               required: ["url"]
             },
-          },
+            annotations: { readOnlyHint: true, openWorldHint: true }
+            },
           {
             name: "get_origin_crux",
-            description: "Get Chrome UX Report field data for an entire origin (domain-level), aggregating real-user Core Web Vitals across all pages — useful when a single URL lacks enough traffic for page-level data",
+            description: "Return Chrome UX Report real-user data aggregated over an entire origin (all pages of a domain): p75 Core Web Vitals by form factor. Use crux_summary for a specific URL; use this when URL-level data is missing due to low traffic.",
             inputSchema: {
               type: "object",
               properties: {
@@ -441,7 +458,8 @@ export class PageSpeedInsightsServer {
               },
               required: ["origin"]
             },
-          },
+            annotations: { readOnlyHint: true, openWorldHint: true }
+            },
           {
             name: "compare_baseline",
             description:
@@ -456,7 +474,7 @@ export class PageSpeedInsightsServer {
               },
               required: ["url"]
             },
-            annotations: { readOnlyHint: true }
+            annotations: { readOnlyHint: false, destructiveHint: false, openWorldHint: true }  // persists baseline to ~/.pagespeed-mcp/baselines.json
           },
         ] satisfies Tool[],
       };
