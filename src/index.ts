@@ -86,16 +86,23 @@ export class PageSpeedInsightsServer {
                   default: ["performance"],
                   description: "Categories to analyze"
                 },
-                locale: { 
-                  type: "string", 
+                locale: {
+                  type: "string",
                   default: "en",
-                  description: "Locale for results" 
+                  description: "Locale for results"
+                },
+                runs: {
+                  type: "integer",
+                  minimum: 1,
+                  maximum: 5,
+                  default: 1,
+                  description: "Distinct analyses to run (default 1). >1 reports the median with min-max spread; cached replays (same fetchTime) are dropped and counted"
                 }
               },
               required: ["url"]
             },
             annotations: { readOnlyHint: true, openWorldHint: true }
-            },
+          },
           {
             name: "get_performance_summary",
             description: "Quick performance health check for one URL: key Lighthouse metrics (FCP, LCP, TBT, CLS, Speed Index) and top opportunities, without full audit detail. Use analyze_page_speed when you need all categories and raw audits, or get_recommendations for a prioritized fix list.",
@@ -133,7 +140,7 @@ export class PageSpeedInsightsServer {
             },
           {
             name: "compare_pages",
-            description: "Run Lighthouse on two URLs and compare them side by side with metric-level diffs (scores, FCP, LCP, TBT, CLS). Use compare_baseline instead to compare the SAME URL before vs after a change.",
+            description: "Run Lighthouse on two URLs and compare them side by side with metric-level diffs (scores, LCP, TBT, CLS). Use compare_baseline instead to compare the SAME URL before vs after a change.",
             inputSchema: {
               type: "object",
               properties: {
@@ -193,7 +200,7 @@ export class PageSpeedInsightsServer {
             },
           {
             name: "batch_analyze",
-            description: "Analyze up to 10 URLs in parallel and return ranked results with progress notifications. For a single URL use analyze_page_speed; to diff exactly two URLs use compare_pages.",
+            description: "Analyze up to 10 URLs sequentially (one per API call, with progress notifications) and return a summary with successful/failed counts. For a single URL use analyze_page_speed; to diff exactly two URLs use compare_pages.",
             inputSchema: {
               type: "object",
               properties: {
@@ -399,7 +406,7 @@ export class PageSpeedInsightsServer {
             },
           {
             name: "get_full_audit",
-            description: "Run Lighthouse across the selected categories and return every failing audit with details and diagnostics. Use analyze_page_speed for category scores and key metrics; this tool is the drill-down into individual failed audits.",
+            description: "Run Lighthouse across the selected categories and return category scores with the top 5 failing audits per non-performance category. Use analyze_page_speed for category scores and key metrics including performance details.",
             inputSchema: {
               type: "object",
               properties: {
@@ -474,7 +481,7 @@ export class PageSpeedInsightsServer {
               },
               required: ["url"]
             },
-            annotations: { readOnlyHint: false, destructiveHint: false, openWorldHint: true }  // persists baseline to ~/.pagespeed-mcp/baselines.json
+            annotations: { readOnlyHint: false, destructiveHint: true, openWorldHint: true }  // save_baseline: true replaces the stored snapshot in ~/.pagespeed-mcp/baselines.json
           },
         ] satisfies Tool[],
       };
