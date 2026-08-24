@@ -1,3 +1,10 @@
+## [1.7.3](https://github.com/ruslanlap/pagespeed-insights-mcp/compare/v1.7.2...v1.7.3) (2026-08-24)
+
+
+### Bug Fixes
+
+* **release:** restore package.json to 1.7.2 and document release integrity gate ([ceff06a](https://github.com/ruslanlap/pagespeed-insights-mcp/commit/ceff06a4d6ba2742e3f8d85343fb64216a2adff1))
+
 ## [1.7.2](https://github.com/ruslanlap/pagespeed-insights-mcp/compare/v1.7.1...v1.7.2) (2026-08-24)
 
 
