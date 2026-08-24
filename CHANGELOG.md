@@ -1,3 +1,10 @@
+## [1.7.2](https://github.com/ruslanlap/pagespeed-insights-mcp/compare/v1.7.1...v1.7.2) (2026-08-24)
+
+
+### Bug Fixes
+
+* **tools:** clear_cache openWorldHint false — in-memory cache only ([#92](https://github.com/ruslanlap/pagespeed-insights-mcp/issues/92)) ([06d468a](https://github.com/ruslanlap/pagespeed-insights-mcp/commit/06d468ad27a849804a906364df69fe39f0dfd66e))
+
 ## [1.7.1](https://github.com/ruslanlap/pagespeed-insights-mcp/compare/v1.7.0...v1.7.1) (2026-08-24)
 
 
