@@ -192,6 +192,13 @@ export class PageSpeedInsightsServer {
                   type: "string", 
                   default: "en",
                   description: "Locale for results" 
+                },
+                runs: {
+                  type: "integer",
+                  minimum: 1,
+                  maximum: 5,
+                  default: 1,
+                  description: "Distinct analyses to run (default 1). >1 reports the median with min-max spread; cached replays (same fetchTime) are dropped and counted"
                 }
               },
               required: ["url"]
@@ -272,6 +279,13 @@ export class PageSpeedInsightsServer {
                   type: "string", 
                   default: "en",
                   description: "Locale for results" 
+                },
+                runs: {
+                  type: "integer",
+                  minimum: 1,
+                  maximum: 5,
+                  default: 1,
+                  description: "Distinct analyses to run (default 1). >1 reports the median with min-max spread; cached replays (same fetchTime) are dropped and counted"
                 }
               },
               required: ["url"]
