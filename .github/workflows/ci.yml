@@ -123,6 +123,43 @@ jobs:
             echo "ℹ️ No new release (HEAD is not tagged $RELEASE_TAG). Skipping publish."
           fi
 
+      - name: Upload release assets and verify release integrity
+        env:
+          GH_TOKEN: ${{ secrets.GH_TOKEN }}
+        run: |
+          # Runs in the release job, on the release commit — immune to the
+          # GITHUB_TOKEN-tag-doesn't-trigger-workflows problem.
+          RELEASE_TAG="v$(node -p "require('./package.json').version")"
+          if ! git describe --tags --exact-match HEAD 2>/dev/null | grep -qF "$RELEASE_TAG"; then
+            echo "ℹ️ No new release — nothing to verify."
+            exit 0
+          fi
+
+          ASSET="pagespeed-insights-mcp-${RELEASE_TAG}-dist.tar.gz"
+          tar -czf "$ASSET" dist package.json README.md
+          sha256sum "$ASSET" > "${ASSET}.sha256"
+          gh release upload "$RELEASE_TAG" "$ASSET" "${ASSET}.sha256" --clobber
+          echo "📦 Uploaded: $ASSET (+ .sha256)"
+
+          # ── Watchdog: a release must never be "empty" ──
+          sleep 5
+          INFO=$(gh api "repos/${GITHUB_REPOSITORY}/releases/tags/${RELEASE_TAG}")
+          ASSET_COUNT=$(echo "$INFO" | jq '.assets | length')
+          BODY_LEN=$(echo "$INFO" | jq '.body | length')
+          echo "assets=$ASSET_COUNT body_len=$BODY_LEN"
+          [ "$ASSET_COUNT" -ge 2 ] || { echo "❌ FAIL: release $RELEASE_TAG has only $ASSET_COUNT assets"; exit 1; }
+          [ "$BODY_LEN" -gt 50 ]   || { echo "❌ FAIL: release $RELEASE_TAG body is empty/short"; exit 1; }
+
+          # npm must carry the new version (retry: registry propagation)
+          EXPECTED="${RELEASE_TAG#v}"
+          for i in 1 2 3 4 5; do
+            NPM_VER=$(npm view pagespeed-insights-mcp@latest version 2>/dev/null || echo "none")
+            [ "$NPM_VER" = "$EXPECTED" ] && break
+            echo "npm latest is '$NPM_VER', expected '$EXPECTED' — retry $i/5"; sleep 30
+          done
+          [ "$NPM_VER" = "$EXPECTED" ] || { echo "❌ FAIL: npm latest is '$NPM_VER', expected '$EXPECTED'"; exit 1; }
+          echo "✅ Release $RELEASE_TAG verified: assets + notes + npm $NPM_VER"
+
   docker:
     name: Build Docker Image
     needs: [test, security]
