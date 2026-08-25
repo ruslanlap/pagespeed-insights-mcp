@@ -1,5 +1,7 @@
 # PageSpeed Insights MCP Server
 
+[![Buy Me A Coffee](https://img.shields.io/badge/Buy_Me_A_Coffee-%40ruslanlap-FFDD00?style=flat-square&logo=buy-me-a-coffee&logoColor=black)](https://ruslanlap.github.io/ruslanlap_buymeacoffe/)
+
 **19-tool MCP server** for Google PageSpeed Insights & Chrome UX Report APIs. Analyze, compare, and optimize web performance directly through Claude, Cursor, or any MCP-compatible AI client.
 
 ## ⚡ Quick Start (Copy & Paste)
