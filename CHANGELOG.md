@@ -1,3 +1,10 @@
+## [1.7.4](https://github.com/ruslanlap/pagespeed-insights-mcp/compare/v1.7.3...v1.7.4) (2026-08-26)
+
+
+### Bug Fixes
+
+* **docker:** build image from clean checkout ([fdd51fc](https://github.com/ruslanlap/pagespeed-insights-mcp/commit/fdd51fcdc4596fd948c3f661b28f31e90b37c010))
+
 ## [1.7.3](https://github.com/ruslanlap/pagespeed-insights-mcp/compare/v1.7.2...v1.7.3) (2026-08-24)
 
 
