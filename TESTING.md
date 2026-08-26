@@ -31,7 +31,7 @@ node scripts/test-tools.js
 
 This script will:
 - Start the MCP server
-- Test all 12 tools sequentially
+- Test all six v2 workflow tools sequentially
 - Show success/failure for each tool
 - Display a summary at the end
 
@@ -42,8 +42,8 @@ Expected output:
 API Key: AIzaSyD7mU...
 ✅ Server started successfully
 
-Testing analyze_page_speed - Complete PageSpeed analysis...
-✅ analyze_page_speed: SUCCESS
+Testing pagespeed_analyze_page - concise Lighthouse analysis...
+✅ pagespeed_analyze_page: SUCCESS
    - Text content: ✓
    - JSON resource: ✓
 
@@ -76,21 +76,14 @@ Testing analyze_page_speed - Complete PageSpeed analysis...
 
 3. Test each tool by typing these commands:
 
-#### Original Tools
-- `Analyze the performance of https://www.google.com`
-- `Get a quick performance report for https://www.google.com`
-- `Get smart recommendations for improving https://www.google.com performance`
-- `Clear the cache`
-
-#### New Tools (v1.1.0)
-- `Get visual analysis for https://www.google.com`
-- `Show me which elements are causing performance issues on https://www.google.com`
-- `Analyze the network waterfall for https://www.google.com`
-- `Get JavaScript execution breakdown for https://www.google.com`
-- `Show me which images need optimization on https://www.google.com`
-- `Find render-blocking resources on https://www.google.com`
-- `Analyze third-party script impact on https://www.google.com`
-- `Run a full audit including accessibility and SEO for https://www.google.com`
+#### v2 workflow tools
+- `Run pagespeed_analyze_page for https://www.google.com with report=summary`
+- `Get recommendations with pagespeed_analyze_page for https://www.google.com`
+- `Diagnose render-blocking resources with pagespeed_diagnose_page`
+- `Get mobile CrUX field data with pagespeed_get_field_data`
+- `Compare https://a.example.com and https://b.example.com with pagespeed_compare_pages`
+- `Analyze these three URLs with pagespeed_analyze_batch`
+- `Clear the local PageSpeed cache with pagespeed_clear_cache`
 
 ### Method 3: Direct MCP Testing
 

@@ -40,10 +40,11 @@ setTimeout(() => {
     id: '1',
     method: 'callTool',
     params: {
-      name: 'analyze_page_speed',
+      name: 'pagespeed_analyze_page',
       arguments: {
         url: 'https://example.com',
-        strategy: 'mobile'
+        strategy: 'mobile',
+        report: 'summary'
       }
     }
   };
@@ -58,10 +59,11 @@ setTimeout(() => {
       id: '2',
       method: 'callTool',
       params: {
-        name: 'get_performance_summary',
+        name: 'pagespeed_get_field_data',
         arguments: {
           url: 'https://example.com',
-          strategy: 'mobile'
+          scope: 'page',
+          formFactor: 'PHONE'
         }
       }
     };

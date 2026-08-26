@@ -54,7 +54,7 @@ To improve performance and reduce API quota usage, the server implements an in-m
 
 ## Data Flow
 
-1.  **Request**: The MCP Client (e.g., Claude) sends a `call_tool` request (e.g., `analyze_page_speed`).
+1.  **Request**: The MCP Client (e.g., Claude) sends a `call_tool` request (e.g., `pagespeed_analyze_page`).
 2.  **Validation**: `index.ts` validates the arguments using Zod schemas defined in `schemas.ts`.
 3.  **Check Cache**: The `PageSpeedClient` checks if a valid result exists in the cache.
 4.  **API Call**: If not cached, `PageSpeedClient` fetches data from Google PageSpeed Insights API.

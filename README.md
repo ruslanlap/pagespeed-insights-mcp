@@ -38,7 +38,7 @@ Get a free API key at [Google Cloud Console](https://developers.google.com/speed
 
 ## 🔥 What Makes It Different
 
-Most PageSpeed MCP servers wrap **one** tool: "run PSI on a URL." This server ships **19 tools** covering the full performance workflow — not just a score, but an action plan:
+Most PageSpeed MCP servers wrap **one** tool: "run PSI on a URL." This server ships **six workflow tools** covering the full performance workflow — not just a score, but an action plan:
 
 - **Full toolkit**: page analysis, CrUX real-user data (URL + origin), Lighthouse audits, multi-page & batch comparison, baselines, and regression tracking
 - **Deep diagnostics**: element-level, network, JavaScript, image optimization, render-blocking, and third-party impact analysis
@@ -469,281 +469,43 @@ Analyze third-party script impact on https://example.com performance
 Run a full audit including accessibility, SEO, and best practices for https://example.com
 ```
 
-## Available Tools
-
-19 tools across three categories:
-
-### Core Analysis
-
-| Tool | Description |
-|------|-------------|
-| `analyze_page_speed` | Full Lighthouse analysis — all metrics and audits |
-| `get_performance_summary` | Simplified key-metrics report |
-| `get_recommendations` | Prioritized recommendations with actionable fixes |
-| `full_report` | Unified report combining Lighthouse lab data with CrUX field data |
-| `batch_analyze` | Analyze up to 10 URLs in parallel with progress tracking |
-| `clear_cache` | Clear internal cache to force fresh API requests |
-
-### CrUX & Comparison
-
-| Tool | Description |
-|------|-------------|
-| `crux_summary` | Real-world Core Web Vitals from Chrome UX Report (field data) |
-| `get_origin_crux` | Domain-level (origin) Chrome UX Report field data across all pages |
-| `compare_pages` | Side-by-side performance comparison between two URLs |
-| `compare_baseline` | Compare current run against a stored baseline to track regressions over time |
-
-### Advanced Diagnostics
-
-| Tool | Description |
-|------|-------------|
-| `get_visual_analysis` | Screenshots, filmstrip, and full-page captures |
-| `get_element_analysis` | LCP/CLS DOM elements causing performance issues |
-| `get_network_analysis` | Network waterfall — all requests with timing and size |
-| `get_javascript_analysis` | JS bootup time, main-thread work, unused & duplicated modules |
-| `get_image_optimization_details` | Images needing optimization with exact savings |
-| `get_render_blocking_details` | Render-blocking resources and critical request chains |
-| `get_third_party_impact` | Third-party script impact grouped by provider |
-| `get_full_audit` | Complete Lighthouse audit for all categories |
-| `get_performance_map` | Mermaid flowchart visualizing performance score, Core Web Vitals status, and top opportunities |
-
----
-
-### `analyze_page_speed`
-
-Complete page analysis with all Lighthouse metrics.
-
-**Parameters:**
-
-- `url` (required): URL of the page to analyze
-- `strategy`: "mobile" or "desktop" (default: "mobile")
-- `category`: array of categories ["performance", "accessibility", "best-practices", "seo", "pwa"]
-- `locale`: locale for results (default: "en")
-- `runs`: 1–5 distinct analyses (default: 1). With `runs > 1` the report shows the **median with min-max spread** for every score and metric, drops cached replays (identical `fetchTime`), and says how many it dropped. A single Lighthouse run is noise — TBT routinely swings 3× on an unchanged page, so treat differences inside the spread as no change. Note: Google re-analyses a URL about once a minute, so each extra run waits ~65 s to be genuinely distinct.
-- `strategy`: also accepts `"both"` — runs mobile then desktop in one call and reports both.
-
-### `get_performance_summary`
-
-Simplified report with key performance metrics.
-
-### `get_recommendations`
-
-Generate smart performance recommendations with priority scoring and actionable fixes.
-
-**Parameters:**
-
-- `url` (required): URL of the page to analyze
-- `strategy`: "mobile" or "desktop" (default: "mobile")
-- `category`: array of categories to analyze (default: ["performance", "accessibility", "best-practices", "seo"])
-- `locale`: locale for results (default: "en")
-
-### `compare_baseline`
-
-Answer "did that change actually help" — with statistical honesty.
-
-- **First call** on a URL+strategy records the baseline (median + spread of `runs` distinct analyses, saved to `~/.pagespeed-mcp/baselines.json`) and compares nothing.
-- Make your change, **call again**: a verdict is only given where the two min-max ranges do **not** overlap. On an unchanged page the performance score has been measured running 27–37 — comparing medians alone reports improvements that are just the instrument moving.
-- Reports both the median difference and the smaller **guaranteed** figure the disjoint ranges actually give you. Quote the guaranteed one.
-- Flags a Lighthouse version change between baseline and now, which moves scores without the page moving.
-
-**Parameters:**
-
-- `url` (required): URL to measure
-- `strategy`: "mobile" or "desktop" (default: "mobile") — part of the baseline identity
-- `runs`: 2–5 distinct analyses per side (default: 3, ~2 min)
-- `save_baseline`: replace the baseline with this measurement (move the starting point; default: false)
-
-### `clear_cache`
-
-Clear the internal cache to force fresh API requests for all subsequent analyses.
-
-### `get_visual_analysis`
-
-Get screenshots and visual timeline showing how the page loads.
-
-**Parameters:**
-
-- `url` (required): URL of the page to analyze
-- `strategy`: "mobile" or "desktop" (default: "mobile")
-
-**Returns:**
-
-- Final screenshot of the loaded page
-- Filmstrip showing page load progression
-- Full-page screenshot with DOM node mapping
-
-### `get_element_analysis`
-
-Get specific DOM elements causing performance issues.
-
-**Parameters:**
-
-- `url` (required): URL of the page to analyze
-- `strategy`: "mobile" or "desktop" (default: "mobile")
-
-**Returns:**
-
-- LCP (Largest Contentful Paint) element details
-- CLS (Cumulative Layout Shift) causing elements
-- Lazy-loaded LCP warnings
-
-### `get_network_analysis`
-
-Get detailed network waterfall showing all requests with timing and size.
-
-**Parameters:**
-
-- `url` (required): URL of the page to analyze
-- `strategy`: "mobile" or "desktop" (default: "mobile")
-
-**Returns:**
-
-- All network requests with timing data
-- Resource breakdown by type
-- Total transfer size and request count
-- Network RTT and server latency
-
-### `get_javascript_analysis`
-
-Get JavaScript execution breakdown showing performance impact.
-
-**Parameters:**
-
-- `url` (required): URL of the page to analyze
-- `strategy`: "mobile" or "desktop" (default: "mobile")
-
-**Returns:**
-
-- JavaScript bootup time by script
-- Main thread work breakdown
-- Unused JavaScript analysis
-- Duplicated JavaScript modules
-
-### `get_image_optimization_details`
-
-Get specific images needing optimization with exact savings potential.
-
-**Parameters:**
-
-- `url` (required): URL of the page to analyze
-- `strategy`: "mobile" or "desktop" (default: "mobile")
-
-**Returns:**
-
-- Improperly sized images
-- Offscreen images (lazy-loading candidates)
-- Unoptimized images
-- Modern format recommendations (WebP/AVIF)
-
-### `get_render_blocking_details`
-
-Get render-blocking resources and critical request chains.
-
-**Parameters:**
-
-- `url` (required): URL of the page to analyze
-- `strategy`: "mobile" or "desktop" (default: "mobile")
-
-**Returns:**
-
-- Render-blocking CSS and JavaScript files
-- Critical request chains showing dependencies
-- Total blocking time
-
-### `get_third_party_impact`
-
-Get third-party script impact analysis grouped by entity.
-
-**Parameters:**
-
-- `url` (required): URL of the page to analyze
-- `strategy`: "mobile" or "desktop" (default: "mobile")
-
-**Returns:**
-
-- Impact by provider (Google, Facebook, etc.)
-- Transfer size and blocking time per provider
-- Recommended facade replacements
-
-### `get_full_audit`
-
-Get comprehensive audit results for all Lighthouse categories.
-
-**Parameters:**
-
-- `url` (required): URL of the page to analyze
-- `strategy`: "mobile" or "desktop" (default: "mobile")
-- `categories`: array of categories to audit (default: ["performance", "accessibility", "best-practices", "seo"])
-
-**Returns:**
-
-- Scores for all categories
-- Detailed Core Web Vitals and metrics
-- Key failing audits for each category
-- Framework-specific advice (if applicable)
-
-### `crux_summary`
-
-Get real-world Core Web Vitals from the Chrome UX Report (field data from actual Chrome users).
-
-**Parameters:**
-
-- `url` (required): URL to analyze
-- `formFactor`: "PHONE", "DESKTOP", or "TABLET" (default: "PHONE")
-
-**Returns:**
-
-- Real-world LCP, CLS, FID, INP, TTFB distributions
-- Pass/fail thresholds per Core Web Vital
-- Percentile breakdowns (p75)
-
-### `compare_pages`
-
-Compare performance metrics between two URLs side-by-side.
-
-**Parameters:**
-
-- `urlA` (required): First URL to compare
-- `urlB` (required): Second URL to compare
-- `strategy`: "mobile" or "desktop" (default: "mobile")
-
-**Returns:**
-
-- Side-by-side Lighthouse score comparison
-- Metric-level diff for LCP, CLS, FCP, TBT, SI
-- Winner/loser indication per metric
-
-### `full_report`
-
-Unified report combining Lighthouse lab data with CrUX real-world field data.
-
-**Parameters:**
-
-- `url` (required): URL to analyze
-- `strategy`: "mobile" or "desktop" (default: "mobile")
-
-**Returns:**
-
-- Lighthouse lab scores + CrUX field data in one response
-- Lab vs. field comparison for Core Web Vitals
-- Actionable recommendations
-
-### `batch_analyze`
-
-Analyze performance for multiple URLs with progress tracking.
-
-**Parameters:**
-
-- `urls` (required): Array of URLs to analyze (max 10)
-- `strategy`: "mobile" or "desktop" (default: "mobile")
-
-**Returns:**
-
-- Performance scores for all URLs
-- Sorted ranking by score
-- Per-URL metric breakdown
-
----
+## Available Tools (v2)
+
+Version 2 replaces the former 19 endpoint-shaped tools with six workflow tools. This is a **breaking change**: update MCP client prompts, saved tool calls, and integrations to use the names below. Every data-returning tool accepts `responseFormat` (`markdown`, default, or `json`) and returns MCP `structuredContent`.
+
+| Tool | Use it for |
+|---|---|
+| `pagespeed_analyze_page` | One-page Lighthouse health check, full report, recommendations, audit findings, or a Mermaid map (`report`). |
+| `pagespeed_diagnose_page` | One focused investigation: `visual`, `elements`, `network`, `javascript`, `images`, `render-blocking`, or `third-parties`. |
+| `pagespeed_get_field_data` | CrUX real-user Core Web Vitals for a `page` or `origin`. |
+| `pagespeed_compare_pages` | Compare two pages now, or compare one page with its saved baseline (`mode`). |
+| `pagespeed_analyze_batch` | Triage 1–10 pages with progress notifications when supported. |
+| `pagespeed_clear_cache` | Clear this process's in-memory API cache after a deploy. |
+
+### Migration from v1
+
+| v1 tools | v2 replacement |
+|---|---|
+| `analyze_page_speed`, `get_performance_summary`, `get_recommendations`, `get_full_audit`, `get_performance_map` | `pagespeed_analyze_page` with `report=full`, `summary`, `recommendations`, `audit`, or `performance-map` |
+| `get_visual_analysis`, `get_element_analysis`, `get_network_analysis`, `get_javascript_analysis`, `get_image_optimization_details`, `get_render_blocking_details`, `get_third_party_impact` | `pagespeed_diagnose_page` with the matching `focus` |
+| `crux_summary`, `get_origin_crux` | `pagespeed_get_field_data` with `scope=page` or `origin` |
+| `compare_pages`, `compare_baseline` | `pagespeed_compare_pages` with `mode=pages` or `baseline` |
+| `batch_analyze`, `clear_cache` | `pagespeed_analyze_batch`, `pagespeed_clear_cache` |
+| `full_report` | Run `pagespeed_analyze_page` and `pagespeed_get_field_data`; lab and field data stay explicit rather than being mixed. |
+
+### Examples
+
+```json
+{"url":"https://example.com","strategy":"mobile","report":"recommendations","responseFormat":"markdown"}
+```
+
+```json
+{"url":"https://example.com","focus":"render-blocking","responseFormat":"json"}
+```
+
+```json
+{"mode":"baseline","url":"https://example.com","strategy":"mobile","runs":3}
+```
 
 ### Example
 

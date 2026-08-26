@@ -5,7 +5,6 @@ import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js"
 import {
   CallToolRequestSchema,
   ListToolsRequestSchema,
-  Tool,
 } from "@modelcontextprotocol/sdk/types.js";
 import { randomUUID } from "crypto";
 import { realpathSync } from "fs";
@@ -25,13 +24,20 @@ import {
   CompareUrlsSchema,
   BatchAnalyzeSchema,
   UrlSchema,
+  AnalysisReportSchema,
+  DiagnoseSchema,
+  FieldDataSchema,
+  CompareSchema,
+  BatchAnalysisSchema,
   type AnalyzePageSpeedInput,
 } from "./schemas.js";
 import type { PageSpeedInsightsResponse, CruxRecord, ComparisonResult } from "./types.js";
 import { getBaseline, saveBaseline, compareBaselines } from "./baselines.js";
 import { z } from "zod";
+import { V2_TOOLS } from "./tool-definitions.js";
 
 const pkg = createRequire(import.meta.url)("../package.json") as { version: string };
+const CHARACTER_LIMIT = 25_000;
 
 export class PageSpeedInsightsServer {
   private server: Server;
@@ -63,441 +69,7 @@ export class PageSpeedInsightsServer {
   private setupTools() {
     this.server.setRequestHandler(ListToolsRequestSchema, async () => {
       return {
-        tools: [
-          {
-            name: "analyze_page_speed",
-            description: "Run a full Lighthouse analysis of one URL via Google PageSpeed Insights: category scores, key metrics, and detailed audit results. The most complete single-page tool; use get_performance_summary for a quick health check or get_recommendations when you want a prioritized fix list instead of raw audits. Results are cached \u2014 call clear_cache to force a fresh run. With runs>1 returns the median of distinct runs and drops cached replays.",
-            inputSchema: {
-              type: "object",
-              properties: {
-                url: { type: "string", format: "uri", description: "The URL to analyze" },
-                strategy: { 
-                  type: "string", 
-                  enum: ["mobile", "desktop", "both"], 
-                  default: "mobile",
-                  description: "Device to simulate: mobile (default), desktop, or both" 
-                },
-                category: {
-                  type: "array",
-                  items: {
-                    type: "string",
-                    enum: ["performance", "accessibility", "best-practices", "seo", "pwa"]
-                  },
-                  default: ["performance"],
-                  description: "Categories to analyze"
-                },
-                locale: {
-                  type: "string",
-                  default: "en",
-                  description: "Locale for results"
-                },
-                runs: {
-                  type: "integer",
-                  minimum: 1,
-                  maximum: 5,
-                  default: 1,
-                  description: "Distinct analyses to run (default 1). >1 reports the median with min-max spread; cached replays (same fetchTime) are dropped and counted"
-                }
-              },
-              required: ["url"]
-            },
-            annotations: { readOnlyHint: true, openWorldHint: true }
-          },
-          {
-            name: "get_performance_summary",
-            description: "Quick performance health check for one URL: key Lighthouse metrics (FCP, LCP, TBT, CLS, Speed Index) and top opportunities, without full audit detail. Use analyze_page_speed when you need all categories and raw audits, or get_recommendations for a prioritized fix list.",
-            inputSchema: {
-              type: "object",
-              properties: {
-                url: { type: "string", format: "uri", description: "The URL to analyze" },
-                strategy: { 
-                  type: "string", 
-                  enum: ["mobile", "desktop", "both"], 
-                  default: "mobile",
-                  description: "Device to simulate: mobile (default), desktop, or both" 
-                }
-              },
-              required: ["url"]
-            },
-            annotations: { readOnlyHint: true, openWorldHint: true }
-            },
-          {
-            name: "crux_summary",
-            description: "Return real-user Core Web Vitals (LCP, INP, CLS, FCP, TTFB) for one URL from the Chrome UX Report \u2014 field data from actual Chrome visits, not a lab run. Use get_origin_crux for domain-level aggregation or analyze_page_speed for Lighthouse lab measurements. URLs with insufficient real-user traffic return no data.",
-            inputSchema: {
-              type: "object",
-              properties: {
-                url: { type: "string", format: "uri", description: "The URL to analyze" },
-                formFactor: {
-                  type: "string",
-                  enum: ["PHONE", "DESKTOP", "TABLET"],
-                  description: "Form factor for CrUX data"
-                }
-              },
-              required: ["url"]
-            },
-            annotations: { readOnlyHint: true, openWorldHint: true }
-            },
-          {
-            name: "compare_pages",
-            description: "Run Lighthouse on two URLs and compare them side by side with metric-level diffs (scores, LCP, TBT, CLS). Use compare_baseline instead to compare the SAME URL before vs after a change.",
-            inputSchema: {
-              type: "object",
-              properties: {
-                urlA: { type: "string", format: "uri", description: "First URL to compare" },
-                urlB: { type: "string", format: "uri", description: "Second URL to compare" },
-                strategy: { 
-                  type: "string", 
-                  enum: ["mobile", "desktop", "both"], 
-                  default: "mobile",
-                  description: "Device to simulate: mobile (default), desktop, or both" 
-                },
-                categories: {
-                  type: "array",
-                  items: {
-                    type: "string",
-                    enum: ["performance", "accessibility", "best-practices", "seo", "pwa"]
-                  },
-                  default: ["performance"],
-                  description: "Categories to compare"
-                }
-              },
-              required: ["urlA", "urlB"]
-            },
-            annotations: { readOnlyHint: true, openWorldHint: true }
-            },
-          {
-            name: "full_report",
-            description: "Combine Lighthouse lab data with CrUX real-user field data for one URL in a single report \u2014 shows both how the page tests in the lab and how real users experience it. Use analyze_page_speed for lab-only results or crux_summary for field-only.",
-            inputSchema: {
-              type: "object",
-              properties: {
-                url: { type: "string", format: "uri", description: "The URL to analyze" },
-                strategy: { 
-                  type: "string", 
-                  enum: ["mobile", "desktop", "both"], 
-                  default: "mobile",
-                  description: "Device to simulate: mobile (default), desktop, or both" 
-                },
-                category: {
-                  type: "array",
-                  items: {
-                    type: "string",
-                    enum: ["performance", "accessibility", "best-practices", "seo", "pwa"]
-                  },
-                  default: ["performance"],
-                  description: "Categories to analyze"
-                },
-                locale: { 
-                  type: "string", 
-                  default: "en",
-                  description: "Locale for results" 
-                },
-                runs: {
-                  type: "integer",
-                  minimum: 1,
-                  maximum: 5,
-                  default: 1,
-                  description: "Distinct analyses to run (default 1). >1 reports the median with min-max spread; cached replays (same fetchTime) are dropped and counted"
-                }
-              },
-              required: ["url"]
-            },
-            annotations: { readOnlyHint: true, openWorldHint: true }
-            },
-          {
-            name: "batch_analyze",
-            description: "Analyze up to 10 URLs sequentially (one per API call, with progress notifications) and return a summary with successful/failed counts. For a single URL use analyze_page_speed; to diff exactly two URLs use compare_pages.",
-            inputSchema: {
-              type: "object",
-              properties: {
-                urls: {
-                  type: "array",
-                  items: { type: "string", format: "uri" },
-                  minItems: 1,
-                  maxItems: 10,
-                  description: "URLs to analyze (max 10)"
-                },
-                strategy: { 
-                  type: "string", 
-                  enum: ["mobile", "desktop", "both"], 
-                  default: "mobile",
-                  description: "Device to simulate: mobile (default), desktop, or both" 
-                },
-                category: {
-                  type: "array",
-                  items: {
-                    type: "string",
-                    enum: ["performance", "accessibility", "best-practices", "seo", "pwa"]
-                  },
-                  default: ["performance"],
-                  description: "Categories to analyze"
-                },
-                locale: { 
-                  type: "string", 
-                  default: "en",
-                  description: "Locale for results" 
-                }
-              },
-              required: ["urls"]
-            },
-            annotations: { readOnlyHint: true, openWorldHint: true }
-            },
-          {
-            name: "clear_cache",
-            description: "Drop all cached PageSpeed results so the next analysis call fetches fresh data from the Google API. Call after changing the page when cached numbers are stale; repeat calls are safe and change nothing else.",
-            inputSchema: {
-              type: "object",
-              properties: {},
-              additionalProperties: false
-            },
-            annotations: { readOnlyHint: false, destructiveHint: false, idempotentHint: true, openWorldHint: false }  // in-memory cache only — no network/filesystem
-          },
-          {
-            name: "get_recommendations",
-            description: "Turn Lighthouse results into a prioritized, actionable fix list with impact scores and estimated savings. Use after analyze_page_speed when you want 'what to fix first' rather than raw audits.",
-            inputSchema: {
-              type: "object",
-              properties: {
-                url: { type: "string", format: "uri", description: "The URL to analyze for recommendations" },
-                strategy: { 
-                  type: "string", 
-                  enum: ["mobile", "desktop", "both"], 
-                  default: "mobile",
-                  description: "Device to simulate: mobile (default), desktop, or both" 
-                },
-                category: {
-                  type: "array",
-                  items: {
-                    type: "string",
-                    enum: ["performance", "accessibility", "best-practices", "seo", "pwa"]
-                  },
-                  default: ["performance", "accessibility", "best-practices", "seo"],
-                  description: "Categories to analyze for recommendations"
-                },
-                locale: { 
-                  type: "string", 
-                  default: "en",
-                  description: "Locale for results" 
-                },
-                runs: {
-                  type: "integer",
-                  minimum: 1,
-                  maximum: 5,
-                  default: 1,
-                  description: "Distinct analyses to run (default 1). >1 reports the median with min-max spread; cached replays (same fetchTime) are dropped and counted"
-                }
-              },
-              required: ["url"]
-            },
-            annotations: { readOnlyHint: true, openWorldHint: true }
-          },
-          {
-            name: "get_visual_analysis",
-            description: "Return screenshots and a filmstrip timeline of the page loading: final screenshot, filmstrip frames at each stage, and a full-page screenshot. Use get_element_analysis to pinpoint the DOM nodes causing slow rendering.",
-            inputSchema: {
-              type: "object",
-              properties: {
-                url: { type: "string", format: "uri", description: "The URL to analyze" },
-                strategy: { 
-                  type: "string", 
-                  enum: ["mobile", "desktop", "both"], 
-                  default: "mobile",
-                  description: "Device to simulate: mobile (default), desktop, or both" 
-                }
-              },
-              required: ["url"]
-            },
-            annotations: { readOnlyHint: true, openWorldHint: true }
-            },
-          {
-            name: "get_element_analysis",
-            description: "Identify the specific DOM elements causing performance issues: the LCP element, CLS-causing elements, and lazy-load problems, with selectors and impact. Use get_network_analysis for request-level causes.",
-            inputSchema: {
-              type: "object",
-              properties: {
-                url: { type: "string", format: "uri", description: "The URL to analyze" },
-                strategy: { 
-                  type: "string", 
-                  enum: ["mobile", "desktop", "both"], 
-                  default: "mobile",
-                  description: "Device to simulate: mobile (default), desktop, or both" 
-                }
-              },
-              required: ["url"]
-            },
-            annotations: { readOnlyHint: true, openWorldHint: true }
-            },
-          {
-            name: "get_network_analysis",
-            description: "Return the full network waterfall for a page: every request with timing, transferred size, priority, and resource type. Use get_render_blocking_details to focus only on blocking resources or get_third_party_impact to group by provider.",
-            inputSchema: {
-              type: "object",
-              properties: {
-                url: { type: "string", format: "uri", description: "The URL to analyze" },
-                strategy: { 
-                  type: "string", 
-                  enum: ["mobile", "desktop", "both"], 
-                  default: "mobile",
-                  description: "Device to simulate: mobile (default), desktop, or both" 
-                }
-              },
-              required: ["url"]
-            },
-            annotations: { readOnlyHint: true, openWorldHint: true }
-            },
-          {
-            name: "get_javascript_analysis",
-            description: "Break down JavaScript cost per script: bootup time, main-thread work, unused bytes, and duplicated modules. Use get_element_analysis for render-blocking DOM causes or get_network_analysis for request timings.",
-            inputSchema: {
-              type: "object",
-              properties: {
-                url: { type: "string", format: "uri", description: "The URL to analyze" },
-                strategy: { 
-                  type: "string", 
-                  enum: ["mobile", "desktop", "both"], 
-                  default: "mobile",
-                  description: "Device to simulate: mobile (default), desktop, or both" 
-                }
-              },
-              required: ["url"]
-            },
-            annotations: { readOnlyHint: true, openWorldHint: true }
-            },
-          {
-            name: "get_image_optimization_details",
-            description: "List images needing optimization \u2014 improperly sized, offscreen, or unencoded \u2014 with estimated byte and load-time savings per image. Use get_visual_analysis to see how the page actually renders.",
-            inputSchema: {
-              type: "object",
-              properties: {
-                url: { type: "string", format: "uri", description: "The URL to analyze" },
-                strategy: { 
-                  type: "string", 
-                  enum: ["mobile", "desktop", "both"], 
-                  default: "mobile",
-                  description: "Device to simulate: mobile (default), desktop, or both" 
-                }
-              },
-              required: ["url"]
-            },
-            annotations: { readOnlyHint: true, openWorldHint: true }
-            },
-          {
-            name: "get_render_blocking_details",
-            description: "List render-blocking CSS/JS and the critical request chain showing which resources delay first render. A focused subset of get_network_analysis (which returns the full waterfall).",
-            inputSchema: {
-              type: "object",
-              properties: {
-                url: { type: "string", format: "uri", description: "The URL to analyze" },
-                strategy: { 
-                  type: "string", 
-                  enum: ["mobile", "desktop", "both"], 
-                  default: "mobile",
-                  description: "Device to simulate: mobile (default), desktop, or both" 
-                }
-              },
-              required: ["url"]
-            },
-            annotations: { readOnlyHint: true, openWorldHint: true }
-            },
-          {
-            name: "get_third_party_impact",
-            description: "Measure third-party script impact grouped by provider (Google, Facebook, etc.): blocking time, main-thread time, and transfer size per entity. Use get_network_analysis for per-request data instead of per-provider.",
-            inputSchema: {
-              type: "object",
-              properties: {
-                url: { type: "string", format: "uri", description: "The URL to analyze" },
-                strategy: { 
-                  type: "string", 
-                  enum: ["mobile", "desktop", "both"], 
-                  default: "mobile",
-                  description: "Device to simulate: mobile (default), desktop, or both" 
-                }
-              },
-              required: ["url"]
-            },
-            annotations: { readOnlyHint: true, openWorldHint: true }
-            },
-          {
-            name: "get_full_audit",
-            description: "Run Lighthouse across the selected categories and return category scores with the top 5 failing audits per non-performance category. Use analyze_page_speed for category scores and key metrics including performance details.",
-            inputSchema: {
-              type: "object",
-              properties: {
-                url: { type: "string", format: "uri", description: "The URL to analyze" },
-                strategy: { 
-                  type: "string", 
-                  enum: ["mobile", "desktop", "both"], 
-                  default: "mobile",
-                  description: "Device to simulate: mobile (default), desktop, or both" 
-                },
-                categories: {
-                  type: "array",
-                  items: {
-                    type: "string",
-                    enum: ["performance", "accessibility", "best-practices", "seo", "pwa"]
-                  },
-                  default: ["performance", "accessibility", "best-practices", "seo"],
-                  description: "Categories to audit"
-                }
-              },
-              required: ["url"]
-            },
-            annotations: { readOnlyHint: true, openWorldHint: true }
-            },
-          {
-            name: "get_performance_map",
-            description: "Generate a Mermaid flowchart combining the performance score, Core Web Vitals status, and top optimization opportunities into one shareable visual map. Use get_performance_summary for the plain numbers.",
-            inputSchema: {
-              type: "object",
-              properties: {
-                url: { type: "string", format: "uri", description: "The URL to analyze" },
-                strategy: { 
-                  type: "string", 
-                  enum: ["mobile", "desktop", "both"], 
-                  default: "mobile",
-                  description: "Device to simulate: mobile (default), desktop, or both" 
-                }
-              },
-              required: ["url"]
-            },
-            annotations: { readOnlyHint: true, openWorldHint: true }
-            },
-          {
-            name: "get_origin_crux",
-            description: "Return Chrome UX Report real-user data aggregated over an entire origin (all pages of a domain): p75 Core Web Vitals by form factor. Use crux_summary for a specific URL; use this when URL-level data is missing due to low traffic.",
-            inputSchema: {
-              type: "object",
-              properties: {
-                origin: { type: "string", format: "uri", description: "The origin (scheme + host, e.g. https://example.com) to query" },
-                formFactor: {
-                  type: "string",
-                  enum: ["PHONE", "DESKTOP", "TABLET", "ALL"],
-                  default: "ALL",
-                  description: "Device form factor to filter field data"
-                }
-              },
-              required: ["origin"]
-            },
-            annotations: { readOnlyHint: true, openWorldHint: true }
-            },
-          {
-            name: "compare_baseline",
-            description:
-              "Answer 'did that change actually help'. FIRST call on a URL+strategy records the baseline and compares nothing; make your change, then call again. A verdict is only given where the two min-max ranges do NOT overlap — on an unchanged page the performance score has been measured running 27-37, so comparing medians alone reports improvements that are just the instrument moving. Reports both the median difference and the smaller figure the ranges actually guarantee (quote that one). Use runs>=3. Also flags a Lighthouse version change, which moves scores without the page moving.",
-            inputSchema: {
-              type: "object",
-              properties: {
-                url: { type: "string", format: "uri", description: "The URL to measure" },
-                strategy: { type: "string", enum: ["mobile", "desktop"], default: "mobile", description: "Part of the baseline identity" },
-                runs: { type: "integer", minimum: 2, maximum: 5, default: 3, description: "Distinct analyses per side. Default 3 (~2 min)" },
-                save_baseline: { type: "boolean", default: false, description: "Replace the baseline with THIS measurement (move the starting point). Default false: repeated calls keep comparing against the original baseline" }
-              },
-              required: ["url"]
-            },
-            annotations: { readOnlyHint: false, destructiveHint: true, openWorldHint: true }  // save_baseline: true replaces the stored snapshot in ~/.pagespeed-mcp/baselines.json
-          },
-        ] satisfies Tool[],
+        tools: V2_TOOLS,
       };
     });
 
@@ -527,6 +99,9 @@ export class PageSpeedInsightsServer {
 
       try {
         return await this.dispatchTool(name, args);
+      } catch (error) {
+        const detail = error instanceof Error ? error.message : "Invalid tool arguments.";
+        return this.toolError(`${detail} Review the tool schema and correct the highlighted field.`);
       } finally {
         if (keepalive) clearInterval(keepalive);
         delete (globalThis as any).__psiProgress;
@@ -534,49 +109,85 @@ export class PageSpeedInsightsServer {
     });
   }
 
-  private async dispatchTool(name: string, args: any) {
+  private async dispatchTool(name: string, args: unknown): Promise<any> {
+    const raw = (args && typeof args === "object" ? args : {}) as Record<string, unknown>;
+    const { responseFormat = "markdown", ...inputArgs } = raw;
+    let result: any;
+
     switch (name) {
-        case "analyze_page_speed":
-          return await this.handleAnalyzePageSpeed(args);
-        case "get_performance_summary":
-          return await this.handlePerformanceSummary(args);
-        case "crux_summary":
-          return await this.handleCruxSummary(args);
-        case "compare_pages":
-          return await this.handleComparePages(args);
-        case "full_report":
-          return await this.handleFullReport(args);
-        case "batch_analyze":
-          return await this.handleBatchAnalyze(args);
-        case "clear_cache":
-          return await this.handleClearCache();
-        case "get_recommendations":
-          return await this.handleGetRecommendations(args);
-        case "get_visual_analysis":
-          return await this.handleGetVisualAnalysis(args);
-        case "get_element_analysis":
-          return await this.handleGetElementAnalysis(args);
-        case "get_network_analysis":
-          return await this.handleGetNetworkAnalysis(args);
-        case "get_javascript_analysis":
-          return await this.handleGetJavaScriptAnalysis(args);
-        case "get_image_optimization_details":
-          return await this.handleGetImageOptimizationDetails(args);
-        case "get_render_blocking_details":
-          return await this.handleGetRenderBlockingDetails(args);
-        case "get_third_party_impact":
-          return await this.handleGetThirdPartyImpact(args);
-        case "get_full_audit":
-          return await this.handleGetFullAudit(args);
-        case "get_performance_map":
-          return await this.handlePerformanceMap(args);
-        case "get_origin_crux":
-          return await this.handleGetOriginCrux(args);
-        case "compare_baseline":
-          return await this.handleCompareBaseline(args);
-        default:
-          throw new Error(`Unknown tool: ${name}`);
+      case "pagespeed_analyze_page": {
+        const { categories, ...analysisArgs } = inputArgs;
+        const input = AnalysisReportSchema.parse({ ...analysisArgs, category: categories ?? analysisArgs.category });
+        const legacy = { ...input, category: input.category };
+        result = input.report === "summary" ? await this.handlePerformanceSummary(legacy)
+          : input.report === "full" ? await this.handleAnalyzePageSpeed(legacy)
+          : input.report === "recommendations" ? await this.handleGetRecommendations(legacy)
+          : input.report === "audit" ? await this.handleGetFullAudit({ ...legacy, categories: input.category })
+          : await this.handlePerformanceMap(legacy);
+        break;
       }
+      case "pagespeed_diagnose_page": {
+        const input = DiagnoseSchema.parse(inputArgs);
+        const handlers = {
+          visual: () => this.handleGetVisualAnalysis(input), elements: () => this.handleGetElementAnalysis(input),
+          network: () => this.handleGetNetworkAnalysis(input), javascript: () => this.handleGetJavaScriptAnalysis(input),
+          images: () => this.handleGetImageOptimizationDetails(input), "render-blocking": () => this.handleGetRenderBlockingDetails(input),
+          "third-parties": () => this.handleGetThirdPartyImpact(input),
+        };
+        result = await handlers[input.focus]();
+        break;
+      }
+      case "pagespeed_get_field_data": {
+        const input = FieldDataSchema.parse(inputArgs);
+        result = input.scope === "origin"
+          ? await this.handleGetOriginCrux({ origin: input.url, formFactor: input.formFactor })
+          : await this.handleCruxSummary({ url: input.url, formFactor: input.formFactor });
+        break;
+      }
+      case "pagespeed_compare_pages": {
+        const input = CompareSchema.parse(inputArgs);
+        result = input.mode === "pages"
+          ? await this.handleComparePages({ urlA: input.url, urlB: input.against, strategy: input.strategy, categories: input.categories })
+          : await this.handleCompareBaseline({ url: input.url, strategy: input.strategy, runs: input.runs, save_baseline: input.replaceBaseline });
+        break;
+      }
+      case "pagespeed_analyze_batch": {
+        const { categories, ...batchArgs } = inputArgs;
+        const input = BatchAnalysisSchema.parse({ ...batchArgs, category: categories ?? batchArgs.category });
+        result = await this.handleBatchAnalyze({ ...input, category: input.category });
+        break;
+      }
+      case "pagespeed_clear_cache":
+        result = await this.handleClearCache();
+        break;
+      default:
+        return this.toolError(`Unknown tool '${name}'. Call tools/list and use one of the pagespeed_* v2 tool names.`);
+    }
+    return this.toV2Result(name, result, responseFormat);
+  }
+
+  private toV2Result(tool: string, result: any, responseFormat: unknown): any {
+    const rawText = result.content?.find((item: { type: string }) => item.type === "text")?.text ?? "";
+    const truncated = rawText.length > CHARACTER_LIMIT;
+    const text = truncated
+      ? `${rawText.slice(0, CHARACTER_LIMIT)}\n\n[Truncated at ${CHARACTER_LIMIT} characters. Request a focused diagnostic or a summary report to reduce output.]`
+      : rawText;
+    let parsed: unknown = text;
+    try { parsed = JSON.parse(text); } catch { /* Markdown is the canonical human-readable fallback. */ }
+    const structuredContent = {
+      tool,
+      result: parsed,
+      ...(truncated ? { truncated: true, truncationMessage: `Response limited to ${CHARACTER_LIMIT} characters; use a focused diagnostic or summary report.` } : {}),
+    };
+    return {
+      ...result,
+      content: [{ type: "text", text: responseFormat === "json" ? JSON.stringify(structuredContent, null, 2) : text }],
+      structuredContent,
+    };
+  }
+
+  private toolError(message: string): { content: Array<{ type: "text"; text: string }>; isError: true } {
+    return { content: [{ type: "text", text: `Error: ${message}` }], isError: true };
   }
 
   private async handleAnalyzePageSpeed(args: any) {

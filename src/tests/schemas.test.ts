@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { UrlSchema, LocaleSchema, AnalyzePageSpeedSchema } from "../schemas.js";
+import { UrlSchema, LocaleSchema, AnalyzePageSpeedSchema, AnalysisReportSchema, FieldDataSchema, CompareSchema } from "../schemas.js";
 
 describe("UrlSchema", () => {
   it("accepts https URLs", () => {
@@ -72,5 +72,27 @@ describe("AnalyzePageSpeedSchema defaults", () => {
       strategy: "mobile",
     });
     expect(result.success).toBe(false);
+  });
+});
+
+
+describe("v2 tool contracts", () => {
+  it("accepts public categories and rejects unknown analysis fields", () => {
+    expect(AnalysisReportSchema.safeParse({ url: "https://example.com", category: ["seo"] }).success).toBe(true);
+    expect(AnalysisReportSchema.safeParse({ url: "https://example.com", unexpected: true }).success).toBe(false);
+  });
+
+  it("uses PHONE by default for page-level CrUX and reserves ALL for origins", () => {
+    const page = FieldDataSchema.safeParse({ url: "https://example.com" });
+    expect(page.success).toBe(true);
+    if (page.success) expect(page.data.formFactor).toBe("PHONE");
+    expect(FieldDataSchema.safeParse({ url: "https://example.com", formFactor: "ALL" }).success).toBe(false);
+    expect(FieldDataSchema.safeParse({ url: "https://example.com", scope: "origin", formFactor: "ALL" }).success).toBe(true);
+  });
+
+  it("requires a comparison target and repeat measurements for baselines", () => {
+    expect(CompareSchema.safeParse({ mode: "pages", url: "https://example.com" }).success).toBe(false);
+    expect(CompareSchema.safeParse({ mode: "baseline", url: "https://example.com" }).success).toBe(false);
+    expect(CompareSchema.safeParse({ mode: "baseline", url: "https://example.com", runs: 3 }).success).toBe(true);
   });
 });

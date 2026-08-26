@@ -1,145 +1,31 @@
-# Tools Reference
+# Tools Reference (v2)
 
-This section details all the tools available in the PageSpeed Insights MCP server. These tools can be called by your MCP client (e.g., Claude).
+This is the v2 breaking API. The 19 v1 tool names were removed in favor of six workflow-oriented tools. All data tools accept `responseFormat`: `markdown` (default) or `json`, and return structured MCP content.
 
-## Core Analysis Tools
+## `pagespeed_analyze_page`
 
-### `analyze_page_speed`
-Runs a comprehensive Google PageSpeed Insights analysis with Lighthouse metrics.
+Run one Lighthouse analysis. Required: `url`. Optional: `strategy` (`mobile`, `desktop`, `both`), `categories`, `locale`, `runs` (1–5), and `report` (`summary`, `full`, `recommendations`, `audit`, `performance-map`). Use `summary` first; use a specific report only when needed.
 
-**Parameters:**
-*   `url` (string, required): The URL to analyze.
-*   `strategy` (string): "mobile" or "desktop" (default: "mobile").
-*   `category` (array): Categories to analyze (e.g., `["performance", "seo"]`).
-*   `locale` (string): Locale for results (default: "en").
+## `pagespeed_diagnose_page`
 
-### `get_performance_summary`
-Retrieves a simplified report focusing on key performance metrics and opportunities.
+Investigate one diagnosed issue. Required: `url`, `focus`. The focus is one of `visual`, `elements`, `network`, `javascript`, `images`, `render-blocking`, or `third-parties`. This returns focused evidence instead of a full audit dump.
 
-**Parameters:**
-*   `url` (string, required): The URL to analyze.
-*   `strategy` (string): "mobile" or "desktop".
+## `pagespeed_get_field_data`
 
-### `full_report`
-Generates a unified report combining Lighthouse lab data with CrUX field data.
+Retrieve Chrome UX Report p75 real-user metrics. Required: `url`. Use `scope=page` for one URL and `scope=origin` for a bare origin; the latter is useful where page data is unavailable. `ALL` form factor is valid only for origins.
 
-**Parameters:**
-*   `url` (string, required): The URL to analyze.
-*   `strategy` (string): "mobile" or "desktop".
-*   `category` (array): Categories to include.
+## `pagespeed_compare_pages`
 
-### `get_full_audit`
-Runs a complete audit covering all categories: Performance, Accessibility, Best Practices, SEO, and PWA.
+Use `mode=pages` with `url` and `against` for a current side-by-side comparison. Use `mode=baseline` with one `url` and at least two `runs` to record or evaluate a stored local baseline. `replaceBaseline=true` overwrites that local state.
 
-**Parameters:**
-*   `url` (string, required): The URL to analyze.
-*   `strategy` (string): "mobile" or "desktop".
+## `pagespeed_analyze_batch`
 
-## Diagnostic Tools
+Analyze 1–10 URLs. Optional `report=summary|full` controls per-page detail. Use the single-page tool when only one result is needed.
 
-### `get_visual_analysis`
-Retrieves visual data about the page load.
+## `pagespeed_clear_cache`
 
-**Returns:**
-*   Final screenshot.
-*   Filmstrip of frames during load.
-*   Full-page screenshot.
+Clear only the current server process's in-memory PageSpeed cache. It is idempotent and does not alter websites or remote data.
 
-### `get_element_analysis`
-Identifies specific DOM elements causing performance issues.
+## Migration
 
-**Returns:**
-*   LCP (Largest Contentful Paint) element.
-*   CLS (Cumulative Layout Shift) contributors.
-*   Lazy-loading issues.
-
-### `get_network_analysis`
-Provides a detailed waterfall of network requests.
-
-**Returns:**
-*   Request timing and priority.
-*   Resource size breakdown.
-*   Server latency metrics.
-
-### `get_javascript_analysis`
-Analyzes JavaScript execution and impact.
-
-**Returns:**
-*   Bootup time.
-*   Main thread work breakdown.
-*   Unused code detection.
-
-### `get_image_optimization_details`
-Identifies image-related performance opportunities.
-
-**Returns:**
-*   Improperly sized images.
-*   Offscreen images.
-*   Format optimization suggestions (WebP/AVIF).
-
-### `get_render_blocking_details`
-Identifies resources that block the first paint of your page.
-
-**Returns:**
-*   Blocking CSS/JS files.
-*   Critical request chains.
-
-### `get_third_party_impact`
-Analyzes the impact of third-party scripts (ads, analytics, etc.).
-
-**Returns:**
-*   Impact grouped by entity (e.g., Google, Facebook).
-*   Blocking time per provider.
-
-## Comparison & Batch Tools
-
-### `compare_pages`
-Compares performance metrics between two URLs side-by-side.
-
-**Parameters:**
-*   `urlA` (string, required): First URL.
-*   `urlB` (string, required): Second URL.
-*   `strategy` (string): Analysis strategy.
-
-### `batch_analyze`
-Analyzes multiple URLs in sequence.
-
-**Parameters:**
-*   `urls` (array of strings, required): List of URLs (max 10).
-*   `strategy` (string): Analysis strategy.
-
-## Utility Tools
-
-### `get_recommendations`
-Generates prioritized, actionable recommendations based on analysis results.
-
-### `crux_summary`
-Retrieves Chrome User Experience Report (CrUX) data.
-
-**Parameters:**
-*   `url` (string, required): The URL to analyze.
-*   `formFactor` (string): "PHONE", "DESKTOP", or "TABLET".
-
-### `get_origin_crux`
-Retrieves domain-level (origin) Chrome UX Report field data — aggregates real-user Core Web Vitals across all pages of an origin. Useful when a single URL lacks enough traffic for page-level data.
-
-**Parameters:**
-*   `origin` (string, required): The origin (scheme + host, e.g. `https://example.com`) to query.
-*   `formFactor` (string): "PHONE", "DESKTOP", "TABLET", or "ALL".
-
-### `clear_cache`
-Clears the internal cache to force fresh API requests for all subsequent analyses.
-
-### `get_performance_map`
-Generate a Mermaid flowchart visualizing the performance score, Core Web Vitals status (LCP, CLS, TBT, FCP, Speed Index), and top 5 optimization opportunities in a single visual map. Color-coded by pass/fail thresholds.
-
-**Parameters:**
-
-- `url` (required): URL of the page to analyze
-- `strategy`: "mobile" or "desktop" (default: "mobile")
-
-**Returns:**
-
-- Mermaid flowchart with performance score node
-- Core Web Vitals nodes with good/needs improvement/poor status colors
-- Top optimization opportunity nodes with potential savings
+`analyze_page_speed`, summary/recommendation/audit/map tools consolidate into `pagespeed_analyze_page`; diagnostics consolidate into `pagespeed_diagnose_page`; CrUX tools consolidate into `pagespeed_get_field_data`; page/baseline comparison consolidate into `pagespeed_compare_pages`; batch/cache names gain the `pagespeed_` prefix. `full_report` is deliberately split into explicit lab and field calls.
