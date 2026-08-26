@@ -21,6 +21,9 @@ on:
 env:
   FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
 
+permissions:
+  contents: read
+
 jobs:
   test:
     name: Test & Build
@@ -85,6 +88,9 @@ jobs:
     needs: [test, security]
     runs-on: ubuntu-latest
     if: github.ref == 'refs/heads/master' && github.event_name == 'push'
+    permissions:
+      contents: write
+      packages: write
     env:
       GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
       GH_TOKEN: ${{ secrets.GH_TOKEN }}
@@ -165,6 +171,9 @@ jobs:
     needs: [test, security]
     runs-on: ubuntu-latest
     if: github.ref == 'refs/heads/master' && github.event_name == 'push'
+    permissions:
+      contents: read
+      packages: write
 
     steps:
       - uses: actions/checkout@v7
