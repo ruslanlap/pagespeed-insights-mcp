@@ -1,3 +1,15 @@
+# [2.0.0](https://github.com/ruslanlap/pagespeed-insights-mcp/compare/v1.7.4...v2.0.0) (2026-08-26)
+
+
+### Features
+
+* release v2 PageSpeed tool API ([a69eb1c](https://github.com/ruslanlap/pagespeed-insights-mcp/commit/a69eb1cb2f1f2140ffc36e359cb34c67c478c93e))
+
+
+### BREAKING CHANGES
+
+* The 19 v1 MCP tool names are replaced by six pagespeed_* workflow tools. See the README migration table.
+
 # Unreleased
 
 ### ⚠ BREAKING CHANGES
