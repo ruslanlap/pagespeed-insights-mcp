@@ -1,24 +1,18 @@
-# [2.0.0](https://github.com/ruslanlap/pagespeed-insights-mcp/compare/v1.7.4...v2.0.0) (2026-08-26)
+# Unreleased
 
+### Changed
+
+* **tools:** remove obsolete v1 implementation paths after v2.0.0. The public API remains the six `pagespeed_*` workflow tools.
+
+# [2.0.0](https://github.com/ruslanlap/pagespeed-insights-mcp/compare/v1.7.4...v2.0.0) (2026-08-26)
 
 ### Features
 
 * release v2 PageSpeed tool API ([a69eb1c](https://github.com/ruslanlap/pagespeed-insights-mcp/commit/a69eb1cb2f1f2140ffc36e359cb34c67c478c93e))
 
-
 ### BREAKING CHANGES
 
 * The 19 v1 MCP tool names are replaced by six pagespeed_* workflow tools. See the README migration table.
-
-# Unreleased
-
-### ⚠ BREAKING CHANGES
-
-* **tools:** replace 19 v1 endpoint-shaped tools with six `pagespeed_*` workflow tools. All names and several argument names changed; see README migration table. `full_report` is split into explicit Lighthouse and CrUX calls.
-
-### Features
-
-* **tools:** add strict v2 contracts, complete annotations, `responseFormat`, output schemas, and structured tool results.
 
 ## [1.7.4](https://github.com/ruslanlap/pagespeed-insights-mcp/compare/v1.7.3...v1.7.4) (2026-08-26)
 

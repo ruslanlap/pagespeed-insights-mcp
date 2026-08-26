@@ -2,7 +2,7 @@
 
 [![Buy Me A Coffee](https://img.shields.io/badge/Buy_Me_A_Coffee-%40ruslanlap-FFDD00?style=flat-square&logo=buy-me-a-coffee&logoColor=black)](https://ruslanlap.github.io/ruslanlap_buymeacoffe/)
 
-**19-tool MCP server** for Google PageSpeed Insights & Chrome UX Report APIs. Analyze, compare, and optimize web performance directly through Claude, Cursor, or any MCP-compatible AI client.
+**Six-tool MCP server** for Google PageSpeed Insights & Chrome UX Report APIs. Analyze, compare, and optimize web performance directly through Claude, Cursor, or any MCP-compatible AI client.
 
 ## ⚡ Quick Start (Copy & Paste)
 
@@ -140,11 +140,11 @@ env = { GOOGLE_API_KEY = "${GOOGLE_API_KEY}", NODE_ENV = "development" }
 
 Verification inside Grok session:
 - `/mcps` (or Ctrl+L → MCP tab) → ensure pagespeed-insights shows "running"
-- Use tools: `pagespeed-insights__analyze_page`, `pagespeed-insights__get_crux_data` etc. (namespaced)
+- Use tools: `pagespeed-insights__pagespeed_analyze_page`, `pagespeed-insights__pagespeed_get_field_data`, etc. (namespaced)
 
 ## 📊 Example Output
 
-Real `analyze_page_speed` results for **github.com** — two runs: `strategy: "mobile"` (metrics table) and `strategy: "both"` (mobile + desktop category scores). CrUX numbers come from `get_origin_crux`:
+Real `pagespeed_analyze_page` results for **github.com** — one mobile Lighthouse run. CrUX numbers come from `pagespeed_get_field_data` with `scope: "origin"`:
 
 **Lighthouse lab scores:**
 
@@ -190,13 +190,11 @@ We have comprehensive documentation available online.
 
 ## 📝 Release Notes
 
-Current release: **v1.7.0**.
+Current release: **v2.0.0**.
 
 Recent highlights:
 
-- **v1.7.0** — baseline comparison (`compare_baseline`), progress keepalive, weighted findings, `strategy: both`
-- **v1.6.0** — median-of-N analysis with replay dedup and lab-vs-field clarity
-- **v1.5.x** — registry validation fixes, Dependabot guard hardening
+- **v2.0.0** — six workflow-oriented `pagespeed_*` tools replace the 19 v1 endpoint-shaped tools; all data tools support Markdown or JSON with structured results.
 
 > The badges at the top of this README update **automatically** on every release (npm version, GitHub package version, downloads). No manual edits needed.
 
@@ -205,7 +203,7 @@ For the complete release history, see [`CHANGELOG.md`](./CHANGELOG.md).
 ## 🎯 Why You Need This
 
 **Pain point 1 — "My page is slow but I don't know why."**
-You open PageSpeed Insights, get a wall of data, and still can't tell what to fix first. This MCP gives your AI assistant 19 specialized tools that cut through the noise: it identifies the exact render-blocking resources, the specific images wasting 2 MB, the third-party scripts eating 1.5 s of main-thread time — and ranks them by impact. Ask "why is my site slow?" and get a prioritized fix list, not a 40-metric dashboard.
+You open PageSpeed Insights, get a wall of data, and still can't tell what to fix first. This MCP gives your AI assistant six focused workflows that cut through the noise: it identifies the exact render-blocking resources, the specific images wasting 2 MB, the third-party scripts eating 1.5 s of main-thread time — and ranks them by impact. Ask "why is my site slow?" and get a prioritized fix list, not a 40-metric dashboard.
 
 **Pain point 2 — "I ship performance regressions to production."**
 Your team moves fast, deploys daily, and nobody runs a full Lighthouse audit before each merge. By the time someone notices the Core Web Vitals dropped, the regression is already live. This MCP lets any developer paste a URL into Claude/Cursor and get a complete audit — lab data, field data from real Chrome users (CrUX), element-level CLS/LCP debugging — in seconds. It's the difference between catching a regression at your desk and discovering it in a Slack message from the SEO team three days later.
