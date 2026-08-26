@@ -1,4 +1,3 @@
-import fetch from "node-fetch";
 import pRetry from "p-retry";
 import pLimit from "p-limit";
 import { createRequire } from "module";

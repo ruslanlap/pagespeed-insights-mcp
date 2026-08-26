@@ -592,48 +592,6 @@ export class PageSpeedInsightsServer {
     }
   }
 
-  private async handleFullReport(args: any) {
-    const correlationId = randomUUID();
-    const logger = createRequestLogger(correlationId, "full-report");
-    
-    try {
-      const input = AnalyzePageSpeedSchema.parse(args);
-      logger.info({ url: input.url }, "Generating full Lab+Field report");
-      
-      const [psiData, cruxData] = await Promise.allSettled([
-        this.client.analyzePageSpeed(input, correlationId),
-        this.client.getCruxData({ url: input.url }, correlationId),
-      ]);
-      
-      const report = this.createFullReport(
-        psiData.status === "fulfilled" ? psiData.value : null,
-        cruxData.status === "fulfilled" ? cruxData.value : null,
-        input
-      );
-      
-      return {
-        content: [
-          {
-            type: "text",
-            text: report,
-          },
-        ],
-      };
-    } catch (error) {
-      const errorMessage = error instanceof Error ? error.message : "Unknown error occurred";
-      logger.error({ error: errorMessage }, "Full report generation failed");
-      return {
-        content: [
-          {
-            type: "text",
-            text: `Error generating full report: ${errorMessage}`,
-          },
-        ],
-        isError: true,
-      };
-    }
-  }
-
   private async handleBatchAnalyze(args: any) {
     const correlationId = randomUUID();
     const logger = createRequestLogger(correlationId, "batch-analyze");
@@ -950,30 +908,6 @@ export class PageSpeedInsightsServer {
         metrics,
       },
     };
-  }
-
-  private createFullReport(psiData: PageSpeedInsightsResponse | null, cruxData: CruxRecord | null, input: AnalyzePageSpeedInput): string {
-    let report = `# Full Performance Report (Lab + Field)\n\n`;
-    report += `**URL:** ${input.url}\n`;
-    report += `**Strategy:** ${input.strategy}\n\n`;
-
-    if (psiData) {
-      report += this.formatAnalysisReport(psiData, input);
-      report += `\n\n---\n\n`;
-    }
-
-    if (cruxData) {
-      report += this.formatCruxSummary(cruxData, input.url);
-    } else {
-      report += `## Real User Experience (CrUX)\nNo field data available for this URL.\n`;
-    }
-
-    if (psiData && cruxData?.record) {
-      report += `\n\n## Lab vs Field Comparison\n`;
-      report += `Lab data represents controlled testing conditions, while field data shows real user experiences.\n`;
-    }
-
-    return report;
   }
 
   private async handleGetVisualAnalysis(args: any) {

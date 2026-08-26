@@ -63,7 +63,6 @@
   },
   "dependencies": {
     "@modelcontextprotocol/sdk": "^1.30.0",
-    "node-fetch": "^3.3.2",
     "p-limit": "^7.3.1",
     "p-retry": "^6.1.0",
     "pino": "^10.3.1",
