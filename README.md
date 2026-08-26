@@ -586,7 +586,7 @@ Ensure the URL includes the protocol — only `http://` and `https://` are accep
 
 ## Requirements
 
-- Node.js **20 or later** (Node 18 is EOL since April 2025 and is no longer supported).
+- Node.js **20.19.0 or later** (Node 18 is EOL since April 2025 and is no longer supported).
 - A Google API key with PageSpeed Insights and (optionally) Chrome UX Report APIs enabled.
 
 ## Security
