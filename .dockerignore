@@ -1,9 +1,9 @@
 # Dependencies & build artifacts
-# NOTE: do NOT ignore dist/ — the Dockerfile copies the compiled output (COPY dist/ ./dist/)
+# NOTE: dist/ is produced inside the build stage and is not needed in the build context.
 node_modules
+dist
 coverage
 site
-src
 
 # Logs & debug
 *.log
@@ -28,8 +28,6 @@ assets/
 scripts/docsbuild.sh
 
 # Config & IDE
-tsconfig.json
-tsconfig.*.json
 .vscode/
 .idea/
 *.swp
@@ -76,7 +74,6 @@ test-*.sh
 
 # TypeScript & build info
 *.tsbuildinfo
-*.ts
 
 # Serena / Claude local data
 .serena/

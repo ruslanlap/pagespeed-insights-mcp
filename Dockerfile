@@ -1,27 +1,33 @@
-FROM node:26-alpine
+FROM node:26-alpine AS build
 
-# Set working directory
 WORKDIR /app
 
-# Copy package files (package.json is also needed at runtime to read version)
+# Install the full dependency set required to compile TypeScript.
 COPY package*.json ./
+RUN npm ci
 
-# Install production dependencies
+COPY tsconfig.json ./
+COPY src/ ./src/
+RUN npm run build
+
+FROM node:26-alpine AS runtime
+
+WORKDIR /app
+
+# package.json is needed at runtime to read the server version.
+COPY package*.json ./
 RUN npm ci --omit=dev
 
-# Copy built application
-COPY dist/ ./dist/
+# Copy the compiled application from the build stage. This makes `docker build`
+# work from a clean Git checkout, where dist/ is intentionally not committed.
+COPY --from=build /app/dist/ ./dist/
 
 # Create non-root user
 RUN addgroup -g 1001 -S nodejs && \
-    adduser -S nextjs -u 1001
+    adduser -S nextjs -u 1001 && \
+    chown -R nextjs:nodejs /app
 
-# Change ownership of the app directory
-RUN chown -R nextjs:nodejs /app
 USER nextjs
-
-# Expose port (if needed for health checks)
-EXPOSE 3000
 
 # Set default command
 CMD ["node", "dist/index.js"]
