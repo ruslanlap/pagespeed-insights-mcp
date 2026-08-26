@@ -1,5 +1,6 @@
 import { describe, it, expect } from "vitest";
 import { UrlSchema, LocaleSchema, AnalyzePageSpeedSchema, AnalysisReportSchema, FieldDataSchema, CompareSchema } from "../schemas.js";
+import { V2_TOOLS } from "../tool-definitions.js";
 
 describe("UrlSchema", () => {
   it("accepts https URLs", () => {
@@ -94,5 +95,20 @@ describe("v2 tool contracts", () => {
     expect(CompareSchema.safeParse({ mode: "pages", url: "https://example.com" }).success).toBe(false);
     expect(CompareSchema.safeParse({ mode: "baseline", url: "https://example.com" }).success).toBe(false);
     expect(CompareSchema.safeParse({ mode: "baseline", url: "https://example.com", runs: 3 }).success).toBe(true);
+  });
+});
+
+
+describe("v2 public tool registry", () => {
+  it("exposes exactly the six namespaced workflow tools", () => {
+    expect(V2_TOOLS.map((tool) => tool.name)).toEqual([
+      "pagespeed_analyze_page",
+      "pagespeed_diagnose_page",
+      "pagespeed_get_field_data",
+      "pagespeed_compare_pages",
+      "pagespeed_analyze_batch",
+      "pagespeed_clear_cache",
+    ]);
+    expect(V2_TOOLS.every((tool) => tool.name.startsWith("pagespeed_"))).toBe(true);
   });
 });
