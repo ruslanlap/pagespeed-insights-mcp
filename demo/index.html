@@ -655,7 +655,7 @@
   <div class="hero-content">
     <div class="hero-badge">
       <span class="pulse"></span>
-      Open Source MCP Server &middot; v1.0.6
+      Open Source MCP Server &middot; v2.0.0
     </div>
     <h1>
       Web Performance Analysis<br>
@@ -677,8 +677,8 @@
     </div>
     <div class="hero-stats">
       <div class="hero-stat">
-        <div class="num" id="counter-tools">16</div>
-        <div class="label">Analysis Tools</div>
+        <div class="num" id="counter-tools">6</div>
+        <div class="label">Workflow Tools</div>
       </div>
       <div class="hero-stat">
         <div class="num" id="counter-categories">5</div>
@@ -689,7 +689,7 @@
         <div class="label">Metrics Tracked</div>
       </div>
       <div class="hero-stat">
-        <div class="num">MIT</div>
+        <div class="num">Apache-2.0</div>
         <div class="label">License</div>
       </div>
     </div>
@@ -778,104 +778,44 @@
   <div class="container">
     <div class="reveal">
       <div class="section-label">&#128295; Tool Suite</div>
-      <h2 class="section-title">16 Powerful Analysis Tools</h2>
-      <p class="section-desc">Everything you need to diagnose, optimize, and monitor web performance — accessible through natural language.</p>
+      <h2 class="section-title">6 Focused Workflow Tools</h2>
+      <p class="section-desc">Start with an analysis, then follow the focused workflow your result calls for.</p>
     </div>
     <div class="tools-grid reveal">
       <div class="tool-card">
         <div class="tool-icon" style="background: rgba(99,102,241,.15); color: var(--accent2);">&#128640;</div>
-        <h3>analyze_page_speed</h3>
-        <p>Full Lighthouse analysis with performance scores, Core Web Vitals, and detailed metrics for any URL.</p>
-        <span class="tool-tag">Core</span>
+        <h3>pagespeed_analyze_page</h3>
+        <p>One-page Lighthouse health check, recommendations, audit findings, or a performance map.</p>
+        <span class="tool-tag">Analyze</span>
       </div>
       <div class="tool-card">
         <div class="tool-icon" style="background: rgba(6,182,212,.15); color: var(--cyan);">&#9889;</div>
-        <h3>get_performance_summary</h3>
-        <p>Quick performance overview with key metrics and top optimization opportunities at a glance.</p>
-        <span class="tool-tag">Quick</span>
+        <h3>pagespeed_diagnose_page</h3>
+        <p>Investigate one problem: visual, elements, network, JavaScript, images, render-blocking, or third parties.</p>
+        <span class="tool-tag">Diagnose</span>
       </div>
       <div class="tool-card">
         <div class="tool-icon" style="background: rgba(34,197,94,.15); color: var(--green);">&#127919;</div>
-        <h3>get_recommendations</h3>
-        <p>AI-powered smart recommendations with priority scoring and actionable code fixes.</p>
-        <span class="tool-tag">Smart</span>
-      </div>
-      <div class="tool-card">
-        <div class="tool-icon" style="background: rgba(249,115,22,.15); color: var(--orange);">&#128247;</div>
-        <h3>get_visual_analysis</h3>
-        <p>Screenshots, filmstrip timeline, and full-page captures showing load progression visually.</p>
-        <span class="tool-tag">Visual</span>
-      </div>
-      <div class="tool-card">
-        <div class="tool-icon" style="background: rgba(236,72,153,.15); color: var(--pink);">&#127760;</div>
-        <h3>get_network_analysis</h3>
-        <p>Detailed request waterfall with timing, sizes, priorities, RTT, and server latency data.</p>
-        <span class="tool-tag">Deep Dive</span>
-      </div>
-      <div class="tool-card">
-        <div class="tool-icon" style="background: rgba(234,179,8,.15); color: var(--yellow);">&#9889;</div>
-        <h3>get_javascript_analysis</h3>
-        <p>JS bootup time, main thread breakdown, unused code detection, and duplicate modules.</p>
-        <span class="tool-tag">Performance</span>
-      </div>
-      <div class="tool-card">
-        <div class="tool-icon" style="background: rgba(239,68,68,.15); color: var(--red);">&#128444;&#65039;</div>
-        <h3>get_image_optimization_details</h3>
-        <p>Find oversized images, lazy-load candidates, and modern format (WebP/AVIF) savings.</p>
-        <span class="tool-tag">Optimization</span>
-      </div>
-      <div class="tool-card">
-        <div class="tool-icon" style="background: rgba(99,102,241,.15); color: var(--accent2);">&#128683;</div>
-        <h3>get_render_blocking_details</h3>
-        <p>Identify render-blocking CSS/JS, critical request chains, and total blocking time.</p>
-        <span class="tool-tag">Critical Path</span>
-      </div>
-      <div class="tool-card">
-        <div class="tool-icon" style="background: rgba(6,182,212,.15); color: var(--cyan);">&#128268;</div>
-        <h3>get_third_party_impact</h3>
-        <p>Third-party script analysis grouped by provider with transfer sizes and blocking times.</p>
-        <span class="tool-tag">Third-Party</span>
-      </div>
-      <div class="tool-card">
-        <div class="tool-icon" style="background: rgba(34,197,94,.15); color: var(--green);">&#127919;</div>
-        <h3>get_element_analysis</h3>
-        <p>DOM-level debugging: LCP element details, CLS-causing elements, lazy-loaded LCP warnings.</p>
-        <span class="tool-tag">Debugging</span>
-      </div>
-      <div class="tool-card">
-        <div class="tool-icon" style="background: rgba(249,115,22,.15); color: var(--orange);">&#128202;</div>
-        <h3>get_full_audit</h3>
-        <p>Comprehensive audit across all categories: Performance, SEO, Accessibility, Best Practices.</p>
-        <span class="tool-tag">Complete</span>
-      </div>
-      <div class="tool-card">
-        <div class="tool-icon" style="background: rgba(236,72,153,.15); color: var(--pink);">&#128200;</div>
-        <h3>crux_summary</h3>
-        <p>Real-world Chrome UX Report field data with Core Web Vitals from actual users.</p>
+        <h3>pagespeed_get_field_data</h3>
+        <p>Get CrUX real-user Core Web Vitals for one page or an entire origin.</p>
         <span class="tool-tag">Field Data</span>
       </div>
       <div class="tool-card">
-        <div class="tool-icon" style="background: rgba(234,179,8,.15); color: var(--yellow);">&#128260;</div>
-        <h3>compare_pages</h3>
-        <p>Side-by-side comparison of two URLs with metric-by-metric performance diff.</p>
+        <div class="tool-icon" style="background: rgba(249,115,22,.15); color: var(--orange);">&#128247;</div>
+        <h3>pagespeed_compare_pages</h3>
+        <p>Compare two pages now or measure one page against its saved baseline.</p>
         <span class="tool-tag">Compare</span>
       </div>
       <div class="tool-card">
-        <div class="tool-icon" style="background: rgba(99,102,241,.15); color: var(--accent2);">&#128209;</div>
-        <h3>full_report</h3>
-        <p>Unified report combining Lighthouse lab data with CrUX real-world field data.</p>
-        <span class="tool-tag">Unified</span>
-      </div>
-      <div class="tool-card">
-        <div class="tool-icon" style="background: rgba(6,182,212,.15); color: var(--cyan);">&#128230;</div>
-        <h3>batch_analyze</h3>
-        <p>Analyze up to 10 URLs simultaneously with progress tracking and aggregate results.</p>
+        <div class="tool-icon" style="background: rgba(236,72,153,.15); color: var(--pink);">&#127760;</div>
+        <h3>pagespeed_analyze_batch</h3>
+        <p>Triage 1–10 public URLs with per-page results and progress notifications.</p>
         <span class="tool-tag">Batch</span>
       </div>
       <div class="tool-card">
-        <div class="tool-icon" style="background: rgba(34,197,94,.15); color: var(--green);">&#128451;&#65039;</div>
-        <h3>clear_cache</h3>
-        <p>Clear internal cache to force fresh API requests for all subsequent analyses.</p>
+        <div class="tool-icon" style="background: rgba(234,179,8,.15); color: var(--yellow);">&#9889;</div>
+        <h3>pagespeed_clear_cache</h3>
+        <p>Clear only this server process’s in-memory PageSpeed cache after a deploy.</p>
         <span class="tool-tag">Utility</span>
       </div>
     </div>
@@ -1038,7 +978,7 @@ CLS: 0.02 &#9989;</code>
             <td><span class="check">&#10003;</span></td>
           </tr>
           <tr>
-            <td>Batch URL Analysis (10+)</td>
+            <td>Batch URL Analysis (1–10)</td>
             <td><span class="cross">&#10007;</span></td>
             <td><span class="check">&#10003;</span></td>
           </tr>
@@ -1354,12 +1294,12 @@ const terminalDemos = {
   analyze: [
     { text: '<span class="term-prompt">$</span> <span class="term-cmd">npx pagespeed-insights-mcp</span>', delay: 0 },
     { text: '<span class="term-accent">[pagespeed-mcp]</span> <span class="term-output">Server started on stdio transport</span>', delay: 600 },
-    { text: '<span class="term-accent">[pagespeed-mcp]</span> <span class="term-output">Registered 16 tools</span>', delay: 200 },
+    { text: '<span class="term-accent">[pagespeed-mcp]</span> <span class="term-output">Registered 6 workflow tools</span>', delay: 200 },
     { text: '', delay: 200 },
-    { text: '<span class="term-cyan">&#9654; tool/call</span> <span class="term-cmd">analyze_page_speed</span>', delay: 400 },
+    { text: '<span class="term-cyan">&#9654; tool/call</span> <span class="term-cmd">pagespeed_analyze_page</span>', delay: 400 },
     { text: '  <span class="term-output">url: "https://example.com"</span>', delay: 100 },
     { text: '  <span class="term-output">strategy: "mobile"</span>', delay: 100 },
-    { text: '  <span class="term-output">category: ["performance", "seo", "accessibility"]</span>', delay: 100 },
+    { text: '  <span class="term-output">categories: ["performance", "seo", "accessibility"]</span>', delay: 100 },
     { text: '', delay: 300 },
     { text: '<span class="term-accent">[pagespeed-mcp]</span> <span class="term-output">Starting PageSpeed analysis...</span>', delay: 500 },
     { text: '<span class="term-accent">[pagespeed-mcp]</span> <span class="term-output">Fetching from Google PageSpeed API...</span>', delay: 800 },
@@ -1375,8 +1315,9 @@ const terminalDemos = {
     { text: '<span class="term-prompt">$</span> <span class="term-cmd">npx pagespeed-insights-mcp</span>', delay: 0 },
     { text: '<span class="term-accent">[pagespeed-mcp]</span> <span class="term-output">Server running...</span>', delay: 600 },
     { text: '', delay: 200 },
-    { text: '<span class="term-cyan">&#9654; tool/call</span> <span class="term-cmd">get_recommendations</span>', delay: 400 },
+    { text: '<span class="term-cyan">&#9654; tool/call</span> <span class="term-cmd">pagespeed_analyze_page</span>', delay: 400 },
     { text: '  <span class="term-output">url: "https://mysite.com"</span>', delay: 100 },
+    { text: '  <span class="term-output">report: "recommendations"</span>', delay: 100 },
     { text: '', delay: 300 },
     { text: '<span class="term-accent">[pagespeed-mcp]</span> <span class="term-output">Generating smart recommendations...</span>', delay: 800 },
     { text: '<span class="term-accent">[pagespeed-mcp]</span> <span class="term-output">Analyzing 47 Lighthouse audits...</span>', delay: 600 },
@@ -1392,9 +1333,10 @@ const terminalDemos = {
     { text: '<span class="term-prompt">$</span> <span class="term-cmd">npx pagespeed-insights-mcp</span>', delay: 0 },
     { text: '<span class="term-accent">[pagespeed-mcp]</span> <span class="term-output">Server running...</span>', delay: 600 },
     { text: '', delay: 200 },
-    { text: '<span class="term-cyan">&#9654; tool/call</span> <span class="term-cmd">compare_pages</span>', delay: 400 },
-    { text: '  <span class="term-output">urlA: "https://mysite.com"</span>', delay: 100 },
-    { text: '  <span class="term-output">urlB: "https://competitor.com"</span>', delay: 100 },
+    { text: '<span class="term-cyan">&#9654; tool/call</span> <span class="term-cmd">pagespeed_compare_pages</span>', delay: 400 },
+    { text: '  <span class="term-output">mode: "pages"</span>', delay: 100 },
+    { text: '  <span class="term-output">url: "https://mysite.com"</span>', delay: 100 },
+    { text: '  <span class="term-output">against: "https://competitor.com"</span>', delay: 100 },
     { text: '', delay: 300 },
     { text: '<span class="term-accent">[pagespeed-mcp]</span> <span class="term-output">Analyzing URL A...</span>', delay: 800 },
     { text: '<span class="term-accent">[pagespeed-mcp]</span> <span class="term-output">Analyzing URL B...</span>', delay: 800 },
