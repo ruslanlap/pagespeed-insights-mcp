@@ -3,2040 +3,1502 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>PageSpeed Insights MCP Server — AI-Native Web Performance Intelligence</title>
-<meta name="description" content="Autonomous web performance intelligence for AI agents. Run Lighthouse audits, CrUX real-user telemetry, multi-run baselines, and focused diagnostics in Claude, Cursor, and Windsurf.">
-<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%2309090b'/%3E%3Cpath d='M7 21V11l9 5-9 5z' fill='%23ffffff'/%3E%3Cpath d='M18 11h7M18 16h5M18 21h6' stroke='%2338bdf8' stroke-width='2' stroke-linecap='round'/%3E%3C/svg%3E">
-
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Geist:wght@300;400;500;600;700;800&family=Geist+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<title>PageSpeed Insights MCP Server — AI Web Performance Intelligence</title>
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' y1='0' x2='1' y2='1'%3E%3Cstop stop-color='%23d97706'/%3E%3Cstop offset='1' stop-color='%23f59e0b'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='64' height='64' rx='14' fill='url(%23g)'/%3E%3Cpath d='M16 43V21l14 11-14 11z' fill='white'/%3E%3Cpath d='M35 25h14M35 32h10M35 39h12' stroke='white' stroke-width='4' stroke-linecap='round'/%3E%3C/svg%3E">
+<link rel="shortcut icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' y1='0' x2='1' y2='1'%3E%3Cstop stop-color='%23d97706'/%3E%3Cstop offset='1' stop-color='%23f59e0b'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='64' height='64' rx='14' fill='url(%23g)'/%3E%3Cpath d='M16 43V21l14 11-14 11z' fill='white'/%3E%3Cpath d='M35 25h14M35 32h10M35 39h12' stroke='white' stroke-width='4' stroke-linecap='round'/%3E%3C/svg%3E">
 
 <style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600;700&display=swap');
+
   :root {
-    --bg: #000000;
-    --surface-1: #09090b;
-    --surface-2: #121215;
-    --surface-3: #18181b;
-    --surface-4: #27272a;
+    --bg: #09090b;
+    --bg2: #111115;
+    --bg3: #18181e;
+    --surface: #1e1e26;
     --border: rgba(255, 255, 255, 0.08);
-    --border-hover: rgba(255, 255, 255, 0.16);
-    --border-active: rgba(255, 255, 255, 0.28);
-    
-    --text-primary: #f4f4f5;
-    --text-secondary: #a1a1aa;
-    --text-tertiary: #71717a;
-    
-    --accent: #38bdf8;
-    --accent-dim: rgba(56, 189, 248, 0.12);
-    --accent-border: rgba(56, 189, 248, 0.3);
-    
-    --amber: #f59e0b;
-    --amber-dim: rgba(245, 158, 11, 0.12);
-    
+    --border-hover: rgba(255, 255, 255, 0.18);
+    --text: #f4f4f6;
+    --text-dim: #9494a0;
+    --accent: #d97706;
+    --accent2: #f59e0b;
+    --accent3: #fbbf24;
     --green: #10b981;
-    --green-dim: rgba(16, 185, 129, 0.12);
-    --green-border: rgba(16, 185, 129, 0.28);
-    
+    --green-dim: #064e3b;
+    --yellow: #f59e0b;
+    --yellow-dim: #78350f;
     --red: #f43f5e;
-    --red-dim: rgba(244, 63, 94, 0.12);
-    --red-border: rgba(244, 63, 94, 0.28);
-
-    --font-sans: 'Geist', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-    --font-mono: 'Geist Mono', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
-    --radius-sm: 6px;
-    --radius-md: 10px;
-    --radius-lg: 14px;
-    --radius-xl: 20px;
+    --red-dim: #881337;
+    --cyan: #06b6d4;
+    --pink: #ec4899;
+    --orange: #ea580c;
+    --gradient: linear-gradient(135deg, #d97706, #f59e0b, #fbbf24);
+    --gradient2: linear-gradient(135deg, #06b6d4, #d97706);
+    --glow: 0 0 35px rgba(217, 119, 6, 0.25);
   }
 
-  * {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
 
   html {
     scroll-behavior: smooth;
-    background-color: var(--bg);
-    color: var(--text-primary);
-    font-family: var(--font-sans);
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
+    scrollbar-width: thin;
+    scrollbar-color: var(--accent) var(--bg);
   }
 
   body {
-    background-color: var(--bg);
-    min-height: 100vh;
-    line-height: 1.5;
+    font-family: 'Inter', -apple-system, sans-serif;
+    background: var(--bg);
+    color: var(--text);
     overflow-x: hidden;
-    background-image: 
-      radial-gradient(circle at 50% 0%, rgba(56, 189, 248, 0.07) 0%, transparent 60%),
-      linear-gradient(to right, rgba(255, 255, 255, 0.02) 1px, transparent 1px),
-      linear-gradient(to bottom, rgba(255, 255, 255, 0.02) 1px, transparent 1px);
-    background-size: 100% 100%, 32px 32px, 32px 32px;
+    line-height: 1.6;
   }
 
-  /* Utility & Layout */
-  .container {
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 0 1.5rem;
+  /* ============ CANVAS PARTICLES ============ */
+  #particles-canvas {
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    z-index: 0;
+    pointer-events: none;
   }
 
-  a {
-    color: inherit;
-    text-decoration: none;
-  }
-
-  button {
-    font-family: inherit;
-    cursor: pointer;
-    border: none;
-    background: none;
-  }
-
-  /* Header */
-  header {
-    position: sticky;
-    top: 0;
+  /* ============ NAV ============ */
+  nav {
+    position: fixed; top: 0; left: 0; right: 0;
     z-index: 100;
-    backdrop-filter: blur(16px);
-    -webkit-backdrop-filter: blur(16px);
-    background: rgba(0, 0, 0, 0.8);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    background: rgba(9, 9, 11, 0.85);
     border-bottom: 1px solid var(--border);
+    padding: 0 1.5rem;
+    height: 64px;
+    display: flex; align-items: center; justify-content: space-between;
+    transition: all .3s;
+  }
+  nav.scrolled { background: rgba(9, 9, 11, 0.98); box-shadow: 0 4px 20px rgba(0,0,0,0.6); }
+  
+  .nav-brand {
+    display: flex; align-items: center; gap: .75rem; font-weight: 700; font-size: 1.05rem;
+    color: #fff; text-decoration: none;
+  }
+  .nav-brand svg { width: 28px; height: 28px; }
+  .badge-v2 {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.7rem; font-weight: 600;
+    padding: 0.15rem 0.45rem; border-radius: 999px;
+    background: var(--surface); color: var(--accent2);
+    border: 1px solid var(--border);
   }
 
-  .nav-wrap {
-    height: 60px;
+  .nav-links { display: flex; gap: 1.5rem; list-style: none; align-items: center; }
+  .nav-links a {
+    color: var(--text-dim); text-decoration: none; font-size: .875rem; font-weight: 500;
+    transition: color .2s;
+  }
+  .nav-links a:hover { color: #fff; }
+  
+  .nav-actions {
+    display: flex; align-items: center; gap: 0.75rem;
+  }
+
+  .nav-cta {
+    background: var(--gradient);
+    color: #000; border: none; border-radius: 8px;
+    padding: .45rem 1.15rem; font-size: .85rem; font-weight: 600;
+    cursor: pointer; text-decoration: none;
+    display: inline-flex; align-items: center; gap: .4rem;
+    transition: transform .2s, box-shadow .2s;
+  }
+  .nav-cta:hover { transform: translateY(-1px); box-shadow: var(--glow); }
+
+  /* Mobile Hamburger Button */
+  .hamburger-btn {
+    display: none;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: 38px;
+    height: 38px;
+    border-radius: 8px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    cursor: pointer;
+    gap: 5px;
+    padding: 8px;
+  }
+  .hamburger-line {
+    width: 100%;
+    height: 2px;
+    background-color: var(--text);
+    border-radius: 2px;
+    transition: all 0.25s ease;
+  }
+  .hamburger-btn.active .hamburger-line:nth-child(1) {
+    transform: translateY(7px) rotate(45deg);
+  }
+  .hamburger-btn.active .hamburger-line:nth-child(2) {
+    opacity: 0;
+  }
+  .hamburger-btn.active .hamburger-line:nth-child(3) {
+    transform: translateY(-7px) rotate(-45deg);
+  }
+
+  /* Mobile Drawer Menu */
+  .mobile-drawer {
+    display: none;
+    position: fixed;
+    top: 64px;
+    left: 0;
+    right: 0;
+    background: rgba(14, 14, 18, 0.98);
+    backdrop-filter: blur(24px);
+    -webkit-backdrop-filter: blur(24px);
+    border-bottom: 1px solid var(--border);
+    padding: 1.5rem;
+    flex-direction: column;
+    gap: 1rem;
+    z-index: 99;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.8);
+    transform: translateY(-10px);
+    opacity: 0;
+    pointer-events: none;
+    transition: all 0.25s ease;
+  }
+  .mobile-drawer.open {
+    display: flex;
+    transform: translateY(0);
+    opacity: 1;
+    pointer-events: auto;
+  }
+  .mobile-drawer a {
+    color: var(--text);
+    text-decoration: none;
+    font-size: 1rem;
+    font-weight: 500;
+    padding: 0.6rem 0.5rem;
+    border-radius: 6px;
     display: flex;
     align-items: center;
     justify-content: space-between;
+    border-bottom: 1px solid var(--border);
+  }
+  .mobile-drawer a:hover {
+    color: var(--accent2);
+    background: var(--surface);
   }
 
-  .brand {
-    display: flex;
-    align-items: center;
-    gap: 0.75rem;
-    font-weight: 600;
-    font-size: 0.95rem;
-    letter-spacing: -0.01em;
-  }
-
-  .brand-icon {
-    width: 26px;
-    height: 26px;
-    border-radius: 7px;
-    background: var(--surface-3);
-    border: 1px solid var(--border-hover);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: #fff;
-  }
-
-  .badge-v2 {
-    font-family: var(--font-mono);
-    font-size: 0.7rem;
-    font-weight: 500;
-    padding: 0.15rem 0.45rem;
-    border-radius: 999px;
-    background: var(--surface-3);
-    color: var(--text-secondary);
-    border: 1px solid var(--border);
-  }
-
-  .nav-links {
-    display: flex;
-    align-items: center;
-    gap: 1.75rem;
-  }
-
-  .nav-link {
-    font-size: 0.875rem;
-    color: var(--text-secondary);
-    transition: color 0.15s ease;
-  }
-
-  .nav-link:hover {
-    color: var(--text-primary);
-  }
-
-  .nav-actions {
-    display: flex;
-    align-items: center;
-    gap: 0.75rem;
-  }
-
-  .btn-ghost {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.4rem;
-    font-size: 0.825rem;
-    font-weight: 500;
-    padding: 0.45rem 0.85rem;
-    border-radius: var(--radius-sm);
-    color: var(--text-secondary);
-    border: 1px solid var(--border);
-    background: var(--surface-2);
-    transition: all 0.15s ease;
-  }
-
-  .btn-ghost:hover {
-    color: var(--text-primary);
-    border-color: var(--border-hover);
-    background: var(--surface-3);
-  }
-
-  .btn-primary {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.45rem;
-    font-size: 0.825rem;
-    font-weight: 600;
-    padding: 0.45rem 0.95rem;
-    border-radius: var(--radius-sm);
-    color: #000;
-    background: #fff;
-    border: 1px solid rgba(255, 255, 255, 0.9);
-    transition: all 0.15s ease;
-  }
-
-  .btn-primary:hover {
-    background: #e4e4e7;
-    transform: translateY(-1px);
-  }
-
-  /* Hero Section */
+  /* ============ HERO ============ */
   .hero {
-    padding: 5rem 0 3.5rem;
+    position: relative;
+    min-height: 92vh;
+    display: flex; align-items: center; justify-content: center;
     text-align: center;
+    padding: 6.5rem 1.5rem 4rem;
+    z-index: 1;
   }
-
-  .hero-pill {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.5rem;
-    padding: 0.3rem 0.85rem;
-    border-radius: 999px;
-    background: var(--surface-2);
-    border: 1px solid var(--border);
-    font-family: var(--font-mono);
-    font-size: 0.75rem;
-    color: var(--text-secondary);
-    margin-bottom: 1.75rem;
+  .hero::before {
+    content: '';
+    position: absolute; inset: 0;
+    background: radial-gradient(ellipse 80% 50% at 50% -20%, rgba(217,119,6,.12), transparent);
+    pointer-events: none;
   }
-
-  .hero-pill .dot {
-    width: 6px;
-    height: 6px;
-    border-radius: 50%;
-    background: var(--green);
-    box-shadow: 0 0 8px var(--green);
+  .hero-content { max-width: 900px; position: relative; }
+  .hero-badge {
+    display: inline-flex; align-items: center; gap: .5rem;
+    background: rgba(217,119,6,.1);
+    border: 1px solid rgba(217,119,6,.28);
+    border-radius: 100px;
+    padding: .4rem 1.2rem;
+    font-size: .8rem; font-weight: 500; color: var(--accent2);
+    margin-bottom: 2rem;
+    animation: fadeInUp .8s ease both;
   }
+  .hero-badge .pulse {
+    width: 8px; height: 8px;
+    background: var(--green); border-radius: 50%;
+    animation: pulse 2s infinite;
+  }
+  @keyframes pulse { 0%,100% { opacity: 1; } 50% { opacity: .4; } }
 
   .hero h1 {
-    font-size: clamp(2.25rem, 5.5vw, 4rem);
-    font-weight: 800;
-    letter-spacing: -0.035em;
-    line-height: 1.1;
-    max-width: 920px;
-    margin: 0 auto 1.25rem;
-    color: #fff;
+    font-size: clamp(2.25rem, 5.5vw, 4.2rem);
+    font-weight: 900;
+    line-height: 1.12;
+    letter-spacing: -.03em;
+    margin-bottom: 1.5rem;
+    animation: fadeInUp .8s ease .1s both;
   }
-
-  .hero-gradient-text {
-    background: linear-gradient(180deg, #ffffff 30%, #a1a1aa 100%);
+  .hero h1 .gradient-text {
+    background: var(--gradient);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
+    background-clip: text;
   }
-
-  .hero-desc {
-    font-size: clamp(1rem, 2vw, 1.2rem);
-    color: var(--text-secondary);
+  .hero p {
+    font-size: clamp(1rem, 2vw, 1.25rem);
+    color: var(--text-dim);
     max-width: 680px;
-    margin: 0 auto 2.25rem;
-    line-height: 1.6;
-    font-weight: 400;
+    margin: 0 auto 2.5rem;
+    animation: fadeInUp .8s ease .2s both;
+  }
+  .hero-actions {
+    display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap;
+    animation: fadeInUp .8s ease .3s both;
+  }
+  .btn {
+    display: inline-flex; align-items: center; gap: .5rem;
+    padding: .85rem 2rem;
+    border-radius: 12px;
+    font-size: 1rem; font-weight: 600;
+    text-decoration: none;
+    cursor: pointer;
+    transition: all .25s;
+    border: none;
+  }
+  .btn-primary {
+    background: var(--gradient);
+    color: #000;
+    box-shadow: 0 4px 24px rgba(217,119,6,.28);
+  }
+  .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 8px 32px rgba(217,119,6,.45); }
+  .btn-secondary {
+    background: rgba(255,255,255,.05);
+    color: var(--text);
+    border: 1px solid var(--border);
+  }
+  .btn-secondary:hover { border-color: var(--accent); background: rgba(217,119,6,.08); }
+
+  .hero-stats {
+    display: flex; justify-content: center; gap: 3rem; margin-top: 4rem;
+    animation: fadeInUp .8s ease .5s both;
+    flex-wrap: wrap;
+  }
+  .hero-stat { text-align: center; }
+  .hero-stat .num {
+    font-size: 2rem; font-weight: 800;
+    background: var(--gradient);
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+  }
+  .hero-stat .label { font-size: .8rem; color: var(--text-dim); margin-top: .25rem; }
+
+  @keyframes fadeInUp {
+    from { opacity: 0; transform: translateY(30px); }
+    to { opacity: 1; transform: translateY(0); }
   }
 
-  .hero-cta-group {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 1rem;
-    flex-wrap: wrap;
+  /* ============ SECTIONS ============ */
+  section { position: relative; z-index: 1; padding: 5rem 1.5rem; }
+  .container { max-width: 1200px; margin: 0 auto; }
+  .section-label {
+    display: inline-flex; align-items: center; gap: .5rem;
+    font-size: .75rem; font-weight: 600; text-transform: uppercase; letter-spacing: .1em;
+    color: var(--accent2);
+    margin-bottom: 1rem;
+  }
+  .section-title {
+    font-size: clamp(1.8rem, 4vw, 2.8rem);
+    font-weight: 800;
+    line-height: 1.2;
+    margin-bottom: 1rem;
+    color: #fff;
+  }
+  .section-desc {
+    color: var(--text-dim);
+    font-size: 1.05rem;
+    max-width: 620px;
     margin-bottom: 3rem;
   }
 
-  .cli-snippet {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.75rem;
-    background: var(--surface-1);
-    border: 1px solid var(--border);
-    padding: 0.55rem 1rem;
-    border-radius: var(--radius-md);
-    font-family: var(--font-mono);
-    font-size: 0.85rem;
-    color: var(--text-primary);
+  /* ============ LIVE DEMO & CHAT ============ */
+  .demo-section { background: var(--bg2); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); }
+  
+  .demo-controls {
+    display: flex; justify-content: center; gap: .75rem; margin-bottom: 2rem; flex-wrap: wrap;
+  }
+  .demo-btn {
+    padding: .6rem 1.35rem;
+    background: rgba(217,119,6,.08);
+    border: 1px solid rgba(217,119,6,.25);
+    color: var(--accent2);
+    border-radius: 8px;
+    font-size: .85rem; font-weight: 600;
     cursor: pointer;
-    transition: all 0.15s ease;
+    transition: all .2s;
   }
+  .demo-btn:hover { background: rgba(217,119,6,.18); border-color: var(--accent2); color: #fff; }
+  .demo-btn.active { background: var(--accent); color: #000; border-color: var(--accent); }
 
-  .cli-snippet:hover {
-    border-color: var(--border-hover);
-    background: var(--surface-2);
-  }
-
-  .cli-snippet .prompt-sign {
-    color: var(--text-tertiary);
-  }
-
-  .cli-copy-btn {
-    color: var(--text-secondary);
-    display: flex;
-    align-items: center;
-  }
-
-  /* Metric chips banner */
-  .hero-chips {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 1rem;
-    max-width: 1000px;
+  .chat-demo {
+    max-width: 760px;
     margin: 0 auto;
-    text-align: left;
-  }
-
-  .hero-chip-card {
-    background: var(--surface-1);
+    background: var(--surface);
+    border-radius: 16px;
     border: 1px solid var(--border);
-    border-radius: var(--radius-md);
-    padding: 1rem 1.15rem;
-    transition: border-color 0.2s ease;
-  }
-
-  .hero-chip-card:hover {
-    border-color: var(--border-hover);
-  }
-
-  .hero-chip-title {
-    font-family: var(--font-mono);
-    font-size: 0.7rem;
-    color: var(--text-tertiary);
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
-    margin-bottom: 0.35rem;
-  }
-
-  .hero-chip-val {
-    font-size: 1.1rem;
-    font-weight: 700;
-    color: var(--text-primary);
-  }
-
-  .hero-chip-sub {
-    font-size: 0.75rem;
-    color: var(--text-secondary);
-    margin-top: 0.2rem;
-  }
-
-  /* Interactive Studio / Playground */
-  .studio-section {
-    padding: 4rem 0 6rem;
-  }
-
-  .section-header {
-    text-align: center;
-    margin-bottom: 2.5rem;
-  }
-
-  .section-tag {
-    font-family: var(--font-mono);
-    font-size: 0.75rem;
-    color: var(--accent);
-    text-transform: uppercase;
-    letter-spacing: 0.08em;
-    margin-bottom: 0.5rem;
-  }
-
-  .section-heading {
-    font-size: clamp(1.75rem, 3.5vw, 2.5rem);
-    font-weight: 700;
-    letter-spacing: -0.025em;
-    color: #fff;
-    margin-bottom: 0.75rem;
-  }
-
-  .section-subheading {
-    color: var(--text-secondary);
-    font-size: 1rem;
-    max-width: 600px;
-    margin: 0 auto;
-  }
-
-  /* Studio Workspace Card */
-  .studio-card {
-    background: var(--surface-1);
-    border: 1px solid var(--border);
-    border-radius: var(--radius-xl);
     overflow: hidden;
-    box-shadow: 0 25px 60px -15px rgba(0, 0, 0, 0.7), 0 0 0 1px rgba(255, 255, 255, 0.05);
+    box-shadow: 0 24px 80px rgba(0,0,0,.6);
   }
-
-  /* Top Control Toolbar */
-  .studio-controls {
-    padding: 1.25rem 1.5rem;
-    background: var(--surface-2);
+  .chat-header {
+    background: var(--bg3);
+    padding: .85rem 1.25rem;
+    display: flex; align-items: center; gap: .75rem;
     border-bottom: 1px solid var(--border);
-    display: flex;
-    flex-direction: column;
-    gap: 1rem;
   }
-
-  .studio-row-1 {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 1rem;
-    flex-wrap: wrap;
-  }
-
-  .preset-buttons {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    flex-wrap: wrap;
-  }
-
-  .preset-label {
-    font-family: var(--font-mono);
-    font-size: 0.75rem;
-    color: var(--text-tertiary);
-    margin-right: 0.25rem;
-  }
-
-  .preset-btn {
-    font-size: 0.775rem;
-    font-weight: 500;
-    padding: 0.3rem 0.65rem;
-    border-radius: var(--radius-sm);
-    background: var(--surface-3);
-    border: 1px solid var(--border);
-    color: var(--text-secondary);
-    transition: all 0.15s ease;
-  }
-
-  .preset-btn:hover {
-    color: var(--text-primary);
-    border-color: var(--border-hover);
-  }
-
-  .preset-btn.active {
-    background: var(--surface-4);
-    color: #fff;
-    border-color: var(--border-active);
-  }
-
-  .segmented-switch {
-    display: inline-flex;
-    background: var(--surface-3);
-    border: 1px solid var(--border);
-    border-radius: var(--radius-sm);
-    padding: 2px;
-  }
-
-  .segmented-btn {
-    font-size: 0.75rem;
-    font-weight: 500;
-    padding: 0.25rem 0.65rem;
-    border-radius: 4px;
-    color: var(--text-secondary);
-    transition: all 0.15s ease;
-  }
-
-  .segmented-btn.active {
-    background: var(--surface-1);
-    color: #fff;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.4);
-  }
-
-  /* Input and Action Row */
-  .studio-input-bar {
-    display: flex;
-    gap: 0.75rem;
-    align-items: center;
-  }
-
-  .url-input-wrap {
-    flex: 1;
-    position: relative;
-    display: flex;
-    align-items: center;
-  }
-
-  .url-input-icon {
-    position: absolute;
-    left: 0.85rem;
-    color: var(--text-tertiary);
-    pointer-events: none;
-  }
-
-  .url-input {
-    width: 100%;
-    background: var(--surface-1);
-    border: 1px solid var(--border);
-    border-radius: var(--radius-sm);
-    padding: 0.6rem 0.85rem 0.6rem 2.4rem;
-    color: #fff;
-    font-family: var(--font-mono);
-    font-size: 0.85rem;
-    outline: none;
-    transition: border-color 0.15s ease;
-  }
-
-  .url-input:focus {
-    border-color: var(--accent);
-  }
-
-  .tool-select-wrap {
-    position: relative;
-    min-width: 260px;
-  }
-
-  .tool-select {
-    width: 100%;
-    background: var(--surface-1);
-    border: 1px solid var(--border);
-    border-radius: var(--radius-sm);
-    padding: 0.6rem 2rem 0.6rem 0.85rem;
-    color: #fff;
-    font-family: var(--font-mono);
-    font-size: 0.8rem;
-    outline: none;
-    appearance: none;
-    cursor: pointer;
-  }
-
-  .tool-select-chevron {
-    position: absolute;
-    right: 0.85rem;
-    top: 50%;
-    transform: translateY(-50%);
-    pointer-events: none;
-    color: var(--text-tertiary);
-  }
-
-  .btn-run {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.5rem;
-    background: #fff;
+  .chat-avatar {
+    width: 32px; height: 32px; border-radius: 8px;
+    background: var(--gradient);
     color: #000;
-    font-weight: 600;
-    font-size: 0.825rem;
-    padding: 0.6rem 1.25rem;
-    border-radius: var(--radius-sm);
-    transition: all 0.15s ease;
-    white-space: nowrap;
+    display: flex; align-items: center; justify-content: center;
+    font-size: .95rem; font-weight: 800;
   }
-
-  .btn-run:hover {
-    background: #e4e4e7;
-  }
-
-  .btn-run:disabled {
-    opacity: 0.5;
-    cursor: not-allowed;
-  }
-
-  /* View Mode Switcher Header */
-  .inspector-header {
-    background: var(--surface-1);
-    border-bottom: 1px solid var(--border);
-    padding: 0 1.5rem;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-  }
-
-  .view-tabs {
-    display: flex;
-    gap: 0;
-  }
-
-  .view-tab {
-    padding: 0.85rem 1.2rem;
-    font-size: 0.825rem;
-    font-weight: 500;
-    color: var(--text-secondary);
-    border-bottom: 2px solid transparent;
-    transition: all 0.15s ease;
-    display: flex;
-    align-items: center;
-    gap: 0.45rem;
-  }
-
-  .view-tab:hover {
-    color: var(--text-primary);
-  }
-
-  .view-tab.active {
-    color: #fff;
-    border-bottom-color: #fff;
-  }
-
-  .protocol-badge {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.35rem;
-    font-family: var(--font-mono);
-    font-size: 0.7rem;
-    color: var(--text-tertiary);
-  }
-
-  .protocol-badge .status-dot {
-    width: 6px;
-    height: 6px;
-    border-radius: 50%;
-    background: var(--green);
-  }
-
-  /* Inspector Content Body */
-  .inspector-body {
-    padding: 1.5rem;
-    min-height: 480px;
-    background: var(--surface-1);
-  }
-
-  /* Visual View */
-  .gauges-grid {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 1rem;
-    margin-bottom: 1.5rem;
-  }
-
-  .gauge-box {
-    background: var(--surface-2);
-    border: 1px solid var(--border);
-    border-radius: var(--radius-md);
-    padding: 1.25rem;
-    text-align: center;
-    position: relative;
-  }
-
-  .gauge-svg-wrap {
-    width: 90px;
-    height: 90px;
-    margin: 0 auto 0.75rem;
-    position: relative;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
-
-  .gauge-score-text {
-    position: absolute;
-    font-size: 1.45rem;
-    font-weight: 700;
-    letter-spacing: -0.03em;
-    color: #fff;
-  }
-
-  .gauge-name {
-    font-size: 0.8rem;
-    font-weight: 600;
-    color: var(--text-primary);
-    margin-bottom: 0.2rem;
-  }
-
-  .gauge-status {
-    font-size: 0.7rem;
-    font-family: var(--font-mono);
-    color: var(--text-tertiary);
-  }
-
-  /* Core Web Vitals Row */
-  .cwv-grid {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 1rem;
-    margin-bottom: 1.5rem;
-  }
-
-  .cwv-box {
-    background: var(--surface-2);
-    border: 1px solid var(--border);
-    border-radius: var(--radius-md);
-    padding: 1rem 1.15rem;
-  }
-
-  .cwv-top {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    margin-bottom: 0.5rem;
-  }
-
-  .cwv-metric-name {
-    font-family: var(--font-mono);
-    font-size: 0.75rem;
-    color: var(--text-secondary);
-    font-weight: 600;
-  }
-
-  .status-chip {
-    font-size: 0.675rem;
-    font-weight: 600;
-    padding: 0.15rem 0.45rem;
-    border-radius: 4px;
-    text-transform: uppercase;
-    letter-spacing: 0.04em;
-  }
-
-  .status-chip.good {
-    background: var(--green-dim);
-    color: var(--green);
-    border: 1px solid var(--green-border);
-  }
-
-  .status-chip.warn {
-    background: var(--amber-dim);
-    color: var(--amber);
-    border: 1px solid rgba(245, 158, 11, 0.28);
-  }
-
-  .status-chip.poor {
-    background: var(--red-dim);
-    color: var(--red);
-    border: 1px solid var(--red-border);
-  }
-
-  .cwv-value {
-    font-size: 1.4rem;
-    font-weight: 700;
-    letter-spacing: -0.02em;
-    color: #fff;
-    margin-bottom: 0.25rem;
-  }
-
-  .cwv-meta {
-    font-size: 0.725rem;
-    color: var(--text-tertiary);
-    display: flex;
-    justify-content: space-between;
-  }
-
-  /* Diagnostics Table / Actionable List */
-  .diagnostics-panel {
-    background: var(--surface-2);
-    border: 1px solid var(--border);
-    border-radius: var(--radius-md);
-    overflow: hidden;
-  }
-
-  .diag-header {
-    padding: 0.85rem 1.15rem;
-    background: var(--surface-3);
-    border-bottom: 1px solid var(--border);
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-  }
-
-  .diag-title {
-    font-size: 0.825rem;
-    font-weight: 600;
-    color: var(--text-primary);
-  }
-
-  .diag-count {
-    font-family: var(--font-mono);
-    font-size: 0.725rem;
-    color: var(--text-tertiary);
-  }
-
-  .diag-list {
-    display: flex;
-    flex-direction: column;
-  }
-
-  .diag-item {
-    padding: 0.9rem 1.15rem;
-    border-bottom: 1px solid var(--border);
-    display: flex;
-    align-items: flex-start;
-    justify-content: space-between;
-    gap: 1rem;
-    transition: background 0.15s ease;
-  }
-
-  .diag-item:last-child {
-    border-bottom: none;
-  }
-
-  .diag-item:hover {
-    background: var(--surface-3);
-  }
-
-  .diag-info {
-    flex: 1;
-  }
-
-  .diag-name {
-    font-size: 0.85rem;
-    font-weight: 600;
-    color: var(--text-primary);
-    margin-bottom: 0.2rem;
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-  }
-
-  .diag-desc {
-    font-size: 0.775rem;
-    color: var(--text-secondary);
-  }
-
-  .diag-saving {
-    text-align: right;
-    white-space: nowrap;
-  }
-
-  .saving-badge {
-    display: inline-block;
-    font-family: var(--font-mono);
-    font-size: 0.75rem;
-    font-weight: 600;
-    color: var(--amber);
-    background: var(--amber-dim);
-    border: 1px solid rgba(245, 158, 11, 0.25);
-    padding: 0.2rem 0.55rem;
-    border-radius: 4px;
-  }
-
-  /* Agent View */
-  .agent-window {
-    background: var(--surface-2);
-    border: 1px solid var(--border);
-    border-radius: var(--radius-md);
-    padding: 1.25rem;
-    font-size: 0.875rem;
+  .chat-header-text { font-size: .85rem; font-weight: 600; color: #fff; }
+  .chat-header-sub { font-size: .7rem; color: var(--text-dim); }
+  
+  .chat-body { padding: 1.5rem; display: flex; flex-direction: column; gap: 1rem; min-height: 360px; }
+  .chat-msg {
+    max-width: 88%;
+    padding: .85rem 1.15rem;
+    border-radius: 14px;
+    font-size: .85rem;
     line-height: 1.6;
-    color: var(--text-secondary);
+    opacity: 0; transform: translateY(10px);
+    transition: all .4s;
   }
-
-  .agent-msg-role {
-    font-family: var(--font-mono);
-    font-size: 0.725rem;
-    font-weight: 600;
-    color: var(--text-tertiary);
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
-    margin-bottom: 0.5rem;
-    display: flex;
-    align-items: center;
-    gap: 0.4rem;
+  .chat-msg.visible { opacity: 1; transform: translateY(0); }
+  .chat-user {
+    align-self: flex-end;
+    background: var(--accent);
+    color: #000;
+    font-weight: 500;
+    border-bottom-right-radius: 4px;
   }
-
-  .agent-msg-role svg {
-    color: var(--accent);
-  }
-
-  .agent-bubble {
-    background: var(--surface-3);
+  .chat-ai {
+    align-self: flex-start;
+    background: var(--bg3);
+    color: var(--text);
+    border-bottom-left-radius: 4px;
     border: 1px solid var(--border);
-    border-radius: var(--radius-sm);
-    padding: 1rem 1.15rem;
-    margin-bottom: 1.25rem;
-    color: var(--text-primary);
+  }
+  .chat-ai .chat-score {
+    display: inline-flex; align-items: center; gap: .4rem;
+    background: rgba(16,185,129,.15);
+    color: var(--green);
+    border: 1px solid rgba(16,185,129,.3);
+    padding: .2rem .6rem;
+    border-radius: 6px;
+    font-weight: 700;
+    font-size: .85rem;
+    margin: .5rem .25rem 0 0;
+  }
+  .chat-ai .chat-score.warn {
+    background: rgba(245,158,11,.15);
+    color: var(--yellow);
+    border-color: rgba(245,158,11,.3);
+  }
+  .chat-ai .chat-score.bad {
+    background: rgba(244,63,94,.15);
+    color: var(--red);
+    border-color: rgba(244,63,94,.3);
   }
 
-  .code-block {
-    background: #000;
+  .typing-indicator {
+    align-self: flex-start;
+    display: flex; gap: 4px;
+    padding: .85rem 1.1rem;
+    background: var(--bg3);
+    border-radius: 14px;
+    opacity: 0; transition: opacity .3s;
     border: 1px solid var(--border);
-    border-radius: var(--radius-sm);
-    padding: 1rem;
-    font-family: var(--font-mono);
-    font-size: 0.8rem;
-    color: #e4e4e7;
-    overflow-x: auto;
-    margin: 0.75rem 0;
+  }
+  .typing-indicator.visible { opacity: 1; }
+  .typing-dot {
+    width: 6px; height: 6px;
+    background: var(--text-dim);
+    border-radius: 50%;
+    animation: typingBounce 1.4s infinite;
+  }
+  .typing-dot:nth-child(2) { animation-delay: .2s; }
+  .typing-dot:nth-child(3) { animation-delay: .4s; }
+  @keyframes typingBounce {
+    0%,60%,100% { transform: translateY(0); }
+    30% { transform: translateY(-5px); }
+  }
+
+  /* Terminal Simulation */
+  .terminal-wrapper {
+    max-width: 760px;
+    margin: 3rem auto 0;
+    border-radius: 16px;
+    overflow: hidden;
+    border: 1px solid var(--border);
+    box-shadow: 0 24px 80px rgba(0,0,0,.6);
+  }
+  .terminal-header {
+    background: var(--bg3);
+    padding: .75rem 1rem;
+    display: flex; align-items: center; gap: .5rem;
+    border-bottom: 1px solid var(--border);
+  }
+  .terminal-dot { width: 12px; height: 12px; border-radius: 50%; }
+  .terminal-dot.red { background: #f43f5e; }
+  .terminal-dot.yellow { background: #f59e0b; }
+  .terminal-dot.green { background: #10b981; }
+  .terminal-title {
+    flex: 1; text-align: center;
+    font-size: .75rem; color: var(--text-dim);
+    font-family: 'JetBrains Mono', monospace;
+  }
+  .terminal-body {
+    background: #050507;
+    padding: 1.5rem;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: .8rem;
+    line-height: 1.8;
+    min-height: 380px;
     position: relative;
-    line-height: 1.5;
-  }
-
-  .code-block .diff-add { color: #34d399; }
-  .code-block .diff-del { color: #f87171; }
-  .code-block .diff-info { color: #38bdf8; }
-
-  /* Protocol View */
-  .protocol-window {
-    background: #000;
-    border: 1px solid var(--border);
-    border-radius: var(--radius-md);
-    padding: 1.25rem;
-    font-family: var(--font-mono);
-    font-size: 0.8rem;
-    color: #a1a1aa;
     overflow-x: auto;
-    position: relative;
   }
-
-  .copy-code-btn {
-    position: absolute;
-    top: 0.85rem;
-    right: 0.85rem;
-    background: var(--surface-3);
-    border: 1px solid var(--border);
-    color: var(--text-secondary);
-    padding: 0.35rem 0.65rem;
-    border-radius: 4px;
-    font-size: 0.725rem;
-    font-family: var(--font-mono);
-    transition: all 0.15s ease;
+  .term-line { opacity: 0; transform: translateY(8px); transition: all .4s; white-space: pre-wrap; }
+  .term-line.visible { opacity: 1; transform: translateY(0); }
+  .term-prompt { color: var(--green); }
+  .term-cmd { color: #fff; font-weight: 600; }
+  .term-comment { color: var(--text-dim); font-style: italic; }
+  .term-output { color: var(--text-dim); }
+  .term-success { color: var(--green); }
+  .term-warn { color: var(--yellow); }
+  .term-error { color: var(--red); }
+  .term-accent { color: var(--accent2); }
+  .term-cyan { color: var(--cyan); }
+  .cursor-blink {
+    display: inline-block; width: 8px; height: 16px;
+    background: var(--green);
+    animation: blink 1s step-end infinite;
+    vertical-align: middle; margin-left: 2px;
   }
+  @keyframes blink { 50% { opacity: 0; } }
 
-  .copy-code-btn:hover {
-    color: #fff;
-    border-color: var(--border-hover);
-  }
-
-  /* 6 Workflow Tools Section */
-  .tools-section {
-    padding: 5rem 0;
-    border-top: 1px solid var(--border);
-  }
-
+  /* ============ TOOLS GRID ============ */
   .tools-grid {
     display: grid;
-    grid-template-columns: repeat(3, 1fr);
+    grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
     gap: 1.25rem;
   }
-
   .tool-card {
-    background: var(--surface-1);
+    background: var(--surface);
     border: 1px solid var(--border);
-    border-radius: var(--radius-lg);
+    border-radius: 16px;
     padding: 1.5rem;
-    transition: all 0.2s ease;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-  }
-
-  .tool-card:hover {
-    border-color: var(--border-hover);
-    transform: translateY(-2px);
-    background: var(--surface-2);
-  }
-
-  .tool-header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    margin-bottom: 0.85rem;
-  }
-
-  .tool-name {
-    font-family: var(--font-mono);
-    font-size: 0.85rem;
-    font-weight: 700;
-    color: #fff;
-  }
-
-  .tool-tag {
-    font-family: var(--font-mono);
-    font-size: 0.675rem;
-    padding: 0.15rem 0.45rem;
-    border-radius: 4px;
-    background: var(--surface-3);
-    color: var(--text-secondary);
-    border: 1px solid var(--border);
-  }
-
-  .tool-desc {
-    font-size: 0.825rem;
-    color: var(--text-secondary);
-    line-height: 1.55;
-    margin-bottom: 1.25rem;
-  }
-
-  .tool-params {
-    background: var(--surface-3);
-    border: 1px solid var(--border);
-    border-radius: var(--radius-sm);
-    padding: 0.65rem 0.85rem;
-    font-family: var(--font-mono);
-    font-size: 0.725rem;
-    color: var(--text-tertiary);
-  }
-
-  .tool-params span {
-    color: var(--accent);
-  }
-
-  /* Configuration Section */
-  .config-section {
-    padding: 5rem 0;
-    border-top: 1px solid var(--border);
-  }
-
-  .config-card {
-    background: var(--surface-1);
-    border: 1px solid var(--border);
-    border-radius: var(--radius-xl);
+    transition: all .3s;
+    position: relative;
     overflow: hidden;
   }
+  .tool-card::before {
+    content: '';
+    position: absolute; top: 0; left: 0; right: 0;
+    height: 2px;
+    background: var(--gradient);
+    opacity: 0;
+    transition: opacity .3s;
+  }
+  .tool-card:hover { border-color: var(--accent); transform: translateY(-4px); box-shadow: 0 12px 40px rgba(0,0,0,.4); }
+  .tool-card:hover::before { opacity: 1; }
+  .tool-icon {
+    width: 44px; height: 44px;
+    border-radius: 12px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.35rem;
+    margin-bottom: 1rem;
+  }
+  .tool-card h3 { font-size: 1.05rem; font-weight: 700; margin-bottom: .5rem; font-family: 'JetBrains Mono', monospace; }
+  .tool-card p { font-size: .85rem; color: var(--text-dim); line-height: 1.55; }
+  .tool-tag {
+    display: inline-block;
+    background: rgba(217,119,6,.1);
+    color: var(--accent2);
+    padding: .2rem .65rem;
+    border-radius: 100px;
+    font-size: .725rem; font-weight: 600;
+    margin-top: .85rem;
+    border: 1px solid rgba(217,119,6,.2);
+  }
 
-  .config-tabs {
+  /* ============ GAUGES & METRICS ============ */
+  .gauges-section { background: var(--bg2); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); }
+  .gauges-row {
+    display: flex; justify-content: center; gap: 3rem; flex-wrap: wrap;
+    margin-bottom: 3rem;
+  }
+  .gauge-item { text-align: center; }
+  .gauge-svg { width: 130px; height: 130px; }
+  .gauge-bg { fill: none; stroke: var(--bg3); stroke-width: 8; }
+  .gauge-fill { fill: none; stroke-width: 8; stroke-linecap: round; transition: stroke-dashoffset 2s ease; }
+  .gauge-text { font-size: 2rem; font-weight: 800; fill: var(--text); font-family: 'Inter', sans-serif; }
+  .gauge-label { font-size: .85rem; color: var(--text-dim); margin-top: .5rem; font-weight: 600; }
+
+  .metrics-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1rem;
+    max-width: 900px;
+    margin: 0 auto;
+  }
+  .metric-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 1.25rem;
+    text-align: center;
+    transition: transform .3s, border-color .3s;
+  }
+  .metric-card:hover { transform: translateY(-2px); border-color: var(--border-hover); }
+  .metric-value { font-size: 1.5rem; font-weight: 800; margin-bottom: .25rem; }
+  .metric-name { font-size: .75rem; color: var(--text-dim); text-transform: uppercase; letter-spacing: .05em; font-weight: 600; }
+
+  /* ============ WORKFLOW ============ */
+  .workflow-steps {
     display: flex;
-    background: var(--surface-2);
-    border-bottom: 1px solid var(--border);
+    gap: 1.5rem;
+    overflow-x: auto;
+    padding: 1.5rem 0;
+  }
+  .workflow-step {
+    flex: 1;
+    min-width: 250px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 1.75rem;
+    transition: all .3s;
+  }
+  .workflow-step:hover { border-color: var(--accent); transform: translateY(-4px); }
+  .step-number {
+    width: 38px; height: 38px;
+    background: var(--gradient);
+    color: #000;
+    border-radius: 10px;
+    display: flex; align-items: center; justify-content: center;
+    font-weight: 800; font-size: 1.1rem;
+    margin-bottom: 1.25rem;
+  }
+  .workflow-step h3 { font-size: 1.05rem; font-weight: 700; margin-bottom: .5rem; }
+  .workflow-step p { font-size: .85rem; color: var(--text-dim); }
+  .workflow-step code {
+    display: block;
+    background: #050507;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: .75rem;
+    margin-top: 1rem;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: .75rem;
+    color: var(--green);
     overflow-x: auto;
   }
 
-  .config-tab {
-    padding: 0.85rem 1.25rem;
-    font-size: 0.825rem;
-    font-weight: 500;
-    color: var(--text-secondary);
-    border-bottom: 2px solid transparent;
-    transition: all 0.15s ease;
-    white-space: nowrap;
-    display: flex;
-    align-items: center;
-    gap: 0.45rem;
-  }
-
-  .config-tab:hover {
-    color: #fff;
-  }
-
-  .config-tab.active {
-    color: #fff;
-    border-bottom-color: #fff;
-    background: var(--surface-1);
-  }
-
-  .config-body {
-    padding: 1.5rem;
-  }
-
-  .config-field-row {
-    display: flex;
-    align-items: center;
-    gap: 1rem;
-    margin-bottom: 1.25rem;
-    flex-wrap: wrap;
-  }
-
-  .config-field-label {
-    font-size: 0.8rem;
-    font-weight: 500;
-    color: var(--text-secondary);
-  }
-
-  .config-key-input {
-    flex: 1;
-    min-width: 280px;
-    background: var(--surface-2);
+  /* ============ COMPARISON TABLE ============ */
+  .comparison-table {
+    width: 100%;
+    max-width: 860px;
+    margin: 0 auto;
+    border-collapse: separate;
+    border-spacing: 0;
+    border-radius: 16px;
+    overflow: hidden;
     border: 1px solid var(--border);
-    border-radius: var(--radius-sm);
-    padding: 0.5rem 0.85rem;
-    font-family: var(--font-mono);
-    font-size: 0.8rem;
-    color: #fff;
-    outline: none;
+    background: var(--surface);
   }
-
-  .config-key-input:focus {
-    border-color: var(--accent);
+  .comparison-table th {
+    background: var(--bg3);
+    padding: 1.1rem;
+    font-size: .8rem;
+    text-transform: uppercase;
+    letter-spacing: .05em;
+    color: var(--text-dim);
+    font-weight: 700;
+    text-align: left;
   }
+  .comparison-table td {
+    padding: .9rem 1.1rem;
+    border-top: 1px solid var(--border);
+    font-size: .875rem;
+  }
+  .comparison-table tr:nth-child(even) td { background: rgba(255,255,255,.015); }
+  .check { color: var(--green); font-weight: 700; }
+  .cross { color: var(--text-dim); }
 
-  /* Comparison Section */
-  .comparison-section {
-    padding: 5rem 0;
+  /* ============ CTA SECTION ============ */
+  .cta-section {
+    text-align: center;
+    padding: 6rem 1.5rem;
+    position: relative;
     border-top: 1px solid var(--border);
   }
-
-  .comp-table {
-    width: 100%;
-    border-collapse: collapse;
-    font-size: 0.85rem;
-    text-align: left;
-    background: var(--surface-1);
+  .cta-section h2 {
+    font-size: clamp(2rem, 5vw, 3.2rem);
+    font-weight: 900;
+    margin-bottom: 1.25rem;
+  }
+  .cta-section p {
+    color: var(--text-dim);
+    font-size: 1.1rem;
+    max-width: 500px;
+    margin: 0 auto 2.5rem;
+  }
+  .install-block {
+    display: inline-flex; align-items: center; gap: .75rem;
+    background: #050507;
     border: 1px solid var(--border);
-    border-radius: var(--radius-lg);
-    overflow: hidden;
+    border-radius: 12px;
+    padding: .85rem 1.5rem;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: .9rem;
+    margin-bottom: 2rem;
+    cursor: pointer;
+    transition: all .2s;
   }
+  .install-block:hover { border-color: var(--accent); background: var(--surface); }
+  .install-block .dollar { color: var(--green); }
+  .install-block .copy-icon { color: var(--text-dim); transition: color .2s; }
+  .install-block:hover .copy-icon { color: var(--accent2); }
 
-  .comp-table th, .comp-table td {
-    padding: 0.95rem 1.25rem;
-    border-bottom: 1px solid var(--border);
-  }
-
-  .comp-table th {
-    background: var(--surface-2);
-    font-family: var(--font-mono);
-    font-size: 0.75rem;
-    color: var(--text-secondary);
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
-    font-weight: 600;
-  }
-
-  .comp-table tr:last-child td {
-    border-bottom: none;
-  }
-
-  .comp-check {
-    color: var(--green);
-    font-weight: 700;
-  }
-
-  .comp-cross {
-    color: var(--text-tertiary);
-  }
-
-  /* Footer */
+  /* ============ FOOTER ============ */
   footer {
     border-top: 1px solid var(--border);
-    padding: 3rem 0;
-    background: var(--surface-1);
+    padding: 3rem 1.5rem;
+    text-align: center;
+    color: var(--text-dim);
+    font-size: .85rem;
+    background: var(--bg2);
+  }
+  footer a { color: var(--accent2); text-decoration: none; }
+  footer a:hover { text-decoration: underline; }
+
+  /* ============ SCROLL REVEAL ============ */
+  .reveal {
+    opacity: 0; transform: translateY(30px);
+    transition: opacity .7s ease, transform .7s ease;
+  }
+  .reveal.visible {
+    opacity: 1; transform: translateY(0);
   }
 
-  .footer-wrap {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    flex-wrap: wrap;
-    gap: 1.5rem;
-    font-size: 0.825rem;
-    color: var(--text-tertiary);
+  /* ============ INTEGRATIONS LOGOS ============ */
+  .integrations-row {
+    display: flex; justify-content: center; align-items: center; gap: 2.5rem; flex-wrap: wrap;
+    margin-top: 1.5rem;
   }
-
-  .footer-links {
-    display: flex;
-    gap: 1.5rem;
+  .integration-item {
+    display: flex; align-items: center; gap: .5rem;
+    font-size: .875rem; font-weight: 600; color: var(--text-dim);
   }
+  .integration-item svg { width: 24px; height: 24px; color: var(--accent2); }
 
-  .footer-links a:hover {
-    color: var(--text-primary);
-  }
-
-  /* Toast Notification */
-  .toast {
-    position: fixed;
-    bottom: 1.5rem;
-    right: 1.5rem;
-    background: #fff;
-    color: #000;
-    padding: 0.65rem 1.15rem;
-    border-radius: var(--radius-sm);
-    font-size: 0.825rem;
-    font-weight: 600;
-    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
-    transform: translateY(100px);
-    opacity: 0;
-    transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
-    z-index: 1000;
-    pointer-events: none;
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-  }
-
-  .toast.show {
-    transform: translateY(0);
-    opacity: 1;
-  }
-
-  /* Responsive */
-  @media (max-width: 900px) {
+  /* ============ RESPONSIVE ============ */
+  @media (max-width: 820px) {
     .nav-links { display: none; }
-    .hero-chips { grid-template-columns: repeat(2, 1fr); }
-    .gauges-grid { grid-template-columns: repeat(2, 1fr); }
-    .cwv-grid { grid-template-columns: 1fr; }
+    .hamburger-btn { display: flex; }
+    .hero-stats { gap: 1.5rem; }
     .tools-grid { grid-template-columns: 1fr; }
-    .studio-input-bar { flex-direction: column; align-items: stretch; }
-    .btn-run { justify-content: center; }
+    .gauges-row { gap: 1.5rem; }
+    .workflow-steps { flex-direction: column; }
+    .workflow-step { min-width: auto; }
   }
 </style>
 </head>
 <body>
 
-<!-- Header -->
-<header>
-  <div class="container nav-wrap">
-    <div class="brand">
-      <div class="brand-icon">
-        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
-      </div>
-      <span>PageSpeed MCP</span>
-      <span class="badge-v2">v2.0.0</span>
-    </div>
+<canvas id="particles-canvas"></canvas>
 
-    <nav class="nav-links">
-      <a href="#studio" class="nav-link">Interactive Studio</a>
-      <a href="#tools" class="nav-link">v2 Tools</a>
-      <a href="#config" class="nav-link">Configuration</a>
-      <a href="#comparison" class="nav-link">Why PSI MCP</a>
-      <a href="https://ruslanlap.github.io/pagespeed-insights-mcp/" target="_blank" class="nav-link">Documentation</a>
-    </nav>
+<!-- NAV -->
+<nav id="main-nav">
+  <a href="#" class="nav-brand">
+    <svg viewBox="0 0 32 32" fill="none">
+      <rect width="32" height="32" rx="8" fill="url(#nav-grad)"/>
+      <path d="M8 22V10l8 6-8 6z" fill="#000"/>
+      <path d="M18 12h6M18 16h4M18 20h5" stroke="#000" stroke-width="2" stroke-linecap="round"/>
+      <defs><linearGradient id="nav-grad" x1="0" y1="0" x2="32" y2="32"><stop stop-color="#d97706"/><stop offset="1" stop-color="#f59e0b"/></linearGradient></defs>
+    </svg>
+    <span>PageSpeed MCP</span>
+    <span class="badge-v2">v2.0</span>
+  </a>
 
-    <div class="nav-actions">
-      <a href="https://github.com/ruslanlap/pagespeed-insights-mcp" target="_blank" class="btn-ghost">
-        <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/></svg>
-        <span>GitHub</span>
-      </a>
-      <button class="btn-primary" onclick="copySnippet('npx -y pagespeed-insights-mcp', 'Copied npx command')">
-        <span>Copy MCP</span>
-      </button>
-    </div>
+  <ul class="nav-links">
+    <li><a href="#demo">Demo</a></li>
+    <li><a href="#tools">Tools</a></li>
+    <li><a href="#scores">Metrics</a></li>
+    <li><a href="#how-it-works">How It Works</a></li>
+    <li><a href="#compare">Compare</a></li>
+    <li><a href="https://ruslanlap.github.io/pagespeed-insights-mcp/" target="_blank">Docs</a></li>
+  </ul>
+
+  <div class="nav-actions">
+    <a href="https://github.com/ruslanlap/pagespeed-insights-mcp" class="nav-cta" target="_blank">
+      <svg width="15" height="15" viewBox="0 0 16 16" fill="currentColor"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0016 8c0-4.42-3.58-8-8-8z"/></svg>
+      <span>GitHub</span>
+    </a>
+    <button class="hamburger-btn" id="mobile-toggle" aria-label="Toggle navigation menu" onclick="toggleMobileMenu()">
+      <div class="hamburger-line"></div>
+      <div class="hamburger-line"></div>
+      <div class="hamburger-line"></div>
+    </button>
   </div>
-</header>
+</nav>
 
-<!-- Hero -->
+<!-- Mobile Navigation Drawer -->
+<div class="mobile-drawer" id="mobile-drawer">
+  <a href="#demo" onclick="closeMobileMenu()"><span>Interactive Demo</span> <span>⚡</span></a>
+  <a href="#tools" onclick="closeMobileMenu()"><span>6 Workflow Tools</span> <span>🛠️</span></a>
+  <a href="#scores" onclick="closeMobileMenu()"><span>Live Metrics & Gauges</span> <span>📊</span></a>
+  <a href="#how-it-works" onclick="closeMobileMenu()"><span>Getting Started</span> <span>🚀</span></a>
+  <a href="#compare" onclick="closeMobileMenu()"><span>Comparison Matrix</span> <span>⚖️</span></a>
+  <a href="https://ruslanlap.github.io/pagespeed-insights-mcp/" target="_blank" onclick="closeMobileMenu()"><span>Full Documentation</span> <span>↗</span></a>
+</div>
+
+<!-- HERO -->
 <section class="hero">
-  <div class="container">
-    <div class="hero-pill">
-      <span class="dot"></span>
-      <span>MODEL CONTEXT PROTOCOL · GOOGLE PAGESPEED V2.0</span>
+  <div class="hero-content">
+    <div class="hero-badge">
+      <span class="pulse"></span>
+      Model Context Protocol &middot; Google PageSpeed v2.0
     </div>
-
     <h1>
-      Autonomous Web Performance<br>
-      <span class="hero-gradient-text">Intelligence for AI Agents</span>
+      Web Performance Intelligence<br>
+      <span class="gradient-text">For AI Coding Assistants</span>
     </h1>
-
-    <p class="hero-desc">
-      Empower Claude, Cursor, and Windsurf to run Lighthouse 12 audits, query 28-day Chrome UX Report field telemetry, diagnose bottlenecks, and generate actionable code patches.
+    <p>
+      Give Claude, Cursor, and Windsurf direct diagnostic access to Lighthouse audits, Chrome UX Report (CrUX) field data, and smart remediation diffs.
     </p>
-
-    <div class="hero-cta-group">
-      <a href="#studio" class="btn-primary">
-        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="5 3 19 12 5 21 5 3"/></svg>
-        <span>Launch MCP Studio</span>
+    <div class="hero-actions">
+      <a href="https://github.com/ruslanlap/pagespeed-insights-mcp" class="btn btn-primary" target="_blank">
+        <svg width="18" height="18" viewBox="0 0 16 16" fill="currentColor"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0016 8c0-4.42-3.58-8-8-8z"/></svg>
+        Get Started
       </a>
-      <div class="cli-snippet" onclick="copySnippet('npx -y pagespeed-insights-mcp', 'Copied npx command')">
-        <span class="prompt-sign">$</span>
-        <span>npx -y pagespeed-insights-mcp</span>
-        <span class="cli-copy-btn">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
-        </span>
-      </div>
+      <a href="#demo" class="btn btn-secondary">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+        Watch Live Demo
+      </a>
     </div>
-
-    <div class="hero-chips">
-      <div class="hero-chip-card">
-        <div class="hero-chip-title">Workflow Architecture</div>
-        <div class="hero-chip-val">6 Tools</div>
-        <div class="hero-chip-sub">Focused v2 API Surface</div>
+    <div class="hero-stats">
+      <div class="hero-stat">
+        <div class="num" id="counter-tools">6</div>
+        <div class="label">v2 Workflow Tools</div>
       </div>
-      <div class="hero-chip-card">
-        <div class="hero-chip-title">Data Sources</div>
-        <div class="hero-chip-val">Lab + CrUX</div>
-        <div class="hero-chip-sub">Lighthouse 12 & Field p75</div>
+      <div class="hero-stat">
+        <div class="num" id="counter-categories">5</div>
+        <div class="label">Audit Categories</div>
       </div>
-      <div class="hero-chip-card">
-        <div class="hero-chip-title">Diagnostic Lenses</div>
-        <div class="hero-chip-val">7 Domains</div>
-        <div class="hero-chip-sub">JS, CSS, Network, Images...</div>
+      <div class="hero-stat">
+        <div class="num" id="counter-metrics">50+</div>
+        <div class="label">Metrics & CWV Tracked</div>
       </div>
-      <div class="hero-chip-card">
-        <div class="hero-chip-title">Registry Verification</div>
-        <div class="hero-chip-val">Official MCP</div>
-        <div class="hero-chip-sub">Apache 2.0 Open Source</div>
+      <div class="hero-stat">
+        <div class="num">Apache-2.0</div>
+        <div class="label">Open Source License</div>
       </div>
     </div>
   </div>
 </section>
 
-<!-- Interactive MCP Studio -->
-<section id="studio" class="studio-section">
-  <div class="container">
-    <div class="section-header">
-      <div class="section-tag">Interactive Simulation</div>
-      <h2 class="section-heading">MCP Performance Studio</h2>
-      <p class="section-subheading">Test live tool calls, inspect multi-modal reports, and see how AI models digest PageSpeed structured outputs.</p>
-    </div>
-
-    <div class="studio-card">
-      <!-- Toolbar Controls -->
-      <div class="studio-controls">
-        <div class="studio-row-1">
-          <div class="preset-buttons">
-            <span class="preset-label">Presets:</span>
-            <button class="preset-btn active" onclick="loadPreset('vercel', this)">vercel.com</button>
-            <button class="preset-btn" onclick="loadPreset('github', this)">github.com</button>
-            <button class="preset-btn" onclick="loadPreset('linear', this)">linear.app</button>
-            <button class="preset-btn" onclick="loadPreset('slowstore', this)">slow-store.dev</button>
-          </div>
-
-          <div class="segmented-switch" id="strategy-switch">
-            <button class="segmented-btn active" onclick="setStrategy('mobile', this)">Mobile (Moto G4)</button>
-            <button class="segmented-btn" onclick="setStrategy('desktop', this)">Desktop</button>
-          </div>
-        </div>
-
-        <div class="studio-input-bar">
-          <div class="url-input-wrap">
-            <div class="url-input-icon">
-              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
-            </div>
-            <input type="text" id="target-url" class="url-input" value="https://vercel.com">
-          </div>
-
-          <div class="tool-select-wrap">
-            <select id="tool-select" class="tool-select" onchange="onToolSelectChange()">
-              <option value="pagespeed_analyze_page">pagespeed_analyze_page (summary)</option>
-              <option value="pagespeed_analyze_page_recs">pagespeed_analyze_page (recommendations)</option>
-              <option value="pagespeed_diagnose_page">pagespeed_diagnose_page (render-blocking)</option>
-              <option value="pagespeed_get_field_data">pagespeed_get_field_data (CrUX p75)</option>
-              <option value="pagespeed_compare_pages">pagespeed_compare_pages (baseline)</option>
-            </select>
-            <div class="tool-select-chevron">
-              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
-            </div>
-          </div>
-
-          <button id="run-btn" class="btn-run" onclick="executeSimulatedCall()">
-            <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"/></svg>
-            <span>Execute Tool</span>
-          </button>
-        </div>
+<!-- INTEGRATIONS -->
+<section style="padding: 2rem 1.5rem 4rem; z-index: 1; position: relative;">
+  <div class="container reveal">
+    <p style="text-align: center; color: var(--text-dim); font-size: .85rem; margin-bottom: 1.25rem;">Seamless native support across AI agents</p>
+    <div class="integrations-row">
+      <div class="integration-item">
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z"/></svg>
+        Claude Desktop
       </div>
-
-      <!-- Inspector View Tabs -->
-      <div class="inspector-header">
-        <div class="view-tabs">
-          <button class="view-tab active" onclick="switchView('visual', this)">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="9" y1="21" x2="9" y2="9"/></svg>
-            <span>Visual Dashboard</span>
-          </button>
-          <button class="view-tab" onclick="switchView('agent', this)">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2z"/><path d="M8 14s1.5 2 4 2 4-2 4-2"/><line x1="9" y1="9" x2="9.01" y2="9"/><line x1="15" y1="9" x2="15.01" y2="9"/></svg>
-            <span>Claude AI Session</span>
-          </button>
-          <button class="view-tab" onclick="switchView('protocol', this)">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
-            <span>MCP JSON-RPC Wire</span>
-          </button>
-        </div>
-
-        <div class="protocol-badge">
-          <span class="status-dot"></span>
-          <span id="runtime-status">Transport: stdio · cached (120s TTL)</span>
-        </div>
+      <div class="integration-item">
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
+        Cursor & Windsurf
       </div>
-
-      <!-- Inspector Content Body -->
-      <div class="inspector-body">
-        
-        <!-- Tab 1: Visual View -->
-        <div id="view-visual">
-          <div class="gauges-grid">
-            <div class="gauge-box">
-              <div class="gauge-svg-wrap">
-                <svg width="84" height="84" viewBox="0 0 36 36">
-                  <path d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="var(--surface-4)" stroke-width="3.5" />
-                  <path id="gauge-perf-path" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="var(--green)" stroke-width="3.5" stroke-dasharray="98, 100" stroke-linecap="round" />
-                </svg>
-                <div class="gauge-score-text" id="score-perf">98</div>
-              </div>
-              <div class="gauge-name">Performance</div>
-              <div class="gauge-status" id="status-perf">Optimal</div>
-            </div>
-
-            <div class="gauge-box">
-              <div class="gauge-svg-wrap">
-                <svg width="84" height="84" viewBox="0 0 36 36">
-                  <path d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="var(--surface-4)" stroke-width="3.5" />
-                  <path id="gauge-a11y-path" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="var(--green)" stroke-width="3.5" stroke-dasharray="100, 100" stroke-linecap="round" />
-                </svg>
-                <div class="gauge-score-text" id="score-a11y">100</div>
-              </div>
-              <div class="gauge-name">Accessibility</div>
-              <div class="gauge-status" id="status-a11y">WCAG 2.2 Ready</div>
-            </div>
-
-            <div class="gauge-box">
-              <div class="gauge-svg-wrap">
-                <svg width="84" height="84" viewBox="0 0 36 36">
-                  <path d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="var(--surface-4)" stroke-width="3.5" />
-                  <path id="gauge-bp-path" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="var(--green)" stroke-width="3.5" stroke-dasharray="100, 100" stroke-linecap="round" />
-                </svg>
-                <div class="gauge-score-text" id="score-bp">100</div>
-              </div>
-              <div class="gauge-name">Best Practices</div>
-              <div class="gauge-status" id="status-bp">Modern Web Standards</div>
-            </div>
-
-            <div class="gauge-box">
-              <div class="gauge-svg-wrap">
-                <svg width="84" height="84" viewBox="0 0 36 36">
-                  <path d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="var(--surface-4)" stroke-width="3.5" />
-                  <path id="gauge-seo-path" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="var(--green)" stroke-width="3.5" stroke-dasharray="100, 100" stroke-linecap="round" />
-                </svg>
-                <div class="gauge-score-text" id="score-seo">100</div>
-              </div>
-              <div class="gauge-name">SEO</div>
-              <div class="gauge-status" id="status-seo">Crawlable & Valid</div>
-            </div>
-          </div>
-
-          <!-- Core Web Vitals Row -->
-          <div class="cwv-grid">
-            <div class="cwv-box">
-              <div class="cwv-top">
-                <span class="cwv-metric-name">Largest Contentful Paint (LCP)</span>
-                <span class="status-chip good" id="chip-lcp">Good</span>
-              </div>
-              <div class="cwv-value" id="val-lcp">0.9 s</div>
-              <div class="cwv-meta">
-                <span>Lab: 0.9s</span>
-                <span id="field-lcp">CrUX p75: 1.2s</span>
-              </div>
-            </div>
-
-            <div class="cwv-box">
-              <div class="cwv-top">
-                <span class="cwv-metric-name">Interaction to Next Paint (INP)</span>
-                <span class="status-chip good" id="chip-inp">Good</span>
-              </div>
-              <div class="cwv-value" id="val-inp">38 ms</div>
-              <div class="cwv-meta">
-                <span>TBT Lab: 10ms</span>
-                <span id="field-inp">CrUX p75: 38ms</span>
-              </div>
-            </div>
-
-            <div class="cwv-box">
-              <div class="cwv-top">
-                <span class="cwv-metric-name">Cumulative Layout Shift (CLS)</span>
-                <span class="status-chip good" id="chip-cls">Good</span>
-              </div>
-              <div class="cwv-value" id="val-cls">0.001</div>
-              <div class="cwv-meta">
-                <span>Lab: 0.001</span>
-                <span id="field-cls">CrUX p75: 0.000</span>
-              </div>
-            </div>
-          </div>
-
-          <!-- Opportunities / Diagnostics -->
-          <div class="diagnostics-panel">
-            <div class="diag-header">
-              <div class="diag-title">Prioritized Diagnostics & Savings</div>
-              <div class="diag-count" id="diag-summary">1 audit item · 0.08s potential gain</div>
-            </div>
-            <div class="diag-list" id="diag-list-items">
-              <div class="diag-item">
-                <div class="diag-info">
-                  <div class="diag-name">
-                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--green)" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
-                    <span>Preload key hero asset font-display: swap</span>
-                  </div>
-                  <div class="diag-desc">Web fonts are self-hosted and correctly hinted via Link headers.</div>
-                </div>
-                <div class="diag-saving">
-                  <span class="saving-badge" style="color: var(--green); background: var(--green-dim); border-color: var(--green-border);">Passed</span>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <!-- Tab 2: Agent View -->
-        <div id="view-agent" style="display: none;">
-          <div class="agent-window">
-            <div class="agent-msg-role">
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2z"/></svg>
-              <span>Claude 3.7 Sonnet · Performance Engineer Agent</span>
-            </div>
-            <div class="agent-bubble" id="agent-response-text">
-              I executed <code>pagespeed_analyze_page</code> for <code>https://vercel.com</code> with strategy <code>mobile</code>.<br><br>
-              <strong>Audit Findings:</strong><br>
-              • Performance score is <strong>98/100</strong> with a sub-second LCP (0.9s) and negligible CLS (0.001).<br>
-              • The page utilizes edge caching with a 45ms TTFB. Next-gen image formats (AVIF/WebP) and critical inline CSS are already optimally deployed.<br><br>
-              <strong>Autonomous Recommendation:</strong><br>
-              No high-priority remediation required. The site meets all Google Core Web Vitals thresholds for the 75th percentile of real-world mobile Chrome users.
-            </div>
-
-            <div class="agent-msg-role">
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
-              <span>Proposed Code Remediation Diff</span>
-            </div>
-            <div class="code-block" id="agent-diff-block">
-<span class="diff-info"># No code changes needed — performance is in optimal tier (98/100).</span>
-            </div>
-          </div>
-        </div>
-
-        <!-- Tab 3: Protocol View -->
-        <div id="view-protocol" style="display: none;">
-          <div class="protocol-window">
-            <button class="copy-code-btn" onclick="copySnippet(document.getElementById('protocol-raw-json').innerText, 'Copied MCP JSON payload')">Copy JSON</button>
-            <pre id="protocol-raw-json">{
-  "jsonrpc": "2.0",
-  "id": 1,
-  "result": {
-    "tool": "pagespeed_analyze_page",
-    "structuredContent": {
-      "url": "https://vercel.com",
-      "strategy": "mobile",
-      "scores": { "performance": 98, "accessibility": 100, "bestPractices": 100, "seo": 100 },
-      "metrics": {
-        "lcp": { "value": 920, "unit": "ms", "category": "FAST" },
-        "fcp": { "value": 680, "unit": "ms", "category": "FAST" },
-        "cls": { "value": 0.001, "category": "FAST" },
-        "tbt": { "value": 10, "unit": "ms", "category": "FAST" }
-      },
-      "crux": {
-        "available": true,
-        "lcp_p75": 1200,
-        "inp_p75": 38,
-        "cls_p75": 0.000
-      }
-    }
-  }
-}</pre>
-          </div>
-        </div>
-
+      <div class="integration-item">
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12s5.37 12 12 12 12-5.37 12-12S18.63 0 12 0zm5.5 16.5h-11v-1h11v1zm0-3h-11v-1h11v1zm0-3h-11v-1h11v1zm0-3h-11v-1h11v1z"/></svg>
+        OpenAI Codex
+      </div>
+      <div class="integration-item">
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg>
+        Docker
+      </div>
+      <div class="integration-item">
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm-1-13h2v6h-2zm0 8h2v2h-2z"/></svg>
+        Any MCP Client
       </div>
     </div>
   </div>
 </section>
 
-<!-- 6 v2 Workflow Tools -->
-<section id="tools" class="tools-section">
+<!-- LIVE DEMO -->
+<section id="demo" class="demo-section">
   <div class="container">
-    <div class="section-header">
-      <div class="section-tag">v2 Architecture</div>
-      <h2 class="section-heading">6 High-Signal Workflow Tools</h2>
-      <p class="section-subheading">Streamlined from monolithic wrappers into focused, high-precision tools designed specifically for AI agent tool calling.</p>
+    <div class="reveal" style="text-align: center;">
+      <div class="section-label">⚡ Live Simulation</div>
+      <h2 class="section-title">See It In Action</h2>
+      <p class="section-desc" style="margin: 0 auto 2rem;">Watch how PageSpeed MCP analyzes websites and generates actionable fixes directly inside your AI assistant.</p>
     </div>
 
-    <div class="tools-grid">
-      <div class="tool-card">
-        <div>
-          <div class="tool-header">
-            <span class="tool-name">pagespeed_analyze_page</span>
-            <span class="tool-tag">Read-Only</span>
+    <div class="demo-controls reveal">
+      <button class="demo-btn active" data-demo="analyze" onclick="runDemo('analyze', this)">Full Analysis</button>
+      <button class="demo-btn" data-demo="recommendations" onclick="runDemo('recommendations', this)">Recommendations</button>
+      <button class="demo-btn" data-demo="diagnose" onclick="runDemo('diagnose', this)">Diagnose Problem</button>
+      <button class="demo-btn" data-demo="compare" onclick="runDemo('compare', this)">Compare URLs</button>
+    </div>
+
+    <!-- Chat-style Demo -->
+    <div class="reveal">
+      <div class="chat-demo" id="chat-demo">
+        <div class="chat-header">
+          <div class="chat-avatar">C</div>
+          <div>
+            <div class="chat-header-text">Claude + PageSpeed MCP</div>
+            <div class="chat-header-sub">pagespeed-insights-mcp (stdio connected)</div>
           </div>
-          <p class="tool-desc">Full Lighthouse analysis for one public page. Supports modes: <code>summary</code>, <code>recommendations</code>, <code>full</code>, and <code>performance-map</code> (with Mermaid diagrams).</p>
         </div>
-        <div class="tool-params">
-          <span>params:</span> url, strategy, categories, report, runs, locale
+        <div class="chat-body" id="chat-body">
+          <!-- Injected by JS -->
         </div>
       </div>
+    </div>
 
-      <div class="tool-card">
-        <div>
-          <div class="tool-header">
-            <span class="tool-name">pagespeed_diagnose_page</span>
-            <span class="tool-tag">Read-Only</span>
-          </div>
-          <p class="tool-desc">Deep-dive into one focused diagnostic lens: <code>render-blocking</code>, <code>javascript</code>, <code>images</code>, <code>network</code>, <code>elements</code>, <code>visual</code>, or <code>third-parties</code>.</p>
+    <!-- Terminal Demo -->
+    <div class="reveal">
+      <div class="terminal-wrapper">
+        <div class="terminal-header">
+          <span class="terminal-dot red"></span>
+          <span class="terminal-dot yellow"></span>
+          <span class="terminal-dot green"></span>
+          <span class="terminal-title">pagespeed-insights-mcp &mdash; stdio transport</span>
         </div>
-        <div class="tool-params">
-          <span>params:</span> url, focus, strategy, responseFormat
-        </div>
-      </div>
-
-      <div class="tool-card">
-        <div>
-          <div class="tool-header">
-            <span class="tool-name">pagespeed_get_field_data</span>
-            <span class="tool-tag">Read-Only</span>
-          </div>
-          <p class="tool-desc">Real-world Core Web Vitals from Chrome UX Report (CrUX). Queries 28-day 75th-percentile field metrics by exact page URL or entire origin fallback.</p>
-        </div>
-        <div class="tool-params">
-          <span>params:</span> url, scope (page|origin), formFactor
-        </div>
-      </div>
-
-      <div class="tool-card">
-        <div>
-          <div class="tool-header">
-            <span class="tool-name">pagespeed_compare_pages</span>
-            <span class="tool-tag">Regression</span>
-          </div>
-          <p class="tool-desc">Direct delta comparison between two URLs (staging vs prod) or measure a URL against a stored local baseline with multi-run statistical guarantees.</p>
-        </div>
-        <div class="tool-params">
-          <span>params:</span> mode (pages|baseline), url, against, runs
-        </div>
-      </div>
-
-      <div class="tool-card">
-        <div>
-          <div class="tool-header">
-            <span class="tool-name">pagespeed_analyze_batch</span>
-            <span class="tool-tag">Batch</span>
-          </div>
-          <p class="tool-desc">Analyze 1 to 10 URLs in parallel with concurrency rate limiting and live progress reporting. Ideal for PR CI checks and site-wide triaging.</p>
-        </div>
-        <div class="tool-params">
-          <span>params:</span> urls[], strategy, categories, report
-        </div>
-      </div>
-
-      <div class="tool-card">
-        <div>
-          <div class="tool-header">
-            <span class="tool-name">pagespeed_clear_cache</span>
-            <span class="tool-tag">Lifecycle</span>
-          </div>
-          <p class="tool-desc">Instantly purge this MCP server instance's in-memory response cache to force fresh telemetry fetching after deploying performance fixes.</p>
-        </div>
-        <div class="tool-params">
-          <span>params:</span> (none)
+        <div class="terminal-body" id="terminal-body">
+          <!-- Injected by JS -->
         </div>
       </div>
     </div>
   </div>
 </section>
 
-<!-- Client Configuration -->
-<section id="config" class="config-section">
+<!-- TOOLS -->
+<section id="tools">
   <div class="container">
-    <div class="section-header">
-      <div class="section-tag">Zero Setup Overhead</div>
-      <h2 class="section-heading">Connect in 30 Seconds</h2>
-      <p class="section-subheading">Drop this standard MCP snippet into your client configuration and immediately invoke PageSpeed tools.</p>
+    <div class="reveal">
+      <div class="section-label">🛠️ Tool Suite</div>
+      <h2 class="section-title">6 Focused Workflow Tools</h2>
+      <p class="section-desc">Streamlined v2 architecture designed for high-signal AI agent tool calls.</p>
+    </div>
+    <div class="tools-grid reveal">
+      <div class="tool-card">
+        <div class="tool-icon" style="background: rgba(217,119,6,.15); color: var(--accent2);">🚀</div>
+        <h3>pagespeed_analyze_page</h3>
+        <p>One-page Lighthouse health check, recommendations, audit findings, or performance map with Mermaid charts.</p>
+        <span class="tool-tag">Analyze</span>
+      </div>
+      <div class="tool-card">
+        <div class="tool-icon" style="background: rgba(6,182,212,.15); color: var(--cyan);">⚡</div>
+        <h3>pagespeed_diagnose_page</h3>
+        <p>Inspect one specific bottleneck lens: visual, elements, network, JavaScript, images, render-blocking, or third parties.</p>
+        <span class="tool-tag">Diagnose</span>
+      </div>
+      <div class="tool-card">
+        <div class="tool-icon" style="background: rgba(16,185,129,.15); color: var(--green);">🎯</div>
+        <h3>pagespeed_get_field_data</h3>
+        <p>Real-user Core Web Vitals from Chrome UX Report (CrUX) 28-day p75 for single URL or bare origin fallback.</p>
+        <span class="tool-tag">CrUX Field Data</span>
+      </div>
+      <div class="tool-card">
+        <div class="tool-icon" style="background: rgba(234,88,12,.15); color: var(--orange);">📸</div>
+        <h3>pagespeed_compare_pages</h3>
+        <p>Compare two pages side-by-side (staging vs prod) or measure one page against its saved baseline.</p>
+        <span class="tool-tag">Regression Baseline</span>
+      </div>
+      <div class="tool-card">
+        <div class="tool-icon" style="background: rgba(236,72,153,.15); color: var(--pink);">🌐</div>
+        <h3>pagespeed_analyze_batch</h3>
+        <p>Triage 1–10 public URLs in parallel with concurrency rate limiting and progress notifications.</p>
+        <span class="tool-tag">Batch Triage</span>
+      </div>
+      <div class="tool-card">
+        <div class="tool-icon" style="background: rgba(245,158,11,.15); color: var(--yellow);">🧹</div>
+        <h3>pagespeed_clear_cache</h3>
+        <p>Purge in-memory PageSpeed response cache immediately after deploying performance optimizations.</p>
+        <span class="tool-tag">Lifecycle Utility</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SCORES / GAUGES -->
+<section id="scores" class="gauges-section">
+  <div class="container" style="text-align: center;">
+    <div class="reveal">
+      <div class="section-label">📊 Live Metrics Preview</div>
+      <h2 class="section-title">Actionable Telemetry Reports</h2>
+      <p class="section-desc" style="margin: 0 auto 3rem;">Lighthouse lab audits and real-world Core Web Vitals delivered in structured formats.</p>
     </div>
 
-    <div class="config-card">
-      <div class="config-tabs">
-        <button class="config-tab active" onclick="switchConfigTab('claude', this)">Claude Desktop</button>
-        <button class="config-tab" onclick="switchConfigTab('cursor', this)">Cursor</button>
-        <button class="config-tab" onclick="switchConfigTab('windsurf', this)">Windsurf</button>
-        <button class="config-tab" onclick="switchConfigTab('codex', this)">Codex / TOML</button>
-        <button class="config-tab" onclick="switchConfigTab('docker', this)">Docker</button>
+    <div class="gauges-row reveal" id="gauges-container">
+      <div class="gauge-item">
+        <svg class="gauge-svg" viewBox="0 0 120 120">
+          <circle class="gauge-bg" cx="60" cy="60" r="50"/>
+          <circle class="gauge-fill" cx="60" cy="60" r="50" stroke="#10b981"
+            stroke-dasharray="314" stroke-dashoffset="314" data-target="94"
+            transform="rotate(-90 60 60)"/>
+          <text class="gauge-text" x="60" y="66" text-anchor="middle">94</text>
+        </svg>
+        <div class="gauge-label">Performance</div>
       </div>
+      <div class="gauge-item">
+        <svg class="gauge-svg" viewBox="0 0 120 120">
+          <circle class="gauge-bg" cx="60" cy="60" r="50"/>
+          <circle class="gauge-fill" cx="60" cy="60" r="50" stroke="#10b981"
+            stroke-dasharray="314" stroke-dashoffset="314" data-target="98"
+            transform="rotate(-90 60 60)"/>
+          <text class="gauge-text" x="60" y="66" text-anchor="middle">98</text>
+        </svg>
+        <div class="gauge-label">Accessibility</div>
+      </div>
+      <div class="gauge-item">
+        <svg class="gauge-svg" viewBox="0 0 120 120">
+          <circle class="gauge-bg" cx="60" cy="60" r="50"/>
+          <circle class="gauge-fill" cx="60" cy="60" r="50" stroke="#10b981"
+            stroke-dasharray="314" stroke-dashoffset="314" data-target="100"
+            transform="rotate(-90 60 60)"/>
+          <text class="gauge-text" x="60" y="66" text-anchor="middle">100</text>
+        </svg>
+        <div class="gauge-label">Best Practices</div>
+      </div>
+      <div class="gauge-item">
+        <svg class="gauge-svg" viewBox="0 0 120 120">
+          <circle class="gauge-bg" cx="60" cy="60" r="50"/>
+          <circle class="gauge-fill" cx="60" cy="60" r="50" stroke="#10b981"
+            stroke-dasharray="314" stroke-dashoffset="314" data-target="100"
+            transform="rotate(-90 60 60)"/>
+          <text class="gauge-text" x="60" y="66" text-anchor="middle">100</text>
+        </svg>
+        <div class="gauge-label">SEO</div>
+      </div>
+    </div>
 
-      <div class="config-body">
-        <div class="config-field-row">
-          <span class="config-field-label">Google API Key:</span>
-          <input type="text" id="api-key-input" class="config-key-input" placeholder="AIzaSy... (optional for free tier, recommended for higher rate limits)" oninput="updateConfigSnippet()">
-        </div>
+    <div class="metrics-grid reveal">
+      <div class="metric-card">
+        <div class="metric-value" style="color: var(--green);">0.9s</div>
+        <div class="metric-name">First Contentful Paint</div>
+      </div>
+      <div class="metric-card">
+        <div class="metric-value" style="color: var(--green);">1.4s</div>
+        <div class="metric-name">Largest Contentful Paint</div>
+      </div>
+      <div class="metric-card">
+        <div class="metric-value" style="color: var(--green);">0.001</div>
+        <div class="metric-name">Cumulative Layout Shift</div>
+      </div>
+      <div class="metric-card">
+        <div class="metric-value" style="color: var(--green);">42ms</div>
+        <div class="metric-name">Interaction to Next Paint</div>
+      </div>
+      <div class="metric-card">
+        <div class="metric-value" style="color: var(--green);">25ms</div>
+        <div class="metric-name">Total Blocking Time</div>
+      </div>
+      <div class="metric-card">
+        <div class="metric-value" style="color: var(--green);">85ms</div>
+        <div class="metric-name">Server Response (TTFB)</div>
+      </div>
+    </div>
+  </div>
+</section>
 
-        <div class="protocol-window">
-          <button class="copy-code-btn" onclick="copySnippet(document.getElementById('config-code-text').innerText, 'Copied client configuration')">Copy Config</button>
-          <pre id="config-code-text">{
+<!-- HOW IT WORKS -->
+<section id="how-it-works">
+  <div class="container">
+    <div class="reveal" style="text-align: center;">
+      <div class="section-label">💡 Getting Started</div>
+      <h2 class="section-title">Up and Running in 60 Seconds</h2>
+      <p class="section-desc" style="margin: 0 auto 3rem;">Three simple steps to unlock AI-powered web performance engineering.</p>
+    </div>
+    <div class="workflow-steps reveal">
+      <div class="workflow-step">
+        <div class="step-number">1</div>
+        <h3>Get API Key</h3>
+        <p>Enable PageSpeed Insights API in Google Cloud Console.</p>
+        <code>export GOOGLE_API_KEY=your-key</code>
+      </div>
+      <div class="workflow-step">
+        <div class="step-number">2</div>
+        <h3>Configure Client</h3>
+        <p>Add the MCP server to Claude Desktop, Cursor, or Windsurf config.</p>
+        <code>{
   "mcpServers": {
     "pagespeed-insights": {
       "command": "npx",
-      "args": ["-y", "-p", "pino-pretty", "-p", "pagespeed-insights-mcp", "pagespeed-insights-mcp"],
-      "env": {
-        "GOOGLE_API_KEY": "your-google-api-key-here"
-      }
+      "args": ["-y", "pagespeed-insights-mcp"]
     }
   }
-}</pre>
-        </div>
+}</code>
+      </div>
+      <div class="workflow-step">
+        <div class="step-number">3</div>
+        <h3>Start Analyzing</h3>
+        <p>Prompt your AI assistant naturally to analyze and optimize your web app.</p>
+        <code>"Analyze https://mysite.com mobile LCP and generate code fixes"</code>
+      </div>
+      <div class="workflow-step">
+        <div class="step-number">✓</div>
+        <h3>Apply Fixes</h3>
+        <p>Receive ranked opportunities with estimated KB savings and patches.</p>
+        <code>Score: 94/100 ✅
+LCP: 1.4s ✅
+Diff: +<Image priority /></code>
       </div>
     </div>
   </div>
 </section>
 
-<!-- Comparison Table -->
-<section id="comparison" class="comparison-section">
-  <div class="container">
-    <div class="section-header">
-      <div class="section-tag">Architecture Comparison</div>
-      <h2 class="section-heading">Why Engineers Choose pagespeed-insights-mcp</h2>
-      <p class="section-subheading">Built from the ground up for AI model context windows and automated performance engineering workflows.</p>
+<!-- COMPARISON TABLE -->
+<section id="compare" style="background: var(--bg2); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border);">
+  <div class="container" style="text-align: center;">
+    <div class="reveal">
+      <div class="section-label">⚖️ Architecture</div>
+      <h2 class="section-title">Beyond Manual Testing</h2>
+      <p class="section-desc" style="margin: 0 auto 3rem;">Stop tab-switching. Integrate live performance audits directly into your AI coding workflow.</p>
     </div>
-
-    <table class="comp-table">
-      <thead>
-        <tr>
-          <th>Capability</th>
-          <th>Generic PSI Wrappers</th>
-          <th style="color: #fff;">pagespeed-insights-mcp v2</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr>
-          <td><strong>v2 Workflow Tool Separation</strong></td>
-          <td><span class="comp-cross">✗ Monolithic blob</span></td>
-          <td><span class="comp-check">✓ 6 Modular Tools (Analyze, Diagnose, CrUX...)</span></td>
-        </tr>
-        <tr>
-          <td><strong>Real-World CrUX Field Telemetry</strong></td>
-          <td><span class="comp-cross">✗ Lab-only</span></td>
-          <td><span class="comp-check">✓ 28-day p75 URL & Origin Fallback</span></td>
-        </tr>
-        <tr>
-          <td><strong>Structured Content & Output Schema</strong></td>
-          <td><span class="comp-cross">✗ Raw string dumps</span></td>
-          <td><span class="comp-check">✓ Type-safe JSON + Concise Markdown</span></td>
-        </tr>
-        <tr>
-          <td><strong>Multi-Run Statistical Baselines</strong></td>
-          <td><span class="comp-cross">✗ Single noisy run</span></td>
-          <td><span class="comp-check">✓ 1–5 Runs with Median & Spread Tracking</span></td>
-        </tr>
-        <tr>
-          <td><strong>Mermaid Critical Path Maps</strong></td>
-          <td><span class="comp-cross">✗ Not supported</span></td>
-          <td><span class="comp-check">✓ Instant visual rendering diagrams</span></td>
-        </tr>
-        <tr>
-          <td><strong>In-Memory Cache Layer</strong></td>
-          <td><span class="comp-cross">✗ Redundant API hits</span></td>
-          <td><span class="comp-check">✓ TTL Caching + Explicit Purge Tool</span></td>
-        </tr>
-      </tbody>
-    </table>
+    <div class="reveal">
+      <table class="comparison-table">
+        <thead>
+          <tr>
+            <th>Feature</th>
+            <th>Manual PageSpeed</th>
+            <th style="color: var(--accent2);">pagespeed-insights-mcp v2</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Natural Language Agent Invocation</td>
+            <td><span class="cross">✗</span></td>
+            <td><span class="check">✓ Claude & Cursor Ready</span></td>
+          </tr>
+          <tr>
+            <td>Focused Diagnostic Lenses (7 Domains)</td>
+            <td><span class="cross">✗</span></td>
+            <td><span class="check">✓ JS, CSS, Render-Blocking, Images</span></td>
+          </tr>
+          <tr>
+            <td>CrUX Field Data + Origin Fallback</td>
+            <td>Basic</td>
+            <td><span class="check">✓ 28-day p75 URL & Origin</span></td>
+          </tr>
+          <tr>
+            <td>Regression Tracking & Stored Baselines</td>
+            <td><span class="cross">✗</span></td>
+            <td><span class="check">✓ 1–5 Runs with Median & Spread</span></td>
+          </tr>
+          <tr>
+            <td>Batch Multi-URL Triage (1–10)</td>
+            <td><span class="cross">✗</span></td>
+            <td><span class="check">✓ Parallel with Rate Limiting</span></td>
+          </tr>
+          <tr>
+            <td>Smart Code Remediation Diffs</td>
+            <td><span class="cross">✗</span></td>
+            <td><span class="check">✓ Actionable AI Engineering Plans</span></td>
+          </tr>
+          <tr>
+            <td>In-Memory Cache Layer & Invalidation</td>
+            <td><span class="cross">✗</span></td>
+            <td><span class="check">✓ TTL Cache + Explicit Purge</span></td>
+          </tr>
+          <tr>
+            <td>Docker & CLI Stdio Transport</td>
+            <td>N/A</td>
+            <td><span class="check">✓ Ready out-of-the-box</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
   </div>
 </section>
 
-<!-- Footer -->
-<footer>
-  <div class="container footer-wrap">
-    <div>
-      <span>© 2026 PageSpeed Insights MCP Server. Open source under Apache-2.0 License.</span>
+<!-- CTA -->
+<section class="cta-section">
+  <div class="container reveal">
+    <h2>Ready to <span class="gradient-text">Supercharge</span><br>Your Performance Workflow?</h2>
+    <p>Install in one command. Start analyzing in seconds.</p>
+    <div class="install-block" onclick="copyInstall(this)">
+      <span class="dollar">$</span>
+      <span>npx -y pagespeed-insights-mcp</span>
+      <svg class="copy-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>
     </div>
-    <div class="footer-links">
-      <a href="https://github.com/ruslanlap/pagespeed-insights-mcp" target="_blank">GitHub</a>
-      <a href="https://www.npmjs.com/package/pagespeed-insights-mcp" target="_blank">npm</a>
-      <a href="https://registry.modelcontextprotocol.io/" target="_blank">Official MCP Registry</a>
-      <a href="https://glama.ai/mcp/servers/ruslanlap/pagespeed-insights-mcp" target="_blank">Glama</a>
-      <a href="https://ruslanlap.github.io/pagespeed-insights-mcp/" target="_blank">MkDocs Guide</a>
+    <br><br>
+    <div style="display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap;">
+      <a href="https://github.com/ruslanlap/pagespeed-insights-mcp" class="btn btn-primary" target="_blank">
+        <svg width="18" height="18" viewBox="0 0 16 16" fill="currentColor"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0016 8c0-4.42-3.58-8-8-8z"/></svg>
+        View on GitHub
+      </a>
+      <a href="https://www.npmjs.com/package/pagespeed-insights-mcp" class="btn btn-secondary" target="_blank">
+        View on npm
+      </a>
+      <a href="https://ruslanlap.github.io/pagespeed-insights-mcp/" class="btn btn-secondary" target="_blank">
+        Documentation
+      </a>
     </div>
   </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <p>
+    Built with ❤️ by <a href="https://github.com/ruslanlap">@ruslanlap</a> &middot;
+    Apache-2.0 License &middot;
+    <a href="https://github.com/ruslanlap/pagespeed-insights-mcp">GitHub</a> &middot;
+    <a href="https://www.npmjs.com/package/pagespeed-insights-mcp">npm</a> &middot;
+    <a href="https://ruslanlap.github.io/pagespeed-insights-mcp/">Docs</a>
+  </p>
 </footer>
 
-<!-- Toast Element -->
-<div id="toast" class="toast">
-  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
-  <span id="toast-msg">Copied to clipboard</span>
-</div>
-
 <script>
-// Mock datasets for realistic simulation
-const DATASETS = {
-  vercel: {
-    url: "https://vercel.com",
-    scores: { perf: 98, a11y: 100, bp: 100, seo: 100 },
-    cwv: { lcp: "0.9 s", inp: "38 ms", cls: "0.001", lcpStatus: "good", inpStatus: "good", clsStatus: "good", fieldLcp: "1.2s", fieldInp: "38ms", fieldCls: "0.000" },
-    diagnostics: [
-      { name: "Preload key hero asset font-display: swap", desc: "Web fonts are self-hosted and correctly hinted via Link headers.", saving: "Passed", status: "good" }
-    ],
-    agentInsight: `I executed <code>pagespeed_analyze_page</code> for <code>https://vercel.com</code> on <strong>Mobile</strong>.<br><br>
-<strong>Audit Findings:</strong><br>
-• Performance score is <strong>98/100</strong> with sub-second LCP (0.9s) and zero layout shift.<br>
-• Edge caching TTFB is 45ms. JavaScript payload is heavily code-split with modern script tags.<br><br>
-<strong>Remediation:</strong> No changes required. Meets all Core Web Vitals thresholds.`,
-    diff: `# No performance regressions detected.`
-  },
-  github: {
-    url: "https://github.com",
-    scores: { perf: 88, a11y: 96, bp: 96, seo: 100 },
-    cwv: { lcp: "1.8 s", inp: "85 ms", cls: "0.015", lcpStatus: "good", inpStatus: "good", clsStatus: "good", fieldLcp: "2.1s", fieldInp: "92ms", fieldCls: "0.010" },
-    diagnostics: [
-      { name: "Reduce unused JavaScript in primer bundle", desc: "Potential savings on vendor-primer.js and turbo.js chunks.", saving: "142 KB", status: "warn" },
-      { name: "Preconnect to github.githubassets.com", desc: "CDN handshake latency can be eliminated in the early head.", saving: "60 ms", status: "good" }
-    ],
-    agentInsight: `I inspected <code>https://github.com</code> using <code>pagespeed_diagnose_page</code> (focus: <code>javascript</code>).<br><br>
-<strong>Bottleneck Analysis:</strong><br>
-• Primer styling framework and client hydrate bundles contain 142 KB of unexecuted symbols on first paint.<br>
-• LCP (1.8s) is fast, but Total Blocking Time on low-tier mobile devices accounts for ~120ms.<br><br>
-<strong>Recommended Patch:</strong> Defer non-critical dashboard tooltips and dynamic dropdown controllers until interaction.`,
-    diff: `<span class="diff-info">--- a/app/views/layouts/application.html.erb</span>
-<span class="diff-info">+++ b/app/views/layouts/application.html.erb</span>
-<span class="diff-del">- &lt;script src="/assets/primer-tooltips.js"&gt;&lt;/script&gt;</span>
-<span class="diff-add">+ &lt;script src="/assets/primer-tooltips.js" defer fetchpriority="low"&gt;&lt;/script&gt;</span>`
-  },
-  linear: {
-    url: "https://linear.app",
-    scores: { perf: 95, a11y: 98, bp: 100, seo: 100 },
-    cwv: { lcp: "1.1 s", inp: "42 ms", cls: "0.002", lcpStatus: "good", inpStatus: "good", clsStatus: "good", fieldLcp: "1.4s", fieldInp: "45ms", fieldCls: "0.001" },
-    diagnostics: [
-      { name: "Efficient Cache-Control on WASM assets", desc: "Static assets served with immutable 1-year headers.", saving: "Passed", status: "good" }
-    ],
-    agentInsight: `I analyzed <code>https://linear.app</code> with <code>pagespeed_analyze_page</code> (report: <code>recommendations</code>).<br><br>
-<strong>Architecture Evaluation:</strong><br>
-• High score of <strong>95/100</strong> achieved through aggressive static generation and lean CSS modules.<br>
-• Real-world CrUX INP is 42ms (top 5% for interactive productivity web apps).`,
-    diff: `# Production setup is fully optimized.`
-  },
-  slowstore: {
-    url: "https://slow-store.dev",
-    scores: { perf: 46, a11y: 82, bp: 75, seo: 88 },
-    cwv: { lcp: "4.8 s", inp: "340 ms", cls: "0.240", lcpStatus: "poor", inpStatus: "poor", clsStatus: "poor", fieldLcp: "5.2s", fieldInp: "380ms", fieldCls: "0.280" },
-    diagnostics: [
-      { name: "Eliminate Render-Blocking CSS & JS", desc: "3 external CSS sheets and 4 sync scripts block first render.", saving: "1,850 ms", status: "poor" },
-      { name: "Properly size images & convert to WebP/AVIF", desc: "Uncompressed 3.4 MB PNG banner loaded above the fold.", saving: "2.8 MB", status: "poor" },
-      { name: "Set explicit width/height on product grid images", desc: "Dynamic layout shifts cause high CLS score of 0.240.", saving: "-0.22 CLS", status: "poor" }
-    ],
-    agentInsight: `I diagnosed <code>https://slow-store.dev</code> using <code>pagespeed_diagnose_page</code> (focus: <code>render-blocking</code>).<br><br>
-<strong>CRITICAL ISSUES FOUND (Score 46/100):</strong><br>
-1. <strong>LCP = 4.8s:</strong> Large uncompressed PNG banner blocking visual paint.<br>
-2. <strong>CLS = 0.240:</strong> Product image cards pop in without reserved dimensions.<br>
-3. <strong>Render Blocking:</strong> Blocking script tags in <code>&lt;head&gt;</code> delay FCP by 1.8s.<br><br>
-<strong>Generated Remediations:</strong> Applying image sizing, lazy loading, and script deferral will boost performance to ~89/100.`,
-    diff: `<span class="diff-info">--- a/components/HeroBanner.jsx</span>
-<span class="diff-info">+++ b/components/HeroBanner.jsx</span>
-<span class="diff-del">- &lt;img src="/hero-banner.png" alt="Big Sale" /&gt;</span>
-<span class="diff-add">+ &lt;Image src="/hero-banner.webp" width={1200} height={600} priority fetchPriority="high" alt="Big Sale" /&gt;</span>
-<span class="diff-info">--- a/pages/_document.jsx</span>
-<span class="diff-info">+++ b/pages/_document.jsx</span>
-<span class="diff-del">- &lt;script src="/analytics-heavy.js"&gt;&lt;/script&gt;</span>
-<span class="diff-add">+ &lt;script src="/analytics-heavy.js" defer async&gt;&lt;/script&gt;</span>`
+// ============ MOBILE DRAWER TOGGLE ============
+function toggleMobileMenu() {
+  const btn = document.getElementById('mobile-toggle');
+  const drawer = document.getElementById('mobile-drawer');
+  btn.classList.toggle('active');
+  drawer.classList.toggle('open');
+}
+
+function closeMobileMenu() {
+  const btn = document.getElementById('mobile-toggle');
+  const drawer = document.getElementById('mobile-drawer');
+  btn.classList.remove('active');
+  drawer.classList.remove('open');
+}
+
+// ============ CANVAS PARTICLES ============
+const canvas = document.getElementById('particles-canvas');
+const ctx = canvas.getContext('2d');
+let particles = [];
+
+function resizeCanvas() {
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+}
+window.addEventListener('resize', resizeCanvas);
+resizeCanvas();
+
+class Particle {
+  constructor() { this.reset(); }
+  reset() {
+    this.x = Math.random() * canvas.width;
+    this.y = Math.random() * canvas.height;
+    this.size = Math.random() * 1.6 + 0.6;
+    this.speedX = (Math.random() - 0.5) * 0.35;
+    this.speedY = (Math.random() - 0.5) * 0.35;
+    this.opacity = Math.random() * 0.35 + 0.15;
+    this.isAmber = Math.random() > 0.3;
   }
-};
-
-let currentPresetKey = 'vercel';
-let currentStrategy = 'mobile';
-let currentView = 'visual';
-
-function loadPreset(key, btnEl) {
-  currentPresetKey = key;
-  document.querySelectorAll('.preset-btn').forEach(b => b.classList.remove('active'));
-  if (btnEl) btnEl.classList.add('active');
-  
-  const data = DATASETS[key];
-  document.getElementById('target-url').value = data.url;
-  updateDashboard(data);
+  update() {
+    this.x += this.speedX;
+    this.y += this.speedY;
+    if (this.x < 0 || this.x > canvas.width || this.y < 0 || this.y > canvas.height) this.reset();
+  }
+  draw() {
+    ctx.beginPath();
+    ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+    ctx.fillStyle = this.isAmber ? `rgba(217, 119, 6, ${this.opacity})` : `rgba(6, 182, 212, ${this.opacity})`;
+    ctx.fill();
+  }
 }
+for (let i = 0; i < 70; i++) particles.push(new Particle());
 
-function setStrategy(strategy, btnEl) {
-  currentStrategy = strategy;
-  document.querySelectorAll('#strategy-switch .segmented-btn').forEach(b => b.classList.remove('active'));
-  if (btnEl) btnEl.classList.add('active');
-}
-
-function onToolSelectChange() {
-  // Update view if needed
-}
-
-function executeSimulatedCall() {
-  const btn = document.getElementById('run-btn');
-  btn.disabled = true;
-  btn.innerHTML = `<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="spin" style="animation: spin 1s linear infinite;"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg> <span>Auditing...</span>`;
-
-  setTimeout(() => {
-    btn.disabled = false;
-    btn.innerHTML = `<svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"/></svg> <span>Execute Tool</span>`;
-    
-    // Check if input URL matches custom or preset
-    const inputUrl = document.getElementById('target-url').value.toLowerCase();
-    let data = DATASETS[currentPresetKey];
-    if (inputUrl.includes('github')) data = DATASETS.github;
-    else if (inputUrl.includes('linear')) data = DATASETS.linear;
-    else if (inputUrl.includes('slow') || inputUrl.includes('store')) data = DATASETS.slowstore;
-    else if (inputUrl.includes('vercel')) data = DATASETS.vercel;
-
-    updateDashboard(data);
-    showToast('MCP Tool call completed (200 OK)');
-  }, 600);
-}
-
-function updateDashboard(data) {
-  // Update gauges
-  const setGauge = (id, score) => {
-    document.getElementById(`score-${id}`).innerText = score;
-    const path = document.getElementById(`gauge-${id}-path`);
-    const color = score >= 90 ? 'var(--green)' : (score >= 50 ? 'var(--amber)' : 'var(--red)');
-    path.setAttribute('stroke', color);
-    path.setAttribute('stroke-dasharray', `${score}, 100`);
-  };
-
-  setGauge('perf', data.scores.perf);
-  setGauge('a11y', data.scores.a11y);
-  setGauge('bp', data.scores.bp);
-  setGauge('seo', data.scores.seo);
-
-  // Statuses
-  document.getElementById('status-perf').innerText = data.scores.perf >= 90 ? 'Optimal' : (data.scores.perf >= 50 ? 'Needs Attention' : 'Critical Bottlenecks');
-
-  // CWV
-  document.getElementById('val-lcp').innerText = data.cwv.lcp;
-  document.getElementById('chip-lcp').className = `status-chip ${data.cwv.lcpStatus}`;
-  document.getElementById('chip-lcp').innerText = data.cwv.lcpStatus;
-  document.getElementById('field-lcp').innerText = `CrUX p75: ${data.cwv.fieldLcp}`;
-
-  document.getElementById('val-inp').innerText = data.cwv.inp;
-  document.getElementById('chip-inp').className = `status-chip ${data.cwv.inpStatus}`;
-  document.getElementById('chip-inp').innerText = data.cwv.inpStatus;
-  document.getElementById('field-inp').innerText = `CrUX p75: ${data.cwv.fieldInp}`;
-
-  document.getElementById('val-cls').innerText = data.cwv.cls;
-  document.getElementById('chip-cls').className = `status-chip ${data.cwv.clsStatus}`;
-  document.getElementById('chip-cls').innerText = data.cwv.clsStatus;
-  document.getElementById('field-cls').innerText = `CrUX p75: ${data.cwv.fieldCls}`;
-
-  // Diagnostics list
-  const diagList = document.getElementById('diag-list-items');
-  diagList.innerHTML = '';
-  data.diagnostics.forEach(item => {
-    const el = document.createElement('div');
-    el.className = 'diag-item';
-    const badgeStyle = item.status === 'good' 
-      ? 'color: var(--green); background: var(--green-dim); border-color: var(--green-border);'
-      : (item.status === 'warn' ? 'color: var(--amber); background: var(--amber-dim);' : 'color: var(--red); background: var(--red-dim); border-color: var(--red-border);');
-    
-    el.innerHTML = `
-      <div class="diag-info">
-        <div class="diag-name">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="${item.status === 'good' ? 'var(--green)' : (item.status === 'warn' ? 'var(--amber)' : 'var(--red)')}" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
-          <span>${item.name}</span>
-        </div>
-        <div class="diag-desc">${item.desc}</div>
-      </div>
-      <div class="diag-saving">
-        <span class="saving-badge" style="${badgeStyle}">${item.saving}</span>
-      </div>
-    `;
-    diagList.appendChild(el);
-  });
-  document.getElementById('diag-summary').innerText = `${data.diagnostics.length} audit item(s) detected`;
-
-  // Agent response & diff
-  document.getElementById('agent-response-text').innerHTML = data.agentInsight;
-  document.getElementById('agent-diff-block').innerHTML = data.diff;
-
-  // JSON protocol preview
-  const jsonPayload = {
-    jsonrpc: "2.0",
-    id: Math.floor(Math.random() * 1000) + 1,
-    result: {
-      tool: document.getElementById('tool-select').value,
-      structuredContent: {
-        url: data.url,
-        strategy: currentStrategy,
-        scores: {
-          performance: data.scores.perf,
-          accessibility: data.scores.a11y,
-          bestPractices: data.scores.bp,
-          seo: data.scores.seo
-        },
-        metrics: {
-          lcp: { value: data.cwv.lcp, category: data.cwv.lcpStatus.toUpperCase() },
-          inp: { value: data.cwv.inp, category: data.cwv.inpStatus.toUpperCase() },
-          cls: { value: data.cwv.cls, category: data.cwv.clsStatus.toUpperCase() }
-        },
-        crux: {
-          available: true,
-          scope: "page",
-          lcp_p75: data.cwv.fieldLcp,
-          inp_p75: data.cwv.fieldInp,
-          cls_p75: data.cwv.fieldCls
-        }
+function animateParticles() {
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  particles.forEach(p => { p.update(); p.draw(); });
+  for (let i = 0; i < particles.length; i++) {
+    for (let j = i + 1; j < particles.length; j++) {
+      const dx = particles[i].x - particles[j].x;
+      const dy = particles[i].y - particles[j].y;
+      const dist = Math.sqrt(dx * dx + dy * dy);
+      if (dist < 110) {
+        ctx.beginPath();
+        ctx.moveTo(particles[i].x, particles[i].y);
+        ctx.lineTo(particles[j].x, particles[j].y);
+        ctx.strokeStyle = `rgba(217, 119, 6, ${0.06 * (1 - dist / 110)})`;
+        ctx.stroke();
       }
     }
-  };
-  document.getElementById('protocol-raw-json').innerText = JSON.stringify(jsonPayload, null, 2);
+  }
+  requestAnimationFrame(animateParticles);
 }
+animateParticles();
 
-function switchView(view, btnEl) {
-  currentView = view;
-  document.querySelectorAll('.view-tab').forEach(b => b.classList.remove('active'));
-  if (btnEl) btnEl.classList.add('active');
-
-  document.getElementById('view-visual').style.display = view === 'visual' ? 'block' : 'none';
-  document.getElementById('view-agent').style.display = view === 'agent' ? 'block' : 'none';
-  document.getElementById('view-protocol').style.display = view === 'protocol' ? 'block' : 'none';
-}
-
-// Config Snippets
-let activeConfigTab = 'claude';
-const CONFIG_TEMPLATES = {
-  claude: (key) => JSON.stringify({
-    mcpServers: {
-      "pagespeed-insights": {
-        command: "npx",
-        args: ["-y", "-p", "pino-pretty", "-p", "pagespeed-insights-mcp", "pagespeed-insights-mcp"],
-        env: { GOOGLE_API_KEY: key || "your-google-api-key-here" }
-      }
-    }
-  }, null, 2),
-  cursor: (key) => JSON.stringify({
-    mcpServers: {
-      "pagespeed-insights": {
-        command: "npx",
-        args: ["-y", "-p", "pino-pretty", "-p", "pagespeed-insights-mcp", "pagespeed-insights-mcp"],
-        env: { GOOGLE_API_KEY: key || "your-google-api-key-here" }
-      }
-    }
-  }, null, 2),
-  windsurf: (key) => JSON.stringify({
-    mcpServers: {
-      "pagespeed-insights": {
-        command: "npx",
-        args: ["-y", "-p", "pino-pretty", "-p", "pagespeed-insights-mcp", "pagespeed-insights-mcp"],
-        env: { GOOGLE_API_KEY: key || "your-google-api-key-here" }
-      }
-    }
-  }, null, 2),
-  codex: (key) => `[mcp_servers.pagespeed-insights]
-command = "npx"
-args = [
-  "-y",
-  "-p",
-  "pino-pretty",
-  "-p",
-  "pagespeed-insights-mcp",
-  "pagespeed-insights-mcp"
-]
-env = { GOOGLE_API_KEY = "${key || "your-google-api-key-here"}" }`,
-  docker: (key) => `version: '3.8'
-services:
-  pagespeed-mcp:
-    image: ghcr.io/ruslanlap/pagespeed-insights-mcp:latest
-    environment:
-      - GOOGLE_API_KEY=${key || "your-google-api-key-here"}
-    restart: unless-stopped`
-};
-
-function switchConfigTab(tab, btnEl) {
-  activeConfigTab = tab;
-  document.querySelectorAll('.config-tab').forEach(b => b.classList.remove('active'));
-  if (btnEl) btnEl.classList.add('active');
-  updateConfigSnippet();
-}
-
-function updateConfigSnippet() {
-  const key = document.getElementById('api-key-input').value.trim();
-  const snippet = CONFIG_TEMPLATES[activeConfigTab](key);
-  document.getElementById('config-code-text').innerText = snippet;
-}
-
-// Toast helper
-let toastTimer;
-function showToast(msg) {
-  const toast = document.getElementById('toast');
-  document.getElementById('toast-msg').innerText = msg;
-  toast.classList.add('show');
-  clearTimeout(toastTimer);
-  toastTimer = setTimeout(() => toast.classList.remove('show'), 2500);
-}
-
-function copySnippet(text, label) {
-  navigator.clipboard.writeText(text).then(() => {
-    showToast(label || 'Copied to clipboard');
-  }).catch(() => {
-    showToast('Failed to copy');
-  });
-}
-
-// Animation loop & init
-document.addEventListener('DOMContentLoaded', () => {
-  loadPreset('vercel', document.querySelector('.preset-btn'));
+// ============ NAV SCROLL ============
+window.addEventListener('scroll', () => {
+  document.getElementById('main-nav').classList.toggle('scrolled', window.scrollY > 40);
 });
-</script>
 
-<style>
-@keyframes spin { 100% { transform: rotate(360deg); } }
-</style>
+// ============ SCROLL REVEAL ============
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
+}, { threshold: 0.15 });
+document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+
+// ============ GAUGE ANIMATION ============
+const gaugeObserver = new IntersectionObserver((entries) => {
+  entries.forEach(e => {
+    if (e.isIntersecting) {
+      document.querySelectorAll('.gauge-fill').forEach(circle => {
+        const target = parseInt(circle.dataset.target);
+        const circumference = 314;
+        const offset = circumference - (target / 100) * circumference;
+        circle.style.strokeDashoffset = offset;
+        if (target >= 90) circle.setAttribute('stroke', '#10b981');
+        else if (target >= 50) circle.setAttribute('stroke', '#f59e0b');
+        else circle.setAttribute('stroke', '#f43f5e');
+      });
+      gaugeObserver.disconnect();
+    }
+  });
+}, { threshold: 0.25 });
+const gaugesContainer = document.getElementById('gauges-container');
+if (gaugesContainer) gaugeObserver.observe(gaugesContainer);
+
+// ============ CHAT DEMOS ============
+const demos = {
+  analyze: [
+    { type: 'user', text: 'Analyze the performance of https://example.com for mobile devices' },
+    { type: 'typing', delay: 1400 },
+    { type: 'ai', html: `<strong>PageSpeed Insights Lighthouse Analysis</strong><br><br>
+      <strong>URL:</strong> https://example.com &middot; <strong>Strategy:</strong> Mobile<br><br>
+      <div style="display:flex;gap:.5rem;flex-wrap:wrap;">
+        <span class="chat-score">Performance: 94</span>
+        <span class="chat-score">Accessibility: 98</span>
+        <span class="chat-score">Best Practices: 100</span>
+        <span class="chat-score">SEO: 100</span>
+      </div><br>
+      <strong>Core Web Vitals Telemetry:</strong><br>
+      &bull; <strong>LCP:</strong> 1.4s <span style="color:var(--green);">&#10003; Fast</span><br>
+      &bull; <strong>INP:</strong> 42ms <span style="color:var(--green);">&#10003; Fast</span><br>
+      &bull; <strong>CLS:</strong> 0.001 <span style="color:var(--green);">&#10003; Fast</span><br>
+      &bull; <strong>FCP:</strong> 0.9s &middot; <strong>TTFB:</strong> 85ms<br><br>
+      <strong>Audit Diagnostics:</strong><br>
+      &bull; Efficient cache headers served on static chunks<br>
+      &bull; Critical CSS inlined in document head` },
+  ],
+  recommendations: [
+    { type: 'user', text: 'Get smart recommendations for improving https://mystore.org performance' },
+    { type: 'typing', delay: 1600 },
+    { type: 'ai', html: `<strong>🎯 Prioritized Performance Recommendations</strong><br><br>
+      <span style="color:var(--red);font-weight:700;">🔴 Critical Priority</span><br>
+      &bull; <strong>Optimize LCP Banner</strong> — Reduce hero image weight by serving WebP/AVIF (Est. savings: 1.2 MB / 850ms)<br>
+      &bull; <strong>Eliminate Render-Blocking CSS</strong> — Defer secondary stylesheet <code>theme-extra.css</code><br><br>
+      <span style="color:var(--yellow);font-weight:700;">🟡 High Priority</span><br>
+      &bull; <strong>Reduce unused JavaScript</strong> — Split vendor bundle (-280 KB)<br>
+      &bull; <strong>Preconnect to CDN origin</strong> — Faster asset handshakes (-60ms)<br><br>
+      <span style="color:var(--green);font-weight:700;">🟢 Best Practices</span><br>
+      &bull; Add explicit <code>width</code> and <code>height</code> attributes to prevent layout shifts (CLS &lt; 0.01)` },
+  ],
+  diagnose: [
+    { type: 'user', text: 'Diagnose render-blocking resources for https://myapp.dev' },
+    { type: 'typing', delay: 1500 },
+    { type: 'ai', html: `<strong>⚡ Diagnostic Lens: Render-Blocking Resources</strong><br><br>
+      <strong>Culprit Analysis:</strong><br>
+      1. <code>/assets/app.css</code> (42 KB) — Blocks FCP by <strong>420ms</strong><br>
+      2. <code>/js/analytics.js</code> (18 KB, synchronous in head) — Blocks FCP by <strong>180ms</strong><br><br>
+      <strong>Remediation Patch:</strong><br>
+      <code>&lt;script src="/js/analytics.js" defer fetchpriority="low"&gt;&lt;/script&gt;</code><br><br>
+      <em>Applying this patch eliminates 600ms of critical rendering delay.</em>` },
+  ],
+  compare: [
+    { type: 'user', text: 'Compare performance between staging and production URL' },
+    { type: 'typing', delay: 1700 },
+    { type: 'ai', html: `<strong>📸 Performance Comparison (Staging vs Production)</strong><br><br>
+      <table style="width:100%;font-size:.8rem;border-collapse:collapse;">
+        <tr style="border-bottom:1px solid var(--border);">
+          <td style="padding:.4rem;color:var(--text-dim);">Metric</td>
+          <td style="padding:.4rem;font-weight:600;">Staging (Optimized)</td>
+          <td style="padding:.4rem;font-weight:600;">Production</td>
+        </tr>
+        <tr style="border-bottom:1px solid var(--border);">
+          <td style="padding:.4rem;color:var(--text-dim);">Performance</td>
+          <td style="padding:.4rem;color:var(--green);font-weight:700;">94/100 &#128077;</td>
+          <td style="padding:.4rem;color:var(--yellow);">76/100</td>
+        </tr>
+        <tr style="border-bottom:1px solid var(--border);">
+          <td style="padding:.4rem;color:var(--text-dim);">LCP</td>
+          <td style="padding:.4rem;color:var(--green);">1.4s</td>
+          <td style="padding:.4rem;color:var(--red);">3.6s</td>
+        </tr>
+        <tr style="border-bottom:1px solid var(--border);">
+          <td style="padding:.4rem;color:var(--text-dim);">CLS</td>
+          <td style="padding:.4rem;color:var(--green);">0.001</td>
+          <td style="padding:.4rem;color:var(--yellow);">0.120</td>
+        </tr>
+        <tr>
+          <td style="padding:.4rem;color:var(--text-dim);">TBT</td>
+          <td style="padding:.4rem;color:var(--green);">25ms</td>
+          <td style="padding:.4rem;color:var(--yellow);">180ms</td>
+        </tr>
+      </table><br>
+      <span style="color:var(--green);font-weight:600;">✅ Staging shows 18pt score improvement</span> &amp; sub-2s LCP.` },
+  ],
+};
+
+let chatAnimating = false;
+function runDemo(type, btnEl) {
+  if (chatAnimating) return;
+  chatAnimating = true;
+
+  document.querySelectorAll('.demo-btn').forEach(b => b.classList.remove('active'));
+  if (btnEl) {
+    btnEl.classList.add('active');
+  } else {
+    const found = document.querySelector(`.demo-btn[data-demo="${type}"]`);
+    if (found) found.classList.add('active');
+  }
+
+  const body = document.getElementById('chat-body');
+  body.innerHTML = '';
+  const messages = demos[type] || demos.analyze;
+  let delay = 0;
+
+  messages.forEach((msg, i) => {
+    if (msg.type === 'typing') {
+      delay += 350;
+      setTimeout(() => {
+        const el = document.createElement('div');
+        el.className = 'typing-indicator';
+        el.innerHTML = '<div class="typing-dot"></div><div class="typing-dot"></div><div class="typing-dot"></div>';
+        el.id = 'typing-' + i;
+        body.appendChild(el);
+        setTimeout(() => el.classList.add('visible'), 40);
+      }, delay);
+      delay += msg.delay;
+      setTimeout(() => {
+        const el = document.getElementById('typing-' + i);
+        if (el) el.remove();
+      }, delay);
+    } else {
+      delay += 250;
+      setTimeout(() => {
+        const el = document.createElement('div');
+        el.className = `chat-msg chat-${msg.type}`;
+        el.innerHTML = msg.html || msg.text;
+        body.appendChild(el);
+        setTimeout(() => el.classList.add('visible'), 40);
+        body.scrollTop = body.scrollHeight;
+      }, delay);
+    }
+  });
+
+  setTimeout(() => { chatAnimating = false; }, delay + 400);
+  runTerminalDemo(type);
+}
+
+// ============ TERMINAL DEMOS ============
+const terminalDemos = {
+  analyze: [
+    { text: '<span class="term-prompt">$</span> <span class="term-cmd">npx pagespeed-insights-mcp</span>', delay: 0 },
+    { text: '<span class="term-accent">[pagespeed-mcp]</span> <span class="term-output">Server started on stdio transport</span>', delay: 500 },
+    { text: '<span class="term-accent">[pagespeed-mcp]</span> <span class="term-output">Registered 6 v2 workflow tools</span>', delay: 200 },
+    { text: '', delay: 150 },
+    { text: '<span class="term-cyan">▶ tools/call</span> <span class="term-cmd">pagespeed_analyze_page</span>', delay: 350 },
+    { text: '  <span class="term-output">url: "https://example.com"</span>', delay: 80 },
+    { text: '  <span class="term-output">strategy: "mobile"</span>', delay: 80 },
+    { text: '  <span class="term-output">categories: ["performance", "seo", "accessibility"]</span>', delay: 80 },
+    { text: '', delay: 200 },
+    { text: '<span class="term-accent">[pagespeed-mcp]</span> <span class="term-output">Querying Google PageSpeed API &amp; CrUX...</span>', delay: 600 },
+    { text: '<span class="term-accent">[pagespeed-mcp]</span> <span class="term-success">✓ Analysis complete (2.1s)</span>', delay: 800 },
+    { text: '', delay: 100 },
+    { text: '<span class="term-success">━━━━━━━━ Structured Output ━━━━━━━━</span>', delay: 150 },
+    { text: '  <span class="term-output">Performance:</span>    <span class="term-success">94/100</span>', delay: 80 },
+    { text: '  <span class="term-output">Accessibility:</span>  <span class="term-success">98/100</span>', delay: 80 },
+    { text: '  <span class="term-output">Core Web Vitals:</span> <span class="term-success">Passed (LCP: 1.4s, INP: 42ms)</span>', delay: 80 },
+    { text: '<span class="term-success">━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━</span>', delay: 100 },
+  ],
+  recommendations: [
+    { text: '<span class="term-prompt">$</span> <span class="term-cmd">npx pagespeed-insights-mcp</span>', delay: 0 },
+    { text: '<span class="term-accent">[pagespeed-mcp]</span> <span class="term-output">Server running...</span>', delay: 400 },
+    { text: '', delay: 150 },
+    { text: '<span class="term-cyan">▶ tools/call</span> <span class="term-cmd">pagespeed_analyze_page</span>', delay: 300 },
+    { text: '  <span class="term-output">url: "https://mystore.org"</span>', delay: 80 },
+    { text: '  <span class="term-output">report: "recommendations"</span>', delay: 80 },
+    { text: '', delay: 200 },
+    { text: '<span class="term-accent">[pagespeed-mcp]</span> <span class="term-output">Parsing 47 Lighthouse audits...</span>', delay: 500 },
+    { text: '<span class="term-accent">[pagespeed-mcp]</span> <span class="term-success">✓ Generated ranked recommendations</span>', delay: 500 },
+    { text: '', delay: 100 },
+    { text: '  <span class="term-error">● CRITICAL:</span> <span class="term-output">Optimize LCP Hero Image (-1.2 MB / WebP)</span>', delay: 150 },
+    { text: '  <span class="term-warn">● HIGH:</span>     <span class="term-output">Eliminate render-blocking CSS (-420ms)</span>', delay: 150 },
+    { text: '  <span class="term-success">● MEDIUM:</span>   <span class="term-output">Reduce unused JavaScript (-280 KB)</span>', delay: 150 },
+  ],
+  diagnose: [
+    { text: '<span class="term-prompt">$</span> <span class="term-cmd">npx pagespeed-insights-mcp</span>', delay: 0 },
+    { text: '<span class="term-accent">[pagespeed-mcp]</span> <span class="term-output">Server running...</span>', delay: 400 },
+    { text: '', delay: 150 },
+    { text: '<span class="term-cyan">▶ tools/call</span> <span class="term-cmd">pagespeed_diagnose_page</span>', delay: 300 },
+    { text: '  <span class="term-output">url: "https://myapp.dev"</span>', delay: 80 },
+    { text: '  <span class="term-output">focus: "render-blocking"</span>', delay: 80 },
+    { text: '', delay: 200 },
+    { text: '<span class="term-accent">[pagespeed-mcp]</span> <span class="term-output">Inspecting critical rendering path...</span>', delay: 600 },
+    { text: '<span class="term-accent">[pagespeed-mcp]</span> <span class="term-success">✓ Isolated 2 render-blocking resources</span>', delay: 400 },
+    { text: '', delay: 100 },
+    { text: '  <span class="term-warn">/assets/app.css</span>   &rarr; <span class="term-output">420ms delay</span>', delay: 120 },
+    { text: '  <span class="term-warn">/js/analytics.js</span>  &rarr; <span class="term-output">180ms delay (sync in head)</span>', delay: 120 },
+  ],
+  compare: [
+    { text: '<span class="term-prompt">$</span> <span class="term-cmd">npx pagespeed-insights-mcp</span>', delay: 0 },
+    { text: '<span class="term-cyan">▶ tools/call</span> <span class="term-cmd">pagespeed_compare_pages</span>', delay: 300 },
+    { text: '  <span class="term-output">mode: "pages"</span>', delay: 80 },
+    { text: '  <span class="term-output">url: "https://staging.app"</span>', delay: 80 },
+    { text: '  <span class="term-output">against: "https://prod.app"</span>', delay: 80 },
+    { text: '', delay: 200 },
+    { text: '<span class="term-accent">[pagespeed-mcp]</span> <span class="term-output">Running dual-target measurement...</span>', delay: 700 },
+    { text: '<span class="term-accent">[pagespeed-mcp]</span> <span class="term-success">✓ Delta calculated</span>', delay: 400 },
+    { text: '', delay: 100 },
+    { text: '  <span class="term-output">            Staging   Production</span>', delay: 100 },
+    { text: '  <span class="term-output">Score       </span><span class="term-success">94</span>        <span class="term-warn">76</span>', delay: 100 },
+    { text: '  <span class="term-output">LCP         </span><span class="term-success">1.4s</span>      <span class="term-error">3.6s</span>', delay: 100 },
+    { text: '  <span class="term-output">CLS         </span><span class="term-success">0.001</span>     <span class="term-warn">0.120</span>', delay: 100 },
+    { text: '  <span class="term-success">✅ Outcome: Staging is +18 points ahead</span>', delay: 200 },
+  ],
+};
+
+function runTerminalDemo(type) {
+  const body = document.getElementById('terminal-body');
+  body.innerHTML = '';
+  const lines = terminalDemos[type] || terminalDemos.analyze;
+  let delay = 0;
+
+  lines.forEach(line => {
+    delay += line.delay;
+    setTimeout(() => {
+      const el = document.createElement('div');
+      el.className = 'term-line';
+      el.innerHTML = line.text;
+      body.appendChild(el);
+      setTimeout(() => el.classList.add('visible'), 25);
+      body.scrollTop = body.scrollHeight;
+    }, delay);
+  });
+
+  delay += 250;
+  setTimeout(() => {
+    const el = document.createElement('div');
+    el.className = 'term-line';
+    el.innerHTML = '<span class="term-prompt">$</span> <span class="cursor-blink"></span>';
+    body.appendChild(el);
+    setTimeout(() => el.classList.add('visible'), 25);
+  }, delay);
+}
+
+// ============ COPY INSTALL ============
+function copyInstall(el) {
+  navigator.clipboard.writeText('npx -y pagespeed-insights-mcp');
+  el.querySelector('.copy-icon').innerHTML = '<polyline points="20 6 9 17 4 12" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/>';
+  el.style.borderColor = 'var(--green)';
+  setTimeout(() => {
+    el.querySelector('.copy-icon').innerHTML = '<rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/>';
+    el.style.borderColor = '';
+  }, 2000);
+}
+
+// ============ AUTO-START ============
+setTimeout(() => runDemo('analyze', null), 1000);
+</script>
 
 </body>
 </html>
