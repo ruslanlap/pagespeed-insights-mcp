@@ -4,8 +4,8 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>PageSpeed Insights MCP Server — Web Performance Intelligence</title>
-<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" fill="none"%3E%3Crect width="32" height="32" rx="8" fill="%23000000" stroke="%23222222" stroke-width="1"/%3E%3Ccircle cx="16" cy="16" r="11" stroke="rgba(255,255,255,0.15)" stroke-width="2" stroke-dasharray="45 15" stroke-dashoffset="15"/%3E%3Cpath d="M16 5 A11 11 0 0 1 27 16" stroke="%230070f3" stroke-width="2.5" stroke-linecap="round"/%3E%3Cpath d="M16 16 L22 10" stroke="%2300e599" stroke-width="2" stroke-linecap="round"/%3E%3Ccircle cx="16" cy="16" r="2.5" fill="%23ffffff"/%3E%3C/svg%3E">
-<link rel="shortcut icon" href="data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" fill="none"%3E%3Crect width="32" height="32" rx="8" fill="%23000000" stroke="%23222222" stroke-width="1"/%3E%3Ccircle cx="16" cy="16" r="11" stroke="rgba(255,255,255,0.15)" stroke-width="2" stroke-dasharray="45 15" stroke-dashoffset="15"/%3E%3Cpath d="M16 5 A11 11 0 0 1 27 16" stroke="%230070f3" stroke-width="2.5" stroke-linecap="round"/%3E%3Cpath d="M16 16 L22 10" stroke="%2300e599" stroke-width="2" stroke-linecap="round"/%3E%3Ccircle cx="16" cy="16" r="2.5" fill="%23ffffff"/%3E%3C/svg%3E">
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32' fill='none'%3E%3Crect width='32' height='32' rx='8' fill='%23000000' stroke='%23222222' stroke-width='1'/%3E%3Ccircle cx='16' cy='16' r='11' stroke='rgba(255,255,255,0.15)' stroke-width='2' stroke-dasharray='45 15' stroke-dashoffset='15'/%3E%3Cpath d='M16 5 A11 11 0 0 1 27 16' stroke='%230070f3' stroke-width='2.5' stroke-linecap='round'/%3E%3Cpath d='M16 16 L22 10' stroke='%2300e599' stroke-width='2' stroke-linecap='round'/%3E%3Ccircle cx='16' cy='16' r='2.5' fill='%23ffffff'/%3E%3C/svg%3E">
+<link rel="shortcut icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32' fill='none'%3E%3Crect width='32' height='32' rx='8' fill='%23000000' stroke='%23222222' stroke-width='1'/%3E%3Ccircle cx='16' cy='16' r='11' stroke='rgba(255,255,255,0.15)' stroke-width='2' stroke-dasharray='45 15' stroke-dashoffset='15'/%3E%3Cpath d='M16 5 A11 11 0 0 1 27 16' stroke='%230070f3' stroke-width='2.5' stroke-linecap='round'/%3E%3Cpath d='M16 16 L22 10' stroke='%2300e599' stroke-width='2' stroke-linecap='round'/%3E%3Ccircle cx='16' cy='16' r='2.5' fill='%23ffffff'/%3E%3C/svg%3E">
 
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600;700&display=swap');
@@ -64,7 +64,7 @@
     pointer-events: none;
   }
 
-    /* ============ NAV ============ */
+  /* ============ NAV ============ */
   nav {
     position: fixed; top: 0; left: 0; right: 0;
     z-index: 100;
@@ -192,13 +192,559 @@
   /* ============ HERO ============ */
   .hero {
     position: relative;
-    min-height: 92vh;
+    min-height: 88vh;
     display: flex; align-items: center; justify-content: center;
     text-align: center;
-    padding: 6.5rem 1.5rem 4rem;
+    padding: 5.5rem 1.5rem 4rem;
     z-index: 1;
   }
   .hero-content { max-width: 900px; position: relative; }
+
+  .hero h1 {
+    font-size: clamp(2.25rem, 5.5vw, 4.2rem);
+    font-weight: 900;
+    line-height: 1.12;
+    letter-spacing: -.035em;
+    margin-bottom: 1.5rem;
+    animation: fadeInUp .8s ease both;
+  }
+  .hero h1 .gradient-text {
+    background: var(--gradient);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+  .hero p {
+    font-size: clamp(1rem, 2vw, 1.25rem);
+    color: var(--text-dim);
+    max-width: 680px;
+    margin: 0 auto 2.5rem;
+    animation: fadeInUp .8s ease .1s both;
+  }
+  .hero-actions {
+    display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap;
+    animation: fadeInUp .8s ease .2s both;
+  }
+  .btn {
+    display: inline-flex; align-items: center; gap: .5rem;
+    padding: .85rem 2rem;
+    border-radius: 10px;
+    font-size: 0.95rem; font-weight: 600;
+    text-decoration: none;
+    cursor: pointer;
+    transition: all .25s;
+    border: none;
+  }
+  .btn-primary {
+    background: #fff;
+    color: #000;
+  }
+  .btn-primary:hover { transform: translateY(-2px); background: #eaeaea; box-shadow: 0 8px 30px rgba(255, 255, 255, 0.15); }
+  .btn-secondary {
+    background: var(--bg3);
+    color: var(--text);
+    border: 1px solid var(--border);
+  }
+  .btn-secondary:hover { border-color: var(--border-hover); background: var(--surface); color: #fff; }
+
+  .hero-stats {
+    display: flex; justify-content: center; gap: 3rem; margin-top: 3.5rem;
+    animation: fadeInUp .8s ease .4s both;
+    flex-wrap: wrap;
+  }
+  .hero-stat { text-align: center; }
+  .hero-stat .num {
+    font-size: 2rem; font-weight: 800;
+    background: var(--gradient);
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+  }
+  .hero-stat .label { font-size: .8rem; color: var(--text-dim); margin-top: .25rem; }
+
+  @keyframes fadeInUp {
+    from { opacity: 0; transform: translateY(30px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* ============ SECTIONS ============ */
+  section { position: relative; z-index: 1; padding: 5rem 1.5rem; }
+  .container { max-width: 1200px; margin: 0 auto; }
+  .section-label {
+    display: inline-flex; align-items: center; gap: .5rem;
+    font-size: .75rem; font-weight: 600; text-transform: uppercase; letter-spacing: .1em;
+    color: var(--accent-blue);
+    margin-bottom: 1rem;
+    font-family: 'JetBrains Mono', monospace;
+  }
+  .section-title {
+    font-size: clamp(1.8rem, 4vw, 2.8rem);
+    font-weight: 800;
+    line-height: 1.2;
+    margin-bottom: 1rem;
+    color: #fff;
+    letter-spacing: -.025em;
+  }
+  .section-desc {
+    color: var(--text-dim);
+    font-size: 1.05rem;
+    max-width: 620px;
+    margin-bottom: 3rem;
+  }
+
+  /* ============ LIVE DEMO & CHAT ============ */
+  .demo-section { background: var(--bg2); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); }
+  
+  .demo-controls {
+    display: flex; justify-content: center; gap: .75rem; margin-bottom: 2rem; flex-wrap: wrap;
+  }
+  .demo-btn {
+    padding: .55rem 1.35rem;
+    background: var(--bg3);
+    border: 1px solid var(--border);
+    color: var(--text-dim);
+    border-radius: 8px;
+    font-size: .85rem; font-weight: 600;
+    cursor: pointer;
+    transition: all .2s;
+  }
+  .demo-btn:hover { border-color: var(--border-hover); color: #fff; }
+  .demo-btn.active { background: #fff; color: #000; border-color: #fff; }
+
+  .chat-demo {
+    max-width: 780px;
+    margin: 0 auto;
+    background: var(--surface);
+    border-radius: 14px;
+    border: 1px solid var(--border);
+    overflow: hidden;
+    box-shadow: 0 24px 80px rgba(0,0,0,.8);
+  }
+  .chat-header {
+    background: var(--bg3);
+    padding: .85rem 1.25rem;
+    display: flex; align-items: center; gap: .75rem;
+    border-bottom: 1px solid var(--border);
+  }
+  .chat-avatar {
+    width: 32px; height: 32px; border-radius: 8px;
+    background: #000;
+    border: 1px solid var(--border);
+    color: #d97706;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .chat-header-text { font-size: .85rem; font-weight: 600; color: #fff; }
+  .chat-header-sub { font-size: .7rem; color: var(--text-dim); }
+  
+  .chat-body { padding: 1.5rem; display: flex; flex-direction: column; gap: 1rem; min-height: 360px; }
+  .chat-msg {
+    max-width: 88%;
+    padding: .85rem 1.15rem;
+    border-radius: 12px;
+    font-size: .85rem;
+    line-height: 1.6;
+    opacity: 0; transform: translateY(10px);
+    transition: all .4s;
+  }
+  .chat-msg.visible { opacity: 1; transform: translateY(0); }
+  .chat-user {
+    align-self: flex-end;
+    background: #fff;
+    color: #000;
+    font-weight: 500;
+    border-bottom-right-radius: 3px;
+  }
+  .chat-ai {
+    align-self: flex-start;
+    background: var(--bg3);
+    color: var(--text);
+    border-bottom-left-radius: 3px;
+    border: 1px solid var(--border);
+  }
+  .chat-ai .chat-score {
+    display: inline-flex; align-items: center; gap: .4rem;
+    background: var(--green-dim);
+    color: var(--green);
+    border: 1px solid rgba(0, 229, 153, 0.3);
+    padding: .2rem .6rem;
+    border-radius: 6px;
+    font-weight: 700;
+    font-size: .85rem;
+    margin: .5rem .25rem 0 0;
+  }
+  .chat-ai .chat-score.warn {
+    background: var(--yellow-dim);
+    color: var(--yellow);
+    border-color: rgba(245, 166, 35, 0.3);
+  }
+  .chat-ai .chat-score.bad {
+    background: var(--red-dim);
+    color: var(--red);
+    border-color: rgba(255, 0, 85, 0.3);
+  }
+
+  .typing-indicator {
+    align-self: flex-start;
+    display: flex; gap: 4px;
+    padding: .85rem 1.1rem;
+    background: var(--bg3);
+    border-radius: 12px;
+    opacity: 0; transition: opacity .3s;
+    border: 1px solid var(--border);
+  }
+  .typing-indicator.visible { opacity: 1; }
+  .typing-dot {
+    width: 6px; height: 6px;
+    background: var(--text-dim);
+    border-radius: 50%;
+    animation: typingBounce 1.4s infinite;
+  }
+  .typing-dot:nth-child(2) { animation-delay: .2s; }
+  .typing-dot:nth-child(3) { animation-delay: .4s; }
+  @keyframes typingBounce {
+    0%,60%,100% { transform: translateY(0); }
+    30% { transform: translateY(-5px); }
+  }
+
+  /* Terminal Simulation */
+  .terminal-wrapper {
+    max-width: 780px;
+    margin: 3rem auto 0;
+    border-radius: 14px;
+    overflow: hidden;
+    border: 1px solid var(--border);
+    box-shadow: 0 24px 80px rgba(0,0,0,.8);
+  }
+  .terminal-header {
+    background: var(--bg3);
+    padding: .75rem 1rem;
+    display: flex; align-items: center; gap: .5rem;
+    border-bottom: 1px solid var(--border);
+  }
+  .terminal-dot { width: 12px; height: 12px; border-radius: 50%; }
+  .terminal-dot.red { background: #ff0055; }
+  .terminal-dot.yellow { background: #f5a623; }
+  .terminal-dot.green { background: #00e599; }
+  .terminal-title {
+    flex: 1; text-align: center;
+    font-size: .75rem; color: var(--text-dim);
+    font-family: 'JetBrains Mono', monospace;
+  }
+  .terminal-body {
+    background: #040405;
+    padding: 1.5rem;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: .8rem;
+    line-height: 1.8;
+    min-height: 380px;
+    position: relative;
+    overflow-x: auto;
+  }
+  .term-line { opacity: 0; transform: translateY(8px); transition: all .4s; white-space: pre-wrap; }
+  .term-line.visible { opacity: 1; transform: translateY(0); }
+  .term-prompt { color: var(--green); }
+  .term-cmd { color: #fff; font-weight: 600; }
+  .term-comment { color: var(--text-dim); font-style: italic; }
+  .term-output { color: var(--text-dim); }
+  .term-success { color: var(--green); }
+  .term-warn { color: var(--yellow); }
+  .term-error { color: var(--red); }
+  .term-accent { color: var(--accent-blue); }
+  .term-cyan { color: var(--accent-cyan); }
+  .cursor-blink {
+    display: inline-block; width: 8px; height: 16px;
+    background: var(--green);
+    animation: blink 1s step-end infinite;
+    vertical-align: middle; margin-left: 2px;
+  }
+  @keyframes blink { 50% { opacity: 0; } }
+
+  /* ============ TOOLS GRID ============ */
+  .tools-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+    gap: 1.25rem;
+  }
+  .tool-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 1.5rem;
+    transition: all .25s;
+    position: relative;
+    overflow: hidden;
+  }
+  .tool-card::before {
+    content: '';
+    position: absolute; top: 0; left: 0; right: 0;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
+    opacity: 0;
+    transition: opacity .3s;
+  }
+  .tool-card:hover { border-color: var(--border-hover); transform: translateY(-3px); background: var(--surface-hover); }
+  .tool-card:hover::before { opacity: 1; }
+  .tool-icon {
+    width: 44px; height: 44px;
+    border-radius: 10px;
+    display: flex; align-items: center; justify-content: center;
+    margin-bottom: 1rem;
+    border: 1px solid var(--border);
+    background: var(--bg3);
+  }
+  .tool-card h3 { font-size: 1.02rem; font-weight: 700; margin-bottom: .5rem; font-family: 'JetBrains Mono', monospace; color: #fff; }
+  .tool-card p { font-size: .85rem; color: var(--text-dim); line-height: 1.55; }
+  .tool-tag {
+    display: inline-block;
+    background: var(--bg3);
+    color: var(--text);
+    padding: .2rem .65rem;
+    border-radius: 100px;
+    font-size: .725rem; font-weight: 600;
+    margin-top: .85rem;
+    border: 1px solid var(--border);
+    font-family: 'JetBrains Mono', monospace;
+  }
+
+  /* ============ GAUGES & METRICS ============ */
+  .gauges-section { background: var(--bg2); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); }
+  .gauges-row {
+    display: flex; justify-content: center; gap: 3rem; flex-wrap: wrap;
+    margin-bottom: 3rem;
+  }
+  .gauge-item { text-align: center; }
+  .gauge-svg { width: 130px; height: 130px; }
+  .gauge-bg { fill: none; stroke: var(--bg3); stroke-width: 8; }
+  .gauge-fill { fill: none; stroke-width: 8; stroke-linecap: round; transition: stroke-dashoffset 2s ease; }
+  .gauge-text { font-size: 2rem; font-weight: 800; fill: var(--text); font-family: 'Inter', sans-serif; }
+  .gauge-label { font-size: .85rem; color: var(--text-dim); margin-top: .5rem; font-weight: 600; }
+
+  .metrics-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1rem;
+    max-width: 900px;
+    margin: 0 auto;
+  }
+  .metric-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 1.25rem;
+    text-align: center;
+    transition: transform .25s, border-color .25s;
+  }
+  .metric-card:hover { transform: translateY(-2px); border-color: var(--border-hover); }
+  .metric-value { font-size: 1.5rem; font-weight: 800; margin-bottom: .25rem; }
+  .metric-name { font-size: .75rem; color: var(--text-dim); text-transform: uppercase; letter-spacing: .05em; font-weight: 600; font-family: 'JetBrains Mono', monospace; }
+
+  /* ============ WORKFLOW ============ */
+  .workflow-steps {
+    display: flex;
+    gap: 1.5rem;
+    overflow-x: auto;
+    padding: 1.5rem 0;
+  }
+  .workflow-step {
+    flex: 1;
+    min-width: 250px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 1.75rem;
+    transition: all .25s;
+  }
+  .workflow-step:hover { border-color: var(--border-hover); transform: translateY(-3px); }
+  .step-number {
+    width: 36px; height: 36px;
+    background: #fff;
+    color: #000;
+    border-radius: 8px;
+    display: flex; align-items: center; justify-content: center;
+    font-weight: 800; font-size: 1.05rem;
+    margin-bottom: 1.25rem;
+  }
+  .workflow-step h3 { font-size: 1.05rem; font-weight: 700; margin-bottom: .5rem; color: #fff; }
+  .workflow-step p { font-size: .85rem; color: var(--text-dim); }
+  .workflow-step code {
+    display: block;
+    background: #000;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: .75rem;
+    margin-top: 1rem;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: .75rem;
+    color: var(--green);
+    overflow-x: auto;
+  }
+
+  /* ============ COMPARISON TABLE ============ */
+  .comparison-table {
+    width: 100%;
+    max-width: 860px;
+    margin: 0 auto;
+    border-collapse: separate;
+    border-spacing: 0;
+    border-radius: 14px;
+    overflow: hidden;
+    border: 1px solid var(--border);
+    background: var(--surface);
+  }
+  .comparison-table th {
+    background: var(--bg3);
+    padding: 1.1rem;
+    font-size: .8rem;
+    text-transform: uppercase;
+    letter-spacing: .05em;
+    color: var(--text-dim);
+    font-weight: 700;
+    text-align: left;
+    font-family: 'JetBrains Mono', monospace;
+  }
+  .comparison-table td {
+    padding: .9rem 1.1rem;
+    border-top: 1px solid var(--border);
+    font-size: .875rem;
+  }
+  .comparison-table tr:nth-child(even) td { background: rgba(255,255,255,.015); }
+  .check { color: var(--green); font-weight: 700; }
+  .cross { color: var(--text-dim); }
+
+  /* ============ CTA SECTION ============ */
+  .cta-section {
+    text-align: center;
+    padding: 6rem 1.5rem;
+    position: relative;
+    border-top: 1px solid var(--border);
+  }
+  .cta-section h2 {
+    font-size: clamp(2rem, 5vw, 3.2rem);
+    font-weight: 900;
+    margin-bottom: 1.25rem;
+    letter-spacing: -.03em;
+  }
+  .cta-section p {
+    color: var(--text-dim);
+    font-size: 1.1rem;
+    max-width: 500px;
+    margin: 0 auto 2.5rem;
+  }
+  .install-block {
+    display: inline-flex; align-items: center; gap: .75rem;
+    background: #000;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: .85rem 1.5rem;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: .9rem;
+    margin-bottom: 2rem;
+    cursor: pointer;
+    transition: all .2s;
+  }
+  .install-block:hover { border-color: var(--border-hover); background: var(--surface); }
+  .install-block .dollar { color: var(--green); }
+  .install-block .copy-icon { color: var(--text-dim); transition: color .2s; }
+  .install-block:hover .copy-icon { color: #fff; }
+
+  /* ============ FOOTER ============ */
+  footer {
+    border-top: 1px solid var(--border);
+    padding: 3rem 1.5rem;
+    text-align: center;
+    color: var(--text-dim);
+    font-size: .85rem;
+    background: var(--bg2);
+  }
+  footer a { color: #fff; text-decoration: none; }
+  footer a:hover { text-decoration: underline; }
+
+  /* ============ SCROLL REVEAL ============ */
+  .reveal {
+    opacity: 0; transform: translateY(30px);
+    transition: opacity .7s ease, transform .7s ease;
+  }
+  .reveal.visible {
+    opacity: 1; transform: translateY(0);
+  }
+
+  /* ============ INTEGRATIONS LOGOS ============ */
+  .integrations-row {
+    display: flex; justify-content: center; align-items: center; gap: 2.5rem; flex-wrap: wrap;
+    margin-top: 1.5rem;
+  }
+  .integration-item {
+    display: flex; align-items: center; gap: .6rem;
+    font-size: .875rem; font-weight: 600; color: var(--text);
+    padding: 0.4rem 0.8rem;
+    border-radius: 8px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    transition: border-color 0.2s ease;
+  }
+  .integration-item:hover { border-color: var(--border-hover); }
+  .integration-item svg { width: 20px; height: 20px; flex-shrink: 0; }
+
+  /* ============ RESPONSIVE ============ */
+  @media (max-width: 820px) {
+    nav {
+      height: 48px;
+      padding: 0 0.85rem;
+    }
+    .nav-brand .brand-logo-svg { width: 22px; height: 22px; }
+    .nav-brand .brand-name { font-size: 0.875rem; }
+    .badge-v2 { display: none; }
+    .nav-cta { padding: 0.28rem 0.65rem; font-size: 0.75rem; }
+    .nav-links { display: none; }
+    .hamburger-btn { display: flex; }
+    .hero { padding: 5rem 1.25rem 3rem; min-height: 85vh; }
+    .hero-stats { gap: 1.25rem; margin-top: 2.5rem; }
+    .tools-grid { grid-template-columns: 1fr; }
+    .gauges-row { gap: 1.5rem; }
+    .workflow-steps { flex-direction: column; }
+    .workflow-step { min-width: auto; }
+    section { padding: 3.5rem 1.25rem; }
+  }
+</style>
+</head>
+<body>
+
+<canvas id="particles-canvas"></canvas>
+
+<!-- NAV -->
+<nav id="main-nav">
+  <a href="#" class="nav-brand">
+    <svg viewBox="0 0 32 32" fill="none" class="brand-logo-svg">
+      <rect width="32" height="32" rx="8" fill="#000000" stroke="#262626" stroke-width="1.2"/>
+      <circle cx="16" cy="16" r="11" stroke="rgba(255,255,255,0.15)" stroke-width="2" stroke-dasharray="45 15" stroke-dashoffset="15"/>
+      <path d="M16 5 A11 11 0 0 1 27 16" stroke="url(#nav-logo-grad)" stroke-width="2.5" stroke-linecap="round"/>
+      <path d="M16 16 L22 10" stroke="#00e599" stroke-width="2" stroke-linecap="round"/>
+      <circle cx="16" cy="16" r="2.5" fill="#ffffff"/>
+      <defs>
+        <linearGradient id="nav-logo-grad" x1="16" y1="5" x2="27" y2="16" gradientUnits="userSpaceOnUse">
+          <stop stop-color="#00dfd8"/>
+          <stop offset="1" stop-color="#0070f3"/>
+        </linearGradient>
+      </defs>
+    </svg>
+    <span class="brand-name">PageSpeed MCP</span>
+    <span class="badge-v2">v2.0</span>
+  </a>
+
+  <ul class="nav-links">
+    <li><a href="#demo">Demo</a></li>
+    <li><a href="#tools">Tools</a></li>
+    <li><a href="#scores">Metrics</a></li>
+    <li><a href="#how-it-works">How It Works</a></li>
+    <li><a href="#compare">Compare</a></li>
+    <li><a href="https://ruslanlap.github.io/pagespeed-insights-mcp/" target="_blank">Docs</a></li>
+  </ul>
+
+  <div class="nav-actions">
+    <a href="https://github.com/ruslanlap/pagespeed-insights-mcp" class="nav-cta" target="_blank">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 .297c-6.63 0-12 5.373-12 12c0 5.303 3.438 9.8 8.205 11.385c.6.113.82-.258.82-.577c0-.285-.01-1.04-.015-2.04c-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729c1.205.084 1.838 1.236 1.838 1.236c1.07 1.835 2.809 1.305 3.495.998c.108-.776.417-1.305.76-1.605c-2.665-.3-5.466-1.332-5.466-5.93c0-1.31.465-2.38 1.235-3.22c-.135-.303-.54-1.523.105-3.176c0 0 1.005-.322 3.3 1.23c.96-.267 1.98-.399 3-.405c1.02.006 2.04.138 3 .405c2.28-1.552 3.285-1.23 3.285-1.23c.645 1.653.24 2.873.12 3.176c.765.84 1.23 1.91 1.23 3.22c0 4.61-2.805 5.625-5.475 5.92c.42.36.81 1.096.81 2.22c0 1.606-.015 2.896-.015 3.286c0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"/></svg>
+      <span>GitHub</span>
+    </a>
+    <button class="hamburger-btn" id="mobile-toggle" aria-label="Toggle navigation menu" onclick="toggleMobileMenu()">
+      <div class="hamburger-line"></div>
       <div class="hamburger-line"></div>
       <div class="hamburger-line"></div>
     </button>
@@ -245,7 +791,7 @@
     </p>
     <div class="hero-actions">
       <a href="https://github.com/ruslanlap/pagespeed-insights-mcp" class="btn btn-primary" target="_blank">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/></svg>
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 .297c-6.63 0-12 5.373-12 12c0 5.303 3.438 9.8 8.205 11.385c.6.113.82-.258.82-.577c0-.285-.01-1.04-.015-2.04c-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729c1.205.084 1.838 1.236 1.838 1.236c1.07 1.835 2.809 1.305 3.495.998c.108-.776.417-1.305.76-1.605c-2.665-.3-5.466-1.332-5.466-5.93c0-1.31.465-2.38 1.235-3.22c-.135-.303-.54-1.523.105-3.176c0 0 1.005-.322 3.3 1.23c.96-.267 1.98-.399 3-.405c1.02.006 2.04.138 3 .405c2.28-1.552 3.285-1.23 3.285-1.23c.645 1.653.24 2.873.12 3.176c.765.84 1.23 1.91 1.23 3.22c0 4.61-2.805 5.625-5.475 5.92c.42.36.81 1.096.81 2.22c0 1.606-.015 2.896-.015 3.286c0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"/></svg>
         Get Started
       </a>
       <a href="#demo" class="btn btn-secondary">
@@ -264,7 +810,7 @@
       </div>
       <div class="hero-stat">
         <div class="num" id="counter-metrics">50+</div>
-        <div class="label">Metrics & CWV Tracked</div>
+        <div class="label">Metrics &amp; CWV Tracked</div>
       </div>
       <div class="hero-stat">
         <div class="num">Apache-2.0</div>
@@ -306,7 +852,7 @@
       <!-- Authentic OpenAI Logo -->
       <div class="integration-item">
         <svg viewBox="0 0 24 24" fill="currentColor" style="color: #10a37f;">
-          <path d="M22.28 9.77a5.98 5.98 0 0 0-.52-4.95 6.06 6.06 0 0 0-4.63-2.93 6.06 6.06 0 0 0-5.32 1.34 6.04 6.04 0 0 0-4.27-.47 6.06 6.06 0 0 0-4.24 3.49 6.07 6.07 0 0 0 .86 6.13 6.02 6.02 0 0 0 .52 4.95 6.06 6.06 0 0 0 4.63 2.93 6.06 6.06 0 0 0 5.32-1.34 6.04 6.04 0 0 0 4.27.47 6.06 6.06 0 0 0 4.24-3.49 6.07 6.07 0 0 0-.86-6.13zm-8.85 10.98a4.57 4.57 0 0 1-2.91-.71c.05-.03.18-.1.25-.14l4.82-2.78a.77.77 0 0 0 .39-.67v-6.8l2.05 1.18a.07.07 0 0 1 .04.05v5.77a4.58 4.58 0 0 1-4.64 4.1zm-8.32-3.89a4.57 4.57 0 0 1-.36-2.98c.05.03.16.1.24.15l4.82 2.78a.77.77 0 0 0 .78 0l5.89-3.4v2.37a.07.07 0 0 1-.03.06l-5 2.89a4.58 4.58 0 0 1-6.34-1.87zm-1.8-8.13a4.57 4.57 0 0 1 2.55-2.27c0 .06-.02.2-.02.29v5.57a.77.77 0 0 0 .39.67l5.89 3.4-2.05 1.18a.07.07 0 0 1-.07 0l-5-2.89a4.58 4.58 0 0 1-1.69-5.95zm14.39 2.5l-5.89-3.4 2.05-1.18a.07.07 0 0 1 .07 0l5 2.89a4.58 4.58 0 0 1 1.69 5.95 4.57 4.57 0 0 1-2.55 2.27c0-.06.02-.2.02-.29v-5.57a.77.77 0 0 0-.39-.67zm3.26 5.86c-.05-.03-.16-.1-.24-.15l-4.82-2.78a.77.77 0 0 0-.78 0l-5.89 3.4v-2.37a.07.07 0 0 1 .03-.06l5-2.89a4.58 4.58 0 0 1 6.34 1.87 4.57 4.57 0 0 1 .36 2.98zm-11.83-4.84l2.4-1.39 2.4 1.39v2.77l-2.4 1.39-2.4-1.39v-2.77z"/>
+          <path d="M22.282 9.821a6 6 0 0 0-.516-4.91a6.05 6.05 0 0 0-6.51-2.9A6.065 6.065 0 0 0 4.981 4.18a6 6 0 0 0-3.998 2.9a6.05 6.05 0 0 0 .743 7.097a5.98 5.98 0 0 0 .51 4.911a6.05 6.05 0 0 0 6.515 2.9A6 6 0 0 0 13.26 24a6.06 6.06 0 0 0 5.772-4.206a6 6 0 0 0 3.997-2.9a6.06 6.06 0 0 0-.747-7.073M13.26 22.43a4.48 4.48 0 0 1-2.876-1.04l.141-.081l4.779-2.758a.8.8 0 0 0 .392-.681v-6.737l2.02 1.168a.07.07 0 0 1 .038.052v5.583a4.504 4.504 0 0 1-4.494 4.494M3.6 18.304a4.47 4.47 0 0 1-.535-3.014l.142.085l4.783 2.759a.77.77 0 0 0 .78 0l5.843-3.369v2.332a.08.08 0 0 1-.033.062L9.74 19.95a4.5 4.5 0 0 1-6.14-1.646M2.34 7.896a4.5 4.5 0 0 1 2.366-1.973V11.6a.77.77 0 0 0 .388.677l5.815 3.354l-2.02 1.168a.08.08 0 0 1-.071 0l-4.83-2.786A4.504 4.504 0 0 1 2.34 7.872zm16.597 3.855l-5.833-3.387L15.119 7.2a.08.08 0 0 1 .071 0l4.83 2.791a4.494 4.494 0 0 1-.676 8.105v-5.678a.79.79 0 0 0-.407-.667m2.01-3.023l-.141-.085l-4.774-2.782a.78.78 0 0 0-.785 0L9.409 9.23V6.897a.07.07 0 0 1 .028-.061l4.83-2.787a4.5 4.5 0 0 1 6.68 4.66zm-12.64 4.135l-2.02-1.164a.08.08 0 0 1-.038-.057V6.075a4.5 4.5 0 0 1 7.375-3.453l-.142.08L8.704 5.46a.8.8 0 0 0-.393.681zm1.097-2.365l2.602-1.5l2.607 1.5v2.999l-2.597 1.5l-2.607-1.5Z"/>
         </svg>
         <span>OpenAI Codex</span>
       </div>
@@ -314,7 +860,7 @@
       <!-- Authentic Docker Logo -->
       <div class="integration-item">
         <svg viewBox="0 0 24 24" fill="currentColor" style="color: #2496ed;">
-          <path d="M13.98 11.08h2.07v2.07h-2.07zm-2.76 0h2.07v2.07h-2.07zm-2.76 0h2.07v2.07H8.46zm-2.76 0h2.07v2.07H5.7zm8.28-2.76h2.07v2.07h-2.07zm-2.76 0h2.07v2.07h-2.07zm-2.76 0h2.07v2.07H8.46zm2.76-2.76h2.07v2.07h-2.07zm9.43 5.52c-.37-.24-.8-.37-1.25-.37-.21 0-.41.03-.61.08-.27-.67-.84-1.2-1.57-1.42l-.4-.12-.24.33c-.45.62-.64 1.38-.55 2.14-.37.2-.95.42-1.74.42H1.5c-.28 0-.5.22-.5.5 0 2.27.75 4.3 2.12 5.72C4.54 18.06 6.55 19 9.3 19c6.48 0 10.9-4.3 11.66-9.8.78-.14 1.48-.52 2.04-1.07l.38-.38-.4-.27c-.28-.19-.62-.35-.98-.4z"/>
+          <path d="M13.983 11.078h2.119a.186.186 0 0 0 .186-.185V9.006a.186.186 0 0 0-.186-.186h-2.119a.185.185 0 0 0-.185.185v1.888c0 .102.083.185.185.185m-2.954-5.43h2.118a.186.186 0 0 0 .186-.186V3.574a.186.186 0 0 0-.186-.185h-2.118a.185.185 0 0 0-.185.185v1.888c0 .102.082.185.185.185m0 2.716h2.118a.187.187 0 0 0 .186-.186V6.29a.186.186 0 0 0-.186-.185h-2.118a.185.185 0 0 0-.185.185v1.887c0 .102.082.185.185.186m-2.93 0h2.12a.186.186 0 0 0 .184-.186V6.29a.185.185 0 0 0-.185-.185H8.1a.185.185 0 0 0-.185.185v1.887c0 .102.083.185.185.186m-2.964 0h2.119a.186.186 0 0 0 .185-.186V6.29a.185.185 0 0 0-.185-.185H5.136a.186.186 0 0 0-.186.185v1.887c0 .102.084.185.186.186m5.893 2.715h2.118a.186.186 0 0 0 .186-.185V9.006a.186.186 0 0 0-.186-.186h-2.118a.185.185 0 0 0-.185.185v1.888c0 .102.082.185.185.185m-2.93 0h2.12a.185.185 0 0 0 .184-.185V9.006a.185.185 0 0 0-.184-.186h-2.12a.185.185 0 0 0-.184.185v1.888c0 .102.083.185.185.185m-2.964 0h2.119a.185.185 0 0 0 .185-.185V9.006a.185.185 0 0 0-.184-.186h-2.12a.185.185 0 0 0-.186.186v1.887c0 .102.084.185.186.185m-2.92 0h2.12a.185.185 0 0 0 .184-.185V9.006a.185.185 0 0 0-.184-.186h-2.12a.185.185 0 0 0-.184.185v1.888c0 .102.082.185.185.185M23.763 9.89c-.065-.051-.672-.51-1.954-.51q-.508.001-1.01.087c-.248-1.7-1.653-2.53-1.716-2.566l-.344-.199l-.226.327c-.284.438-.49.922-.612 1.43c-.23.97-.09 1.882.403 2.661c-.595.332-1.55.413-1.744.42H.751a.75.75 0 0 0-.75.748a11.4 11.4 0 0 0 .692 4.062c.545 1.428 1.355 2.48 2.41 3.124c1.18.723 3.1 1.137 5.275 1.137a15.7 15.7 0 0 0 2.93-.266a12.3 12.3 0 0 0 3.823-1.389a10.5 10.5 0 0 0 2.61-2.136c1.252-1.418 1.998-2.997 2.553-4.4h.221c1.372 0 2.215-.549 2.68-1.009c.309-.293.55-.65.707-1.046l.098-.288Z"/>
         </svg>
         <span>Docker</span>
       </div>
@@ -557,7 +1103,7 @@
         <p>Receive ranked opportunities with estimated KB savings and patches.</p>
         <code>Score: 96/100 (Pass)
 LCP: 1.2s (Fast)
-Diff: +<Image priority /></code>
+Diff: +&lt;Image priority /&gt;</code>
       </div>
     </div>
   </div>
@@ -594,12 +1140,12 @@ Diff: +<Image priority /></code>
           <tr>
             <td>CrUX Field Data + Origin Fallback</td>
             <td>Basic</td>
-            <td><span class="check"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#00e599" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="vertical-align: -2px; margin-right: 4px;"><polyline points="20 6 9 17 4 12"/></svg>28-day p75 URL & Origin</span></td>
+            <td><span class="check"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#00e599" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="vertical-align: -2px; margin-right: 4px;"><polyline points="20 6 9 17 4 12"/></svg>28-day p75 URL &amp; Origin</span></td>
           </tr>
           <tr>
-            <td>Regression Tracking & Stored Baselines</td>
+            <td>Regression Tracking &amp; Stored Baselines</td>
             <td><span class="cross"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#555" stroke-width="2" stroke-linecap="round" style="vertical-align: -2px;"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></span></td>
-            <td><span class="check"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#00e599" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="vertical-align: -2px; margin-right: 4px;"><polyline points="20 6 9 17 4 12"/></svg>1–5 Runs with Median & Spread</span></td>
+            <td><span class="check"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#00e599" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="vertical-align: -2px; margin-right: 4px;"><polyline points="20 6 9 17 4 12"/></svg>1–5 Runs with Median &amp; Spread</span></td>
           </tr>
           <tr>
             <td>Batch Multi-URL Triage (1–10)</td>
@@ -612,12 +1158,12 @@ Diff: +<Image priority /></code>
             <td><span class="check"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#00e599" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="vertical-align: -2px; margin-right: 4px;"><polyline points="20 6 9 17 4 12"/></svg>Actionable AI Engineering Plans</span></td>
           </tr>
           <tr>
-            <td>In-Memory Cache Layer & Invalidation</td>
+            <td>In-Memory Cache Layer &amp; Invalidation</td>
             <td><span class="cross"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#555" stroke-width="2" stroke-linecap="round" style="vertical-align: -2px;"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></span></td>
             <td><span class="check"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#00e599" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="vertical-align: -2px; margin-right: 4px;"><polyline points="20 6 9 17 4 12"/></svg>TTL Cache + Explicit Purge</span></td>
           </tr>
           <tr>
-            <td>Docker & CLI Stdio Transport</td>
+            <td>Docker &amp; CLI Stdio Transport</td>
             <td>N/A</td>
             <td><span class="check"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#00e599" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="vertical-align: -2px; margin-right: 4px;"><polyline points="20 6 9 17 4 12"/></svg>Ready out-of-the-box</span></td>
           </tr>
@@ -640,7 +1186,7 @@ Diff: +<Image priority /></code>
     <br><br>
     <div style="display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap;">
       <a href="https://github.com/ruslanlap/pagespeed-insights-mcp" class="btn btn-primary" target="_blank">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/></svg>
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 .297c-6.63 0-12 5.373-12 12c0 5.303 3.438 9.8 8.205 11.385c.6.113.82-.258.82-.577c0-.285-.01-1.04-.015-2.04c-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729c1.205.084 1.838 1.236 1.838 1.236c1.07 1.835 2.809 1.305 3.495.998c.108-.776.417-1.305.76-1.605c-2.665-.3-5.466-1.332-5.466-5.93c0-1.31.465-2.38 1.235-3.22c-.135-.303-.54-1.523.105-3.176c0 0 1.005-.322 3.3 1.23c.96-.267 1.98-.399 3-.405c1.02.006 2.04.138 3 .405c2.28-1.552 3.285-1.23 3.285-1.23c.645 1.653.24 2.873.12 3.176c.765.84 1.23 1.91 1.23 3.22c0 4.61-2.805 5.625-5.475 5.92c.42.36.81 1.096.81 2.22c0 1.606-.015 2.896-.015 3.286c0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"/></svg>
         View on GitHub
       </a>
       <a href="https://www.npmjs.com/package/pagespeed-insights-mcp" class="btn btn-secondary" target="_blank">
@@ -965,7 +1511,7 @@ const terminalDemos = {
     { text: '  <span class="term-output">Score       </span><span class="term-success">96</span>        <span class="term-warn">76</span>', delay: 100 },
     { text: '  <span class="term-output">LCP         </span><span class="term-success">1.2s</span>      <span class="term-error">3.6s</span>', delay: 100 },
     { text: '  <span class="term-output">CLS         </span><span class="term-success">0.000</span>     <span class="term-warn">0.120</span>', delay: 100 },
-    { text: '  <span class="term-success">[RESULT] Staging is +20 points ahead</span>', delay: 200 },
+    { text: '  <span class="term-success">[RESULT] Outcome: Staging is +20 points ahead</span>', delay: 200 },
   ],
 };
 
