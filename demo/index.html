@@ -199,552 +199,6 @@
     z-index: 1;
   }
   .hero-content { max-width: 900px; position: relative; }
-  .hero-badge {
-    display: inline-flex; align-items: center; gap: .5rem;
-    background: rgba(255, 255, 255, 0.04);
-    border: 1px solid var(--border);
-    border-radius: 100px;
-    padding: .4rem 1.2rem;
-    font-size: .8rem; font-weight: 500; color: #fff;
-    margin-bottom: 2rem;
-    animation: fadeInUp .8s ease both;
-  }
-  .hero-badge .pulse {
-    width: 8px; height: 8px;
-    background: var(--green); border-radius: 50%;
-    box-shadow: 0 0 8px var(--green);
-    animation: pulse 2s infinite;
-  }
-  @keyframes pulse { 0%,100% { opacity: 1; } 50% { opacity: .4; } }
-
-  .hero h1 {
-    font-size: clamp(2.25rem, 5.5vw, 4.2rem);
-    font-weight: 900;
-    line-height: 1.12;
-    letter-spacing: -.035em;
-    margin-bottom: 1.5rem;
-    animation: fadeInUp .8s ease .1s both;
-  }
-  .hero h1 .gradient-text {
-    background: var(--gradient);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-  }
-  .hero p {
-    font-size: clamp(1rem, 2vw, 1.25rem);
-    color: var(--text-dim);
-    max-width: 680px;
-    margin: 0 auto 2.5rem;
-    animation: fadeInUp .8s ease .2s both;
-  }
-  .hero-actions {
-    display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap;
-    animation: fadeInUp .8s ease .3s both;
-  }
-  .btn {
-    display: inline-flex; align-items: center; gap: .5rem;
-    padding: .85rem 2rem;
-    border-radius: 10px;
-    font-size: 0.95rem; font-weight: 600;
-    text-decoration: none;
-    cursor: pointer;
-    transition: all .25s;
-    border: none;
-  }
-  .btn-primary {
-    background: #fff;
-    color: #000;
-  }
-  .btn-primary:hover { transform: translateY(-2px); background: #eaeaea; box-shadow: 0 8px 30px rgba(255, 255, 255, 0.15); }
-  .btn-secondary {
-    background: var(--bg3);
-    color: var(--text);
-    border: 1px solid var(--border);
-  }
-  .btn-secondary:hover { border-color: var(--border-hover); background: var(--surface); color: #fff; }
-
-  .hero-stats {
-    display: flex; justify-content: center; gap: 3rem; margin-top: 4rem;
-    animation: fadeInUp .8s ease .5s both;
-    flex-wrap: wrap;
-  }
-  .hero-stat { text-align: center; }
-  .hero-stat .num {
-    font-size: 2rem; font-weight: 800;
-    background: var(--gradient);
-    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-  }
-  .hero-stat .label { font-size: .8rem; color: var(--text-dim); margin-top: .25rem; }
-
-  @keyframes fadeInUp {
-    from { opacity: 0; transform: translateY(30px); }
-    to { opacity: 1; transform: translateY(0); }
-  }
-
-  /* ============ SECTIONS ============ */
-  section { position: relative; z-index: 1; padding: 5rem 1.5rem; }
-  .container { max-width: 1200px; margin: 0 auto; }
-  .section-label {
-    display: inline-flex; align-items: center; gap: .5rem;
-    font-size: .75rem; font-weight: 600; text-transform: uppercase; letter-spacing: .1em;
-    color: var(--accent-blue);
-    margin-bottom: 1rem;
-    font-family: 'JetBrains Mono', monospace;
-  }
-  .section-title {
-    font-size: clamp(1.8rem, 4vw, 2.8rem);
-    font-weight: 800;
-    line-height: 1.2;
-    margin-bottom: 1rem;
-    color: #fff;
-    letter-spacing: -.025em;
-  }
-  .section-desc {
-    color: var(--text-dim);
-    font-size: 1.05rem;
-    max-width: 620px;
-    margin-bottom: 3rem;
-  }
-
-  /* ============ LIVE DEMO & CHAT ============ */
-  .demo-section { background: var(--bg2); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); }
-  
-  .demo-controls {
-    display: flex; justify-content: center; gap: .75rem; margin-bottom: 2rem; flex-wrap: wrap;
-  }
-  .demo-btn {
-    padding: .55rem 1.35rem;
-    background: var(--bg3);
-    border: 1px solid var(--border);
-    color: var(--text-dim);
-    border-radius: 8px;
-    font-size: .85rem; font-weight: 600;
-    cursor: pointer;
-    transition: all .2s;
-  }
-  .demo-btn:hover { border-color: var(--border-hover); color: #fff; }
-  .demo-btn.active { background: #fff; color: #000; border-color: #fff; }
-
-  .chat-demo {
-    max-width: 780px;
-    margin: 0 auto;
-    background: var(--surface);
-    border-radius: 14px;
-    border: 1px solid var(--border);
-    overflow: hidden;
-    box-shadow: 0 24px 80px rgba(0,0,0,.8);
-  }
-  .chat-header {
-    background: var(--bg3);
-    padding: .85rem 1.25rem;
-    display: flex; align-items: center; gap: .75rem;
-    border-bottom: 1px solid var(--border);
-  }
-  .chat-avatar {
-    width: 32px; height: 32px; border-radius: 8px;
-    background: #000;
-    border: 1px solid var(--border);
-    color: #d97706;
-    display: flex; align-items: center; justify-content: center;
-  }
-  .chat-header-text { font-size: .85rem; font-weight: 600; color: #fff; }
-  .chat-header-sub { font-size: .7rem; color: var(--text-dim); }
-  
-  .chat-body { padding: 1.5rem; display: flex; flex-direction: column; gap: 1rem; min-height: 360px; }
-  .chat-msg {
-    max-width: 88%;
-    padding: .85rem 1.15rem;
-    border-radius: 12px;
-    font-size: .85rem;
-    line-height: 1.6;
-    opacity: 0; transform: translateY(10px);
-    transition: all .4s;
-  }
-  .chat-msg.visible { opacity: 1; transform: translateY(0); }
-  .chat-user {
-    align-self: flex-end;
-    background: #fff;
-    color: #000;
-    font-weight: 500;
-    border-bottom-right-radius: 3px;
-  }
-  .chat-ai {
-    align-self: flex-start;
-    background: var(--bg3);
-    color: var(--text);
-    border-bottom-left-radius: 3px;
-    border: 1px solid var(--border);
-  }
-  .chat-ai .chat-score {
-    display: inline-flex; align-items: center; gap: .4rem;
-    background: var(--green-dim);
-    color: var(--green);
-    border: 1px solid rgba(0, 229, 153, 0.3);
-    padding: .2rem .6rem;
-    border-radius: 6px;
-    font-weight: 700;
-    font-size: .85rem;
-    margin: .5rem .25rem 0 0;
-  }
-  .chat-ai .chat-score.warn {
-    background: var(--yellow-dim);
-    color: var(--yellow);
-    border-color: rgba(245, 166, 35, 0.3);
-  }
-  .chat-ai .chat-score.bad {
-    background: var(--red-dim);
-    color: var(--red);
-    border-color: rgba(255, 0, 85, 0.3);
-  }
-
-  .typing-indicator {
-    align-self: flex-start;
-    display: flex; gap: 4px;
-    padding: .85rem 1.1rem;
-    background: var(--bg3);
-    border-radius: 12px;
-    opacity: 0; transition: opacity .3s;
-    border: 1px solid var(--border);
-  }
-  .typing-indicator.visible { opacity: 1; }
-  .typing-dot {
-    width: 6px; height: 6px;
-    background: var(--text-dim);
-    border-radius: 50%;
-    animation: typingBounce 1.4s infinite;
-  }
-  .typing-dot:nth-child(2) { animation-delay: .2s; }
-  .typing-dot:nth-child(3) { animation-delay: .4s; }
-  @keyframes typingBounce {
-    0%,60%,100% { transform: translateY(0); }
-    30% { transform: translateY(-5px); }
-  }
-
-  /* Terminal Simulation */
-  .terminal-wrapper {
-    max-width: 780px;
-    margin: 3rem auto 0;
-    border-radius: 14px;
-    overflow: hidden;
-    border: 1px solid var(--border);
-    box-shadow: 0 24px 80px rgba(0,0,0,.8);
-  }
-  .terminal-header {
-    background: var(--bg3);
-    padding: .75rem 1rem;
-    display: flex; align-items: center; gap: .5rem;
-    border-bottom: 1px solid var(--border);
-  }
-  .terminal-dot { width: 12px; height: 12px; border-radius: 50%; }
-  .terminal-dot.red { background: #ff0055; }
-  .terminal-dot.yellow { background: #f5a623; }
-  .terminal-dot.green { background: #00e599; }
-  .terminal-title {
-    flex: 1; text-align: center;
-    font-size: .75rem; color: var(--text-dim);
-    font-family: 'JetBrains Mono', monospace;
-  }
-  .terminal-body {
-    background: #040405;
-    padding: 1.5rem;
-    font-family: 'JetBrains Mono', monospace;
-    font-size: .8rem;
-    line-height: 1.8;
-    min-height: 380px;
-    position: relative;
-    overflow-x: auto;
-  }
-  .term-line { opacity: 0; transform: translateY(8px); transition: all .4s; white-space: pre-wrap; }
-  .term-line.visible { opacity: 1; transform: translateY(0); }
-  .term-prompt { color: var(--green); }
-  .term-cmd { color: #fff; font-weight: 600; }
-  .term-comment { color: var(--text-dim); font-style: italic; }
-  .term-output { color: var(--text-dim); }
-  .term-success { color: var(--green); }
-  .term-warn { color: var(--yellow); }
-  .term-error { color: var(--red); }
-  .term-accent { color: var(--accent-blue); }
-  .term-cyan { color: var(--accent-cyan); }
-  .cursor-blink {
-    display: inline-block; width: 8px; height: 16px;
-    background: var(--green);
-    animation: blink 1s step-end infinite;
-    vertical-align: middle; margin-left: 2px;
-  }
-  @keyframes blink { 50% { opacity: 0; } }
-
-  /* ============ TOOLS GRID ============ */
-  .tools-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
-    gap: 1.25rem;
-  }
-  .tool-card {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 14px;
-    padding: 1.5rem;
-    transition: all .25s;
-    position: relative;
-    overflow: hidden;
-  }
-  .tool-card::before {
-    content: '';
-    position: absolute; top: 0; left: 0; right: 0;
-    height: 1px;
-    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
-    opacity: 0;
-    transition: opacity .3s;
-  }
-  .tool-card:hover { border-color: var(--border-hover); transform: translateY(-3px); background: var(--surface-hover); }
-  .tool-card:hover::before { opacity: 1; }
-  .tool-icon {
-    width: 44px; height: 44px;
-    border-radius: 10px;
-    display: flex; align-items: center; justify-content: center;
-    font-size: 1.35rem;
-    margin-bottom: 1rem;
-    border: 1px solid var(--border);
-    background: var(--bg3);
-  }
-  .tool-card h3 { font-size: 1.02rem; font-weight: 700; margin-bottom: .5rem; font-family: 'JetBrains Mono', monospace; color: #fff; }
-  .tool-card p { font-size: .85rem; color: var(--text-dim); line-height: 1.55; }
-  .tool-tag {
-    display: inline-block;
-    background: var(--bg3);
-    color: var(--text);
-    padding: .2rem .65rem;
-    border-radius: 100px;
-    font-size: .725rem; font-weight: 600;
-    margin-top: .85rem;
-    border: 1px solid var(--border);
-    font-family: 'JetBrains Mono', monospace;
-  }
-
-  /* ============ GAUGES & METRICS ============ */
-  .gauges-section { background: var(--bg2); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); }
-  .gauges-row {
-    display: flex; justify-content: center; gap: 3rem; flex-wrap: wrap;
-    margin-bottom: 3rem;
-  }
-  .gauge-item { text-align: center; }
-  .gauge-svg { width: 130px; height: 130px; }
-  .gauge-bg { fill: none; stroke: var(--bg3); stroke-width: 8; }
-  .gauge-fill { fill: none; stroke-width: 8; stroke-linecap: round; transition: stroke-dashoffset 2s ease; }
-  .gauge-text { font-size: 2rem; font-weight: 800; fill: var(--text); font-family: 'Inter', sans-serif; }
-  .gauge-label { font-size: .85rem; color: var(--text-dim); margin-top: .5rem; font-weight: 600; }
-
-  .metrics-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-    gap: 1rem;
-    max-width: 900px;
-    margin: 0 auto;
-  }
-  .metric-card {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 12px;
-    padding: 1.25rem;
-    text-align: center;
-    transition: transform .25s, border-color .25s;
-  }
-  .metric-card:hover { transform: translateY(-2px); border-color: var(--border-hover); }
-  .metric-value { font-size: 1.5rem; font-weight: 800; margin-bottom: .25rem; }
-  .metric-name { font-size: .75rem; color: var(--text-dim); text-transform: uppercase; letter-spacing: .05em; font-weight: 600; font-family: 'JetBrains Mono', monospace; }
-
-  /* ============ WORKFLOW ============ */
-  .workflow-steps {
-    display: flex;
-    gap: 1.5rem;
-    overflow-x: auto;
-    padding: 1.5rem 0;
-  }
-  .workflow-step {
-    flex: 1;
-    min-width: 250px;
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 14px;
-    padding: 1.75rem;
-    transition: all .25s;
-  }
-  .workflow-step:hover { border-color: var(--border-hover); transform: translateY(-3px); }
-  .step-number {
-    width: 36px; height: 36px;
-    background: #fff;
-    color: #000;
-    border-radius: 8px;
-    display: flex; align-items: center; justify-content: center;
-    font-weight: 800; font-size: 1.05rem;
-    margin-bottom: 1.25rem;
-  }
-  .workflow-step h3 { font-size: 1.05rem; font-weight: 700; margin-bottom: .5rem; color: #fff; }
-  .workflow-step p { font-size: .85rem; color: var(--text-dim); }
-  .workflow-step code {
-    display: block;
-    background: #000;
-    border: 1px solid var(--border);
-    border-radius: 8px;
-    padding: .75rem;
-    margin-top: 1rem;
-    font-family: 'JetBrains Mono', monospace;
-    font-size: .75rem;
-    color: var(--green);
-    overflow-x: auto;
-  }
-
-  /* ============ COMPARISON TABLE ============ */
-  .comparison-table {
-    width: 100%;
-    max-width: 860px;
-    margin: 0 auto;
-    border-collapse: separate;
-    border-spacing: 0;
-    border-radius: 14px;
-    overflow: hidden;
-    border: 1px solid var(--border);
-    background: var(--surface);
-  }
-  .comparison-table th {
-    background: var(--bg3);
-    padding: 1.1rem;
-    font-size: .8rem;
-    text-transform: uppercase;
-    letter-spacing: .05em;
-    color: var(--text-dim);
-    font-weight: 700;
-    text-align: left;
-    font-family: 'JetBrains Mono', monospace;
-  }
-  .comparison-table td {
-    padding: .9rem 1.1rem;
-    border-top: 1px solid var(--border);
-    font-size: .875rem;
-  }
-  .comparison-table tr:nth-child(even) td { background: rgba(255,255,255,.015); }
-  .check { color: var(--green); font-weight: 700; }
-  .cross { color: var(--text-dim); }
-
-  /* ============ CTA SECTION ============ */
-  .cta-section {
-    text-align: center;
-    padding: 6rem 1.5rem;
-    position: relative;
-    border-top: 1px solid var(--border);
-  }
-  .cta-section h2 {
-    font-size: clamp(2rem, 5vw, 3.2rem);
-    font-weight: 900;
-    margin-bottom: 1.25rem;
-    letter-spacing: -.03em;
-  }
-  .cta-section p {
-    color: var(--text-dim);
-    font-size: 1.1rem;
-    max-width: 500px;
-    margin: 0 auto 2.5rem;
-  }
-  .install-block {
-    display: inline-flex; align-items: center; gap: .75rem;
-    background: #000;
-    border: 1px solid var(--border);
-    border-radius: 10px;
-    padding: .85rem 1.5rem;
-    font-family: 'JetBrains Mono', monospace;
-    font-size: .9rem;
-    margin-bottom: 2rem;
-    cursor: pointer;
-    transition: all .2s;
-  }
-  .install-block:hover { border-color: var(--border-hover); background: var(--surface); }
-  .install-block .dollar { color: var(--green); }
-  .install-block .copy-icon { color: var(--text-dim); transition: color .2s; }
-  .install-block:hover .copy-icon { color: #fff; }
-
-  /* ============ FOOTER ============ */
-  footer {
-    border-top: 1px solid var(--border);
-    padding: 3rem 1.5rem;
-    text-align: center;
-    color: var(--text-dim);
-    font-size: .85rem;
-    background: var(--bg2);
-  }
-  footer a { color: #fff; text-decoration: none; }
-  footer a:hover { text-decoration: underline; }
-
-  /* ============ SCROLL REVEAL ============ */
-  .reveal {
-    opacity: 0; transform: translateY(30px);
-    transition: opacity .7s ease, transform .7s ease;
-  }
-  .reveal.visible {
-    opacity: 1; transform: translateY(0);
-  }
-
-  /* ============ INTEGRATIONS LOGOS ============ */
-  .integrations-row {
-    display: flex; justify-content: center; align-items: center; gap: 2.5rem; flex-wrap: wrap;
-    margin-top: 1.5rem;
-  }
-  .integration-item {
-    display: flex; align-items: center; gap: .6rem;
-    font-size: .875rem; font-weight: 600; color: var(--text);
-    padding: 0.4rem 0.8rem;
-    border-radius: 8px;
-    background: var(--surface);
-    border: 1px solid var(--border);
-    transition: border-color 0.2s ease;
-  }
-  .integration-item:hover { border-color: var(--border-hover); }
-  .integration-item svg { width: 20px; height: 20px; flex-shrink: 0; }
-
-  /* ============ RESPONSIVE ============ */
-  @media (max-width: 820px) {
-    .nav-links { display: none; }
-    .hamburger-btn { display: flex; }
-    .hero-stats { gap: 1.5rem; }
-    .tools-grid { grid-template-columns: 1fr; }
-    .gauges-row { gap: 1.5rem; }
-    .workflow-steps { flex-direction: column; }
-    .workflow-step { min-width: auto; }
-  }
-</style>
-</head>
-<body>
-
-<canvas id="particles-canvas"></canvas>
-
-<!-- NAV -->
-<nav id="main-nav">
-  <a href="#" class="nav-brand">
-    <svg viewBox="0 0 32 32" fill="none">
-      <rect width="32" height="32" rx="8" fill="%23000000" stroke="%23333333" stroke-width="1.5"/>
-      <path d="M8 22V10l8 6-8 6z" fill="#ffffff"/>
-      <path d="M18 12h6M18 16h4M18 20h5" stroke="#0070f3" stroke-width="2" stroke-linecap="round"/>
-    </svg>
-    <span>PageSpeed MCP</span>
-    <span class="badge-v2">v2.0</span>
-  </a>
-
-  <ul class="nav-links">
-    <li><a href="#demo">Demo</a></li>
-    <li><a href="#tools">Tools</a></li>
-    <li><a href="#scores">Metrics</a></li>
-    <li><a href="#how-it-works">How It Works</a></li>
-    <li><a href="#compare">Compare</a></li>
-    <li><a href="https://ruslanlap.github.io/pagespeed-insights-mcp/" target="_blank">Docs</a></li>
-  </ul>
-
-  <div class="nav-actions">
-    <a href="https://github.com/ruslanlap/pagespeed-insights-mcp" class="nav-cta" target="_blank">
-      <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/></svg>
-      <span>GitHub</span>
-    </a>
-    <button class="hamburger-btn" id="mobile-toggle" aria-label="Toggle navigation menu" onclick="toggleMobileMenu()">
-      <div class="hamburger-line"></div>
       <div class="hamburger-line"></div>
       <div class="hamburger-line"></div>
     </button>
@@ -764,10 +218,6 @@
 <!-- HERO -->
 <section class="hero">
   <div class="hero-content">
-    <div class="hero-badge">
-      <span class="pulse"></span>
-      Model Context Protocol &middot; Google PageSpeed v2.0
-    </div>
     <h1>
       Web Performance Intelligence<br>
       <span class="gradient-text">For AI Coding Assistants</span>
@@ -814,16 +264,15 @@
       <!-- Authentic Claude Logo -->
       <div class="integration-item">
         <svg viewBox="0 0 24 24" fill="currentColor" style="color: #d97706;">
-          <path d="M17.31 3.16c-.38-.97-1.74-.97-2.12 0l-2.36 6.06c-.19.49-.57.87-1.06 1.06L5.71 12.64c-.97.38-.97 1.74 0 2.12l6.06 2.36c.49.19.87.57 1.06 1.06l2.36 6.06c.38.97 1.74.97 2.12 0l2.36-6.06c.19-.49.57-.87 1.06-1.06l6.06-2.36c.97-.38.97-1.74 0-2.12l-6.06-2.36c-.49-.19-.87-.57-1.06-1.06l-2.36-6.06z"/>
+          <path d="M17.304 3.541h-3.672l6.696 16.918H24Zm-10.608 0L0 20.459h3.744l1.37-3.553h7.005l1.369 3.553h3.744L10.536 3.541Zm-.371 10.223L8.616 7.82l2.291 5.945Z"/>
         </svg>
         <span>Claude Desktop</span>
       </div>
 
       <!-- Authentic Cursor Logo -->
       <div class="integration-item">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="color: #0070f3;">
-          <path d="M4 4l7.07 17 2.51-7.39L21 11.07 4 4z"/>
-          <path d="M13.58 13.58L19 19"/>
+        <svg viewBox="0 0 24 24" fill="currentColor" style="color: #ffffff;">
+          <path d="M11.503.131L1.891 5.678a.84.84 0 0 0-.42.726v11.188c0 .3.162.575.42.724l9.609 5.55a1 1 0 0 0 .998 0l9.61-5.55a.84.84 0 0 0 .42-.724V6.404a.84.84 0 0 0-.42-.726L12.497.131a1.01 1.01 0 0 0-.996 0M2.657 6.338h18.55c.263 0 .43.287.297.515L12.23 22.918c-.062.107-.229.064-.229-.06V12.335a.59.59 0 0 0-.295-.51l-9.11-5.257c-.109-.063-.064-.23.061-.23"/>
         </svg>
         <span>Cursor</span>
       </div>
@@ -831,9 +280,9 @@
       <!-- Authentic Windsurf Logo -->
       <div class="integration-item">
         <svg viewBox="0 0 24 24" fill="currentColor" style="color: #00dfd8;">
-          <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/>
+          <path d="M1 0a1 1 0 0 0-1 1v22q0 .094.018.184L0 23.199l.025.026c.103.443.5.775.975.775h22a1 1 0 0 0 1-1V1a1 1 0 0 0-1-1zm.707 1h20.582l-2 2H3.707zM23 1.705v20.588l-2-2V3.705zM1 1.707l2 2v16.492l-2 2zM4 4h16v16H4zm3.537 3q-1.51 0-1.51 1.605v2.297q0 .6-.554.6a.47.47 0 0 0-.344.139a.5.5 0 0 0-.129.365a.5.5 0 0 0 .129.353a.47.47 0 0 0 .344.139q.555 0 .554.6v2.297Q6.027 17 7.537 17q.205 0 .334-.148A.5.5 0 0 0 8 16.498a.5.5 0 0 0-.129-.365a.44.44 0 0 0-.334-.139q-.564 0-.564-.6v-2.296q0-.69-.297-1.092q.148-.207.222-.485q.075-.274.075-.619V8.605q0-.6.564-.6a.44.44 0 0 0 .334-.138A.5.5 0 0 0 8 7.512a.53.53 0 0 0-.129-.364A.43.43 0 0 0 7.537 7m8.926 0a.43.43 0 0 0-.334.148a.53.53 0 0 0-.129.364a.5.5 0 0 0 .129.355a.44.44 0 0 0 .334.139q.564 0 .564.6v2.296q0 .345.075.62q.073.276.222.484q-.296.403-.297 1.092v2.297q0 .6-.564.6a.44.44 0 0 0-.334.138a.5.5 0 0 0-.129.365q0 .217.129.354a.43.43 0 0 0 .334.148q1.51 0 1.51-1.605v-2.297q0-.6.554-.6a.44.44 0 0 0 .334-.139a.48.48 0 0 0 .139-.353a.5.5 0 0 0-.139-.365a.44.44 0 0 0-.334-.139q-.554 0-.554-.6V8.605Q17.973 7 16.463 7m-7.25 6a.74.74 0 0 0-.496.227a.72.72 0 0 0-.217.529a.74.74 0 0 0 .75.744a.74.74 0 0 0 .75-.744a.72.72 0 0 0-.217-.53A.7.7 0 0 0 9.25 13zm2.75 0a.74.74 0 0 0-.496.227a.72.72 0 0 0-.217.529a.74.74 0 0 0 .217.53q.228.214.533.214a.74.74 0 0 0 .75-.744a.72.72 0 0 0-.217-.53A.7.7 0 0 0 12 13zm2.75 0a.74.74 0 0 0-.496.227a.72.72 0 0 0-.217.529a.74.74 0 0 0 .217.53q.228.214.533.214a.74.74 0 0 0 .75-.744a.72.72 0 0 0-.217-.53a.7.7 0 0 0-.533-.226zm-11.1 8h16.68l2 2H1.613z"/>
         </svg>
-        <span>Windsurf</span>
+        <span>Windsurf (Codeium)</span>
       </div>
 
       <!-- Authentic OpenAI Logo -->
@@ -877,7 +326,7 @@
         <div class="chat-header">
           <div class="chat-avatar">
             <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
-              <path d="M17.31 3.16c-.38-.97-1.74-.97-2.12 0l-2.36 6.06c-.19.49-.57.87-1.06 1.06L5.71 12.64c-.97.38-.97 1.74 0 2.12l6.06 2.36c.49.19.87.57 1.06 1.06l2.36 6.06c.38.97 1.74.97 2.12 0l2.36-6.06c.19-.49.57-.87 1.06-1.06l6.06-2.36c.97-.38.97-1.74 0-2.12l-6.06-2.36c-.49-.19-.87-.57-1.06-1.06l-2.36-6.06z"/>
+              <path d="M17.304 3.541h-3.672l6.696 16.918H24Zm-10.608 0L0 20.459h3.744l1.37-3.553h7.005l1.369 3.553h3.744L10.536 3.541Zm-.371 10.223L8.616 7.82l2.291 5.945Z"/>
             </svg>
           </div>
           <div>
@@ -918,37 +367,49 @@
     </div>
     <div class="tools-grid reveal">
       <div class="tool-card">
-        <div class="tool-icon">🚀</div>
+        <div class="tool-icon" style="color: #0070f3;">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4.5 16.5c-1.5 1.26-2 5-2 5s3.74-.5 5-2c.71-.84.7-2.13-.09-2.91a2.18 2.18 0 0 0-2.91-.09z"/><path d="m12 15-3-3a22 22 0 0 1 2-3.95A12.88 12.88 0 0 1 22 2c0 2.72-.78 7.5-2.05 11a22.35 22.35 0 0 1-4 2z"/><path d="M9 12H4s.55-3.03 2-4.5c1.47-1.47 4.5-2 4.5-2"/><path d="M12 15v5s3.03-.55 4.5-2c1.47-1.47 2-4.5 2-4.5"/></svg>
+        </div>
         <h3>pagespeed_analyze_page</h3>
         <p>One-page Lighthouse health check, recommendations, audit findings, or performance map with Mermaid charts.</p>
         <span class="tool-tag">Analyze</span>
       </div>
       <div class="tool-card">
-        <div class="tool-icon">⚡</div>
+        <div class="tool-icon" style="color: #f5a623;">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
+        </div>
         <h3>pagespeed_diagnose_page</h3>
         <p>Inspect one specific bottleneck lens: visual, elements, network, JavaScript, images, render-blocking, or third parties.</p>
         <span class="tool-tag">Diagnose</span>
       </div>
       <div class="tool-card">
-        <div class="tool-icon">🎯</div>
+        <div class="tool-icon" style="color: #00e599;">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M22 12h-4"/><path d="M6 12H2"/><path d="M12 6V2"/><path d="M12 22v-4"/></svg>
+        </div>
         <h3>pagespeed_get_field_data</h3>
         <p>Real-user Core Web Vitals from Chrome UX Report (CrUX) 28-day p75 for single URL or bare origin fallback.</p>
         <span class="tool-tag">CrUX Field Data</span>
       </div>
       <div class="tool-card">
-        <div class="tool-icon">📸</div>
+        <div class="tool-icon" style="color: #50e3c2;">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="18" r="3"/><circle cx="6" cy="6" r="3"/><path d="M13 6h3a2 2 0 0 1 2 2v7"/><path d="M11 18H8a2 2 0 0 1-2-2V9"/></svg>
+        </div>
         <h3>pagespeed_compare_pages</h3>
         <p>Compare two pages side-by-side (staging vs prod) or measure one page against its saved baseline.</p>
         <span class="tool-tag">Regression Baseline</span>
       </div>
       <div class="tool-card">
-        <div class="tool-icon">🌐</div>
+        <div class="tool-icon" style="color: #00dfd8;">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m12.83 2.18a2 2 0 0 0-1.66 0L2.6 6.08a1 1 0 0 0 0 1.83l8.58 3.91a2 2 0 0 0 1.66 0l8.58-3.9a1 1 0 0 0 0-1.83Z"/><path d="m22 12.5-8.58 3.91a2 2 0 0 1-1.66 0L2 12.5"/><path d="m22 17.5-8.58 3.91a2 2 0 0 1-1.66 0L2 17.5"/></svg>
+        </div>
         <h3>pagespeed_analyze_batch</h3>
         <p>Triage 1–10 public URLs in parallel with concurrency rate limiting and progress notifications.</p>
         <span class="tool-tag">Batch Triage</span>
       </div>
       <div class="tool-card">
-        <div class="tool-icon">🧹</div>
+        <div class="tool-icon" style="color: #ff0055;">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/><line x1="10" x2="10" y1="11" y2="17"/><line x1="14" x2="14" y1="11" y2="17"/></svg>
+        </div>
         <h3>pagespeed_clear_cache</h3>
         <p>Purge in-memory PageSpeed response cache immediately after deploying performance optimizations.</p>
         <span class="tool-tag">Lifecycle Utility</span>
