@@ -4,8 +4,8 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>PageSpeed Insights MCP Server — Web Performance Intelligence</title>
-<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%23000000' stroke='%23333333' stroke-width='2'/%3E%3Cpath d='M16 43V21l14 11-14 11z' fill='%23ffffff'/%3E%3Cpath d='M35 25h14M35 32h10M35 39h12' stroke='%230070f3' stroke-width='4' stroke-linecap='round'/%3E%3C/svg%3E">
-<link rel="shortcut icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%23000000' stroke='%23333333' stroke-width='2'/%3E%3Cpath d='M16 43V21l14 11-14 11z' fill='%23ffffff'/%3E%3Cpath d='M35 25h14M35 32h10M35 39h12' stroke='%230070f3' stroke-width='4' stroke-linecap='round'/%3E%3C/svg%3E">
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" fill="none"%3E%3Crect width="32" height="32" rx="8" fill="%23000000" stroke="%23222222" stroke-width="1"/%3E%3Ccircle cx="16" cy="16" r="11" stroke="rgba(255,255,255,0.15)" stroke-width="2" stroke-dasharray="45 15" stroke-dashoffset="15"/%3E%3Cpath d="M16 5 A11 11 0 0 1 27 16" stroke="%230070f3" stroke-width="2.5" stroke-linecap="round"/%3E%3Cpath d="M16 16 L22 10" stroke="%2300e599" stroke-width="2" stroke-linecap="round"/%3E%3Ccircle cx="16" cy="16" r="2.5" fill="%23ffffff"/%3E%3C/svg%3E">
+<link rel="shortcut icon" href="data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" fill="none"%3E%3Crect width="32" height="32" rx="8" fill="%23000000" stroke="%23222222" stroke-width="1"/%3E%3Ccircle cx="16" cy="16" r="11" stroke="rgba(255,255,255,0.15)" stroke-width="2" stroke-dasharray="45 15" stroke-dashoffset="15"/%3E%3Cpath d="M16 5 A11 11 0 0 1 27 16" stroke="%230070f3" stroke-width="2.5" stroke-linecap="round"/%3E%3Cpath d="M16 16 L22 10" stroke="%2300e599" stroke-width="2" stroke-linecap="round"/%3E%3Ccircle cx="16" cy="16" r="2.5" fill="%23ffffff"/%3E%3C/svg%3E">
 
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600;700&display=swap');
@@ -64,51 +64,51 @@
     pointer-events: none;
   }
 
-  /* ============ NAV ============ */
+    /* ============ NAV ============ */
   nav {
     position: fixed; top: 0; left: 0; right: 0;
     z-index: 100;
     backdrop-filter: blur(20px);
     -webkit-backdrop-filter: blur(20px);
-    background: rgba(0, 0, 0, 0.75);
+    background: rgba(0, 0, 0, 0.8);
     border-bottom: 1px solid var(--border);
     padding: 0 1.5rem;
-    height: 64px;
+    height: 56px;
     display: flex; align-items: center; justify-content: space-between;
     transition: all .3s;
   }
   nav.scrolled { background: rgba(0, 0, 0, 0.95); box-shadow: 0 4px 24px rgba(0,0,0,0.8); }
   
   .nav-brand {
-    display: flex; align-items: center; gap: .75rem; font-weight: 700; font-size: 1.05rem;
+    display: flex; align-items: center; gap: .6rem; font-weight: 700; font-size: 0.95rem;
     color: #fff; text-decoration: none;
   }
-  .nav-brand svg { width: 28px; height: 28px; }
+  .nav-brand .brand-logo-svg { width: 26px; height: 26px; flex-shrink: 0; }
   .badge-v2 {
     font-family: 'JetBrains Mono', monospace;
-    font-size: 0.7rem; font-weight: 600;
-    padding: 0.15rem 0.45rem; border-radius: 999px;
+    font-size: 0.65rem; font-weight: 600;
+    padding: 0.1rem 0.4rem; border-radius: 999px;
     background: var(--bg3); color: #fff;
     border: 1px solid var(--border);
   }
 
-  .nav-links { display: flex; gap: 1.75rem; list-style: none; align-items: center; }
+  .nav-links { display: flex; gap: 1.5rem; list-style: none; align-items: center; }
   .nav-links a {
-    color: var(--text-dim); text-decoration: none; font-size: .875rem; font-weight: 500;
+    color: var(--text-dim); text-decoration: none; font-size: .85rem; font-weight: 500;
     transition: color .2s;
   }
   .nav-links a:hover { color: #fff; }
   
   .nav-actions {
-    display: flex; align-items: center; gap: 0.75rem;
+    display: flex; align-items: center; gap: 0.6rem;
   }
 
   .nav-cta {
     background: #fff;
-    color: #000; border: none; border-radius: 8px;
-    padding: .45rem 1.15rem; font-size: .85rem; font-weight: 600;
+    color: #000; border: none; border-radius: 6px;
+    padding: .35rem .9rem; font-size: .8rem; font-weight: 600;
     cursor: pointer; text-decoration: none;
-    display: inline-flex; align-items: center; gap: .45rem;
+    display: inline-flex; align-items: center; gap: .4rem;
     transition: transform .2s, background .2s;
   }
   .nav-cta:hover { transform: translateY(-1px); background: #eaeaea; }
@@ -119,14 +119,14 @@
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    width: 38px;
-    height: 38px;
-    border-radius: 8px;
+    width: 32px;
+    height: 32px;
+    border-radius: 6px;
     background: var(--bg3);
     border: 1px solid var(--border);
     cursor: pointer;
-    gap: 5px;
-    padding: 8px;
+    gap: 4px;
+    padding: 6px;
   }
   .hamburger-line {
     width: 100%;
@@ -136,32 +136,32 @@
     transition: all 0.25s ease;
   }
   .hamburger-btn.active .hamburger-line:nth-child(1) {
-    transform: translateY(7px) rotate(45deg);
+    transform: translateY(6px) rotate(45deg);
   }
   .hamburger-btn.active .hamburger-line:nth-child(2) {
     opacity: 0;
   }
   .hamburger-btn.active .hamburger-line:nth-child(3) {
-    transform: translateY(-7px) rotate(-45deg);
+    transform: translateY(-6px) rotate(-45deg);
   }
 
   /* Mobile Drawer Menu */
   .mobile-drawer {
     display: none;
     position: fixed;
-    top: 64px;
+    top: 48px;
     left: 0;
     right: 0;
-    background: rgba(8, 8, 10, 0.98);
+    background: rgba(4, 4, 6, 0.98);
     backdrop-filter: blur(24px);
     -webkit-backdrop-filter: blur(24px);
     border-bottom: 1px solid var(--border);
-    padding: 1.5rem;
+    padding: 1rem 1.25rem;
     flex-direction: column;
-    gap: 0.75rem;
+    gap: 0.5rem;
     z-index: 99;
     box-shadow: 0 20px 40px rgba(0, 0, 0, 0.9);
-    transform: translateY(-10px);
+    transform: translateY(-8px);
     opacity: 0;
     pointer-events: none;
     transition: all 0.25s ease;
@@ -175,14 +175,14 @@
   .mobile-drawer a {
     color: var(--text);
     text-decoration: none;
-    font-size: 0.95rem;
+    font-size: 0.9rem;
     font-weight: 500;
-    padding: 0.75rem 0.6rem;
-    border-radius: 8px;
+    padding: 0.6rem 0.5rem;
+    border-radius: 6px;
     display: flex;
     align-items: center;
     justify-content: space-between;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.04);
   }
   .mobile-drawer a:hover {
     color: #fff;
@@ -207,12 +207,30 @@
 
 <!-- Mobile Navigation Drawer -->
 <div class="mobile-drawer" id="mobile-drawer">
-  <a href="#demo" onclick="closeMobileMenu()"><span>Interactive Demo</span> <span>⚡</span></a>
-  <a href="#tools" onclick="closeMobileMenu()"><span>6 Workflow Tools</span> <span>🛠️</span></a>
-  <a href="#scores" onclick="closeMobileMenu()"><span>Live Metrics & Gauges</span> <span>📊</span></a>
-  <a href="#how-it-works" onclick="closeMobileMenu()"><span>Getting Started</span> <span>🚀</span></a>
-  <a href="#compare" onclick="closeMobileMenu()"><span>Comparison Matrix</span> <span>⚖️</span></a>
-  <a href="https://ruslanlap.github.io/pagespeed-insights-mcp/" target="_blank" onclick="closeMobileMenu()"><span>Full Documentation</span> <span>↗</span></a>
+  <a href="#demo" onclick="closeMobileMenu()">
+    <span>Interactive Demo</span>
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
+  </a>
+  <a href="#tools" onclick="closeMobileMenu()">
+    <span>6 Workflow Tools</span>
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
+  </a>
+  <a href="#scores" onclick="closeMobileMenu()">
+    <span>Live Metrics &amp; Gauges</span>
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
+  </a>
+  <a href="#how-it-works" onclick="closeMobileMenu()">
+    <span>Getting Started</span>
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
+  </a>
+  <a href="#compare" onclick="closeMobileMenu()">
+    <span>Comparison Matrix</span>
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
+  </a>
+  <a href="https://ruslanlap.github.io/pagespeed-insights-mcp/" target="_blank" onclick="closeMobileMenu()">
+    <span>Documentation</span>
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+  </a>
 </div>
 
 <!-- HERO -->
@@ -308,7 +326,7 @@
 <section id="demo" class="demo-section">
   <div class="container">
     <div class="reveal" style="text-align: center;">
-      <div class="section-label">⚡ Live Simulation</div>
+      <div class="section-label">Interactive Simulation</div>
       <h2 class="section-title">See It In Action</h2>
       <p class="section-desc" style="margin: 0 auto 2rem;">Watch how PageSpeed MCP analyzes websites and generates actionable fixes directly inside your AI assistant.</p>
     </div>
@@ -361,7 +379,7 @@
 <section id="tools">
   <div class="container">
     <div class="reveal">
-      <div class="section-label">🛠️ Tool Suite</div>
+      <div class="section-label">v2 Tool Suite</div>
       <h2 class="section-title">6 Focused Workflow Tools</h2>
       <p class="section-desc">Streamlined v2 architecture designed for high-signal AI agent tool calls.</p>
     </div>
@@ -422,7 +440,7 @@
 <section id="scores" class="gauges-section">
   <div class="container" style="text-align: center;">
     <div class="reveal">
-      <div class="section-label">📊 Live Metrics Preview</div>
+      <div class="section-label">Live Telemetry &amp; Gauges</div>
       <h2 class="section-title">Actionable Telemetry Reports</h2>
       <p class="section-desc" style="margin: 0 auto 3rem;">Lighthouse lab audits and real-world Core Web Vitals delivered in structured formats.</p>
     </div>
@@ -503,7 +521,7 @@
 <section id="how-it-works">
   <div class="container">
     <div class="reveal" style="text-align: center;">
-      <div class="section-label">💡 Getting Started</div>
+      <div class="section-label">Quickstart Guide</div>
       <h2 class="section-title">Up and Running in 60 Seconds</h2>
       <p class="section-desc" style="margin: 0 auto 3rem;">Three simple steps to unlock AI-powered web performance engineering.</p>
     </div>
@@ -534,11 +552,11 @@
         <code>"Analyze https://mysite.com mobile LCP and generate code fixes"</code>
       </div>
       <div class="workflow-step">
-        <div class="step-number">✓</div>
+        <div class="step-number">4</div>
         <h3>Apply Fixes</h3>
         <p>Receive ranked opportunities with estimated KB savings and patches.</p>
-        <code>Score: 96/100 ✅
-LCP: 1.2s ✅
+        <code>Score: 96/100 (Pass)
+LCP: 1.2s (Fast)
 Diff: +<Image priority /></code>
       </div>
     </div>
@@ -549,7 +567,7 @@ Diff: +<Image priority /></code>
 <section id="compare" style="background: var(--bg2); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border);">
   <div class="container" style="text-align: center;">
     <div class="reveal">
-      <div class="section-label">⚖️ Architecture</div>
+      <div class="section-label">Architecture Comparison</div>
       <h2 class="section-title">Beyond Manual Testing</h2>
       <p class="section-desc" style="margin: 0 auto 3rem;">Stop tab-switching. Integrate live performance audits directly into your AI coding workflow.</p>
     </div>
@@ -565,43 +583,43 @@ Diff: +<Image priority /></code>
         <tbody>
           <tr>
             <td>Natural Language Agent Invocation</td>
-            <td><span class="cross">✗</span></td>
-            <td><span class="check">✓ Claude, Cursor, Windsurf Ready</span></td>
+            <td><span class="cross"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#555" stroke-width="2" stroke-linecap="round" style="vertical-align: -2px;"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></span></td>
+            <td><span class="check"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#00e599" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="vertical-align: -2px; margin-right: 4px;"><polyline points="20 6 9 17 4 12"/></svg>Claude, Cursor, Windsurf Ready</span></td>
           </tr>
           <tr>
             <td>Focused Diagnostic Lenses (7 Domains)</td>
-            <td><span class="cross">✗</span></td>
-            <td><span class="check">✓ JS, CSS, Render-Blocking, Images</span></td>
+            <td><span class="cross"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#555" stroke-width="2" stroke-linecap="round" style="vertical-align: -2px;"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></span></td>
+            <td><span class="check"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#00e599" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="vertical-align: -2px; margin-right: 4px;"><polyline points="20 6 9 17 4 12"/></svg>JS, CSS, Render-Blocking, Images</span></td>
           </tr>
           <tr>
             <td>CrUX Field Data + Origin Fallback</td>
             <td>Basic</td>
-            <td><span class="check">✓ 28-day p75 URL & Origin</span></td>
+            <td><span class="check"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#00e599" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="vertical-align: -2px; margin-right: 4px;"><polyline points="20 6 9 17 4 12"/></svg>28-day p75 URL & Origin</span></td>
           </tr>
           <tr>
             <td>Regression Tracking & Stored Baselines</td>
-            <td><span class="cross">✗</span></td>
-            <td><span class="check">✓ 1–5 Runs with Median & Spread</span></td>
+            <td><span class="cross"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#555" stroke-width="2" stroke-linecap="round" style="vertical-align: -2px;"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></span></td>
+            <td><span class="check"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#00e599" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="vertical-align: -2px; margin-right: 4px;"><polyline points="20 6 9 17 4 12"/></svg>1–5 Runs with Median & Spread</span></td>
           </tr>
           <tr>
             <td>Batch Multi-URL Triage (1–10)</td>
-            <td><span class="cross">✗</span></td>
-            <td><span class="check">✓ Parallel with Rate Limiting</span></td>
+            <td><span class="cross"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#555" stroke-width="2" stroke-linecap="round" style="vertical-align: -2px;"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></span></td>
+            <td><span class="check"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#00e599" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="vertical-align: -2px; margin-right: 4px;"><polyline points="20 6 9 17 4 12"/></svg>Parallel with Rate Limiting</span></td>
           </tr>
           <tr>
             <td>Smart Code Remediation Diffs</td>
-            <td><span class="cross">✗</span></td>
-            <td><span class="check">✓ Actionable AI Engineering Plans</span></td>
+            <td><span class="cross"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#555" stroke-width="2" stroke-linecap="round" style="vertical-align: -2px;"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></span></td>
+            <td><span class="check"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#00e599" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="vertical-align: -2px; margin-right: 4px;"><polyline points="20 6 9 17 4 12"/></svg>Actionable AI Engineering Plans</span></td>
           </tr>
           <tr>
             <td>In-Memory Cache Layer & Invalidation</td>
-            <td><span class="cross">✗</span></td>
-            <td><span class="check">✓ TTL Cache + Explicit Purge</span></td>
+            <td><span class="cross"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#555" stroke-width="2" stroke-linecap="round" style="vertical-align: -2px;"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></span></td>
+            <td><span class="check"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#00e599" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="vertical-align: -2px; margin-right: 4px;"><polyline points="20 6 9 17 4 12"/></svg>TTL Cache + Explicit Purge</span></td>
           </tr>
           <tr>
             <td>Docker & CLI Stdio Transport</td>
             <td>N/A</td>
-            <td><span class="check">✓ Ready out-of-the-box</span></td>
+            <td><span class="check"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#00e599" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="vertical-align: -2px; margin-right: 4px;"><polyline points="20 6 9 17 4 12"/></svg>Ready out-of-the-box</span></td>
           </tr>
         </tbody>
       </table>
@@ -638,7 +656,7 @@ Diff: +<Image priority /></code>
 <!-- FOOTER -->
 <footer>
   <p>
-    Built with ❤️ by <a href="https://github.com/ruslanlap">@ruslanlap</a> &middot;
+    Maintained by <a href="https://github.com/ruslanlap">@ruslanlap</a> &middot;
     Apache-2.0 License &middot;
     <a href="https://github.com/ruslanlap/pagespeed-insights-mcp">GitHub</a> &middot;
     <a href="https://www.npmjs.com/package/pagespeed-insights-mcp">npm</a> &middot;
@@ -765,9 +783,9 @@ const demos = {
         <span class="chat-score">SEO: 100</span>
       </div><br>
       <strong>Core Web Vitals Telemetry:</strong><br>
-      &bull; <strong>LCP:</strong> 1.2s <span style="color:var(--green);">&#10003; Fast</span><br>
-      &bull; <strong>INP:</strong> 35ms <span style="color:var(--green);">&#10003; Fast</span><br>
-      &bull; <strong>CLS:</strong> 0.000 <span style="color:var(--green);">&#10003; Fast</span><br>
+      &bull; <strong>LCP:</strong> 1.2s <span style="color:var(--green);">Fast</span><br>
+      &bull; <strong>INP:</strong> 35ms <span style="color:var(--green);">Fast</span><br>
+      &bull; <strong>CLS:</strong> 0.000 <span style="color:var(--green);">Fast</span><br>
       &bull; <strong>FCP:</strong> 0.8s &middot; <strong>TTFB:</strong> 60ms<br><br>
       <strong>Audit Diagnostics:</strong><br>
       &bull; Efficient cache headers served on static chunks<br>
@@ -776,20 +794,20 @@ const demos = {
   recommendations: [
     { type: 'user', text: 'Get smart recommendations for improving https://mystore.org performance' },
     { type: 'typing', delay: 1600 },
-    { type: 'ai', html: `<strong>🎯 Prioritized Performance Recommendations</strong><br><br>
-      <span style="color:var(--red);font-weight:700;">🔴 Critical Priority</span><br>
+    { type: 'ai', html: `<strong>Prioritized Performance Recommendations</strong><br><br>
+      <span style="color:var(--red);font-weight:700;">[CRITICAL PRIORITY]</span><br>
       &bull; <strong>Optimize LCP Banner</strong> — Reduce hero image weight by serving WebP/AVIF (Est. savings: 1.2 MB / 850ms)<br>
       &bull; <strong>Eliminate Render-Blocking CSS</strong> — Defer secondary stylesheet <code>theme-extra.css</code><br><br>
-      <span style="color:var(--yellow);font-weight:700;">🟡 High Priority</span><br>
+      <span style="color:var(--yellow);font-weight:700;">[HIGH PRIORITY]</span><br>
       &bull; <strong>Reduce unused JavaScript</strong> — Split vendor bundle (-280 KB)<br>
       &bull; <strong>Preconnect to CDN origin</strong> — Faster asset handshakes (-60ms)<br><br>
-      <span style="color:var(--green);font-weight:700;">🟢 Best Practices</span><br>
+      <span style="color:var(--green);font-weight:700;">[BEST PRACTICES]</span><br>
       &bull; Add explicit <code>width</code> and <code>height</code> attributes to prevent layout shifts (CLS &lt; 0.01)` },
   ],
   diagnose: [
     { type: 'user', text: 'Diagnose render-blocking resources for https://myapp.dev' },
     { type: 'typing', delay: 1500 },
-    { type: 'ai', html: `<strong>⚡ Diagnostic Lens: Render-Blocking Resources</strong><br><br>
+    { type: 'ai', html: `<strong>Diagnostic Lens: Render-Blocking Resources</strong><br><br>
       <strong>Culprit Analysis:</strong><br>
       1. <code>/assets/app.css</code> (42 KB) — Blocks FCP by <strong>420ms</strong><br>
       2. <code>/js/analytics.js</code> (18 KB, synchronous in head) — Blocks FCP by <strong>180ms</strong><br><br>
@@ -800,7 +818,7 @@ const demos = {
   compare: [
     { type: 'user', text: 'Compare performance between staging and production URL' },
     { type: 'typing', delay: 1700 },
-    { type: 'ai', html: `<strong>📸 Performance Comparison (Staging vs Production)</strong><br><br>
+    { type: 'ai', html: `<strong>Performance Comparison (Staging vs Production)</strong><br><br>
       <table style="width:100%;font-size:.8rem;border-collapse:collapse;">
         <tr style="border-bottom:1px solid var(--border);">
           <td style="padding:.4rem;color:var(--text-dim);">Metric</td>
@@ -809,7 +827,7 @@ const demos = {
         </tr>
         <tr style="border-bottom:1px solid var(--border);">
           <td style="padding:.4rem;color:var(--text-dim);">Performance</td>
-          <td style="padding:.4rem;color:var(--green);font-weight:700;">96/100 &#128077;</td>
+          <td style="padding:.4rem;color:var(--green);font-weight:700;">96/100</td>
           <td style="padding:.4rem;color:var(--yellow);">76/100</td>
         </tr>
         <tr style="border-bottom:1px solid var(--border);">
@@ -828,7 +846,7 @@ const demos = {
           <td style="padding:.4rem;color:var(--yellow);">180ms</td>
         </tr>
       </table><br>
-      <span style="color:var(--green);font-weight:600;">✅ Staging shows 20pt score improvement</span> &amp; sub-1.5s LCP.` },
+      <span style="color:var(--green);font-weight:600;">+ Staging shows +20pt score improvement</span> &amp; sub-1.5s LCP.` },
   ],
 };
 
@@ -896,7 +914,7 @@ const terminalDemos = {
     { text: '  <span class="term-output">categories: ["performance", "seo", "accessibility"]</span>', delay: 80 },
     { text: '', delay: 200 },
     { text: '<span class="term-accent">[pagespeed-mcp]</span> <span class="term-output">Querying Google PageSpeed API &amp; CrUX...</span>', delay: 600 },
-    { text: '<span class="term-accent">[pagespeed-mcp]</span> <span class="term-success">✓ Analysis complete (2.1s)</span>', delay: 800 },
+    { text: '<span class="term-accent">[pagespeed-mcp]</span> <span class="term-success">[OK] Analysis complete (2.1s)</span>', delay: 800 },
     { text: '', delay: 100 },
     { text: '<span class="term-success">━━━━━━━━ Structured Output ━━━━━━━━</span>', delay: 150 },
     { text: '  <span class="term-output">Performance:</span>    <span class="term-success">96/100</span>', delay: 80 },
@@ -913,11 +931,11 @@ const terminalDemos = {
     { text: '  <span class="term-output">report: "recommendations"</span>', delay: 80 },
     { text: '', delay: 200 },
     { text: '<span class="term-accent">[pagespeed-mcp]</span> <span class="term-output">Parsing 47 Lighthouse audits...</span>', delay: 500 },
-    { text: '<span class="term-accent">[pagespeed-mcp]</span> <span class="term-success">✓ Generated ranked recommendations</span>', delay: 500 },
+    { text: '<span class="term-accent">[pagespeed-mcp]</span> <span class="term-success">[OK] Generated ranked recommendations</span>', delay: 500 },
     { text: '', delay: 100 },
-    { text: '  <span class="term-error">● CRITICAL:</span> <span class="term-output">Optimize LCP Hero Image (-1.2 MB / WebP)</span>', delay: 150 },
-    { text: '  <span class="term-warn">● HIGH:</span>     <span class="term-output">Eliminate render-blocking CSS (-420ms)</span>', delay: 150 },
-    { text: '  <span class="term-success">● MEDIUM:</span>   <span class="term-output">Reduce unused JavaScript (-280 KB)</span>', delay: 150 },
+    { text: '  <span class="term-error">[CRITICAL]</span> <span class="term-output">Optimize LCP Hero Image (-1.2 MB / WebP)</span>', delay: 150 },
+    { text: '  <span class="term-warn">[HIGH]</span>     <span class="term-output">Eliminate render-blocking CSS (-420ms)</span>', delay: 150 },
+    { text: '  <span class="term-success">[MEDIUM]</span>   <span class="term-output">Reduce unused JavaScript (-280 KB)</span>', delay: 150 },
   ],
   diagnose: [
     { text: '<span class="term-prompt">$</span> <span class="term-cmd">npx pagespeed-insights-mcp</span>', delay: 0 },
@@ -928,7 +946,7 @@ const terminalDemos = {
     { text: '  <span class="term-output">focus: "render-blocking"</span>', delay: 80 },
     { text: '', delay: 200 },
     { text: '<span class="term-accent">[pagespeed-mcp]</span> <span class="term-output">Inspecting critical rendering path...</span>', delay: 600 },
-    { text: '<span class="term-accent">[pagespeed-mcp]</span> <span class="term-success">✓ Isolated 2 render-blocking resources</span>', delay: 400 },
+    { text: '<span class="term-accent">[pagespeed-mcp]</span> <span class="term-success">[OK] Isolated 2 render-blocking resources</span>', delay: 400 },
     { text: '', delay: 100 },
     { text: '  <span class="term-warn">/assets/app.css</span>   &rarr; <span class="term-output">420ms delay</span>', delay: 120 },
     { text: '  <span class="term-warn">/js/analytics.js</span>  &rarr; <span class="term-output">180ms delay (sync in head)</span>', delay: 120 },
@@ -941,13 +959,13 @@ const terminalDemos = {
     { text: '  <span class="term-output">against: "https://prod.app"</span>', delay: 80 },
     { text: '', delay: 200 },
     { text: '<span class="term-accent">[pagespeed-mcp]</span> <span class="term-output">Running dual-target measurement...</span>', delay: 700 },
-    { text: '<span class="term-accent">[pagespeed-mcp]</span> <span class="term-success">✓ Delta calculated</span>', delay: 400 },
+    { text: '<span class="term-accent">[pagespeed-mcp]</span> <span class="term-success">[OK] Delta calculated</span>', delay: 400 },
     { text: '', delay: 100 },
     { text: '  <span class="term-output">            Staging   Production</span>', delay: 100 },
     { text: '  <span class="term-output">Score       </span><span class="term-success">96</span>        <span class="term-warn">76</span>', delay: 100 },
     { text: '  <span class="term-output">LCP         </span><span class="term-success">1.2s</span>      <span class="term-error">3.6s</span>', delay: 100 },
     { text: '  <span class="term-output">CLS         </span><span class="term-success">0.000</span>     <span class="term-warn">0.120</span>', delay: 100 },
-    { text: '  <span class="term-success">✅ Outcome: Staging is +20 points ahead</span>', delay: 200 },
+    { text: '  <span class="term-success">[RESULT] Staging is +20 points ahead</span>', delay: 200 },
   ],
 };
 
