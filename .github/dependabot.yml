@@ -13,6 +13,10 @@ updates:
       prefix: "chore(deps)"
     # Auto-approve patch and minor updates for safe auto-merge
     auto-merge: true
+    # GitHub-side: Dependabot security updates must be enabled in
+    # Settings → Code security → Dependabot security updates. With it on,
+    # dependabot opens daily PRs for any GHSA in the dependency graph and the
+    # dependabot-auto-merge guard above still applies (npm-only file changes).
     groups:
       # Group MCP SDK updates together
       mcp-sdk:

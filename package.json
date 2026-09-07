@@ -92,5 +92,9 @@
   "publishConfig": {
     "registry": "https://npm.pkg.github.com"
   },
-  "mcpName": "io.github.ruslanlap/pagespeed-insights-mcp"
+  "mcpName": "io.github.ruslanlap/pagespeed-insights-mcp",
+  "overrides": {
+    "fast-uri": "^3.1.7",
+    "qs": "^6.16.0"
+  }
 }
