@@ -20,6 +20,8 @@ jobs:
 
     steps:
       - uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
 
       - uses: actions/setup-node@v7
         with:
@@ -38,12 +40,17 @@ jobs:
           VERSION=${GITHUB_REF#refs/tags/v}
           jq --arg v "$VERSION" '.version = $v | .packages[0].version = $v' server.json > server.tmp && mv server.tmp server.json
 
-      - name: Sync server.json version with package.json (schedule/dispatch)
+      - name: Sync server.json version with latest release tag (schedule/dispatch)
         if: ${{ !startsWith(github.ref, 'refs/tags/v') }}
         run: |
-          VERSION=$(jq -r .version package.json)
+          TAG=$(git tag -l 'v*' --sort=-v:refname | head -n1)
+          if [ -z "$TAG" ]; then
+            echo "No release tag found" >&2
+            exit 1
+          fi
+          VERSION=${TAG#v}
           jq --arg v "$VERSION" '.version = $v | .packages[0].version = $v' server.json > server.tmp && mv server.tmp server.json
-          echo "Synced server.json to ${VERSION}"
+          echo "Synced server.json to ${VERSION} from ${TAG}"
 
       - name: Publish server to MCP Registry
         run: |
