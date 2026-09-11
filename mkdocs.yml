@@ -12,18 +12,9 @@ theme:
     - search.highlight
     - content.code.copy
   palette:
-    - scheme: default
-      primary: indigo
-      accent: blue
-      toggle:
-        icon: material/brightness-7
-        name: Switch to dark mode
-    - scheme: slate
-      primary: indigo
-      accent: cyan
-      toggle:
-        icon: material/brightness-4
-        name: Switch to light mode
+    scheme: slate
+    primary: indigo
+    accent: cyan
 
 nav:
   - Home: index.md
