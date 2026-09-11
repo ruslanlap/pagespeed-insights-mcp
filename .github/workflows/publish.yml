@@ -15,6 +15,9 @@ jobs:
   publish:
     name: Dual-publish to Registries
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
     env:
       GITHUB_TOKEN: ${{ github.token }}
       NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
