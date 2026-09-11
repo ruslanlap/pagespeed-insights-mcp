@@ -1,6 +1,7 @@
 import pRetry from "p-retry";
 import pLimit from "p-limit";
 import { createRequire } from "module";
+import { AsyncLocalStorage } from "async_hooks";
 import { getEnv } from "./env.js";
 import { createRequestLogger } from "./logger.js";
 import { cache, createPSICacheKey, createCruxCacheKey } from "./cache.js";
@@ -21,6 +22,7 @@ export class PageSpeedClient {
   private readonly retryAttempts: number;
   private readonly limiter: ReturnType<typeof pLimit>;
   private readonly cacheTTL: number;
+  private readonly requestSignals = new AsyncLocalStorage<AbortSignal | undefined>();
 
   constructor() {
     const env = getEnv();
@@ -43,11 +45,28 @@ export class PageSpeedClient {
     return sanitized;
   }
 
+  /** Binds MCP cancellation to every PSI/CrUX request in this tool call. */
+  withSignal<T>(signal: AbortSignal | undefined, operation: () => Promise<T>): Promise<T> {
+    return this.requestSignals.run(signal, operation);
+  }
+
+  private requestSignal(controller: AbortController): AbortSignal {
+    const signal = this.requestSignals.getStore();
+    return signal ? AbortSignal.any([controller.signal, signal]) : controller.signal;
+  }
+
+  private cancelledError(): Error {
+    const error = new Error("Request cancelled by the MCP client.");
+    error.name = "AbortError";
+    return error;
+  }
+
   private async makeRequest(url: string, correlationId: string): Promise<any> {
     const logger = createRequestLogger(correlationId, "psi-request");
 
     return pRetry(
       async (attempt) => {
+        if (this.requestSignals.getStore()?.aborted) throw this.cancelledError();
         logger.debug({ attempt, url: this.redact(url) }, "Making PSI request");
         
         const controller = new AbortController();
@@ -55,7 +74,7 @@ export class PageSpeedClient {
         
         try {
           const response = await fetch(url, {
-            signal: controller.signal,
+            signal: this.requestSignal(controller),
             headers: {
               "User-Agent": USER_AGENT,
             },
@@ -96,7 +115,7 @@ export class PageSpeedClient {
       {
         retries: this.retryAttempts,
         onFailedAttempt: (error) => {
-          if (error.name === "ClientError") {
+          if (error.name === "ClientError" || error.name === "AbortError") {
             throw error; // Don't retry client errors
           }
         },
@@ -166,11 +185,19 @@ export class PageSpeedClient {
       const all: PageSpeedInsightsResponse[] = [data as PageSpeedInsightsResponse];
       onRunComplete?.();
       for (let i = 1; i < runs; i++) {
-        await new Promise((r) => setTimeout(r, 65_000));
+        await new Promise<void>((resolve, reject) => {
+          const signal = this.requestSignals.getStore();
+          const timer = setTimeout(resolve, 65_000);
+          signal?.addEventListener("abort", () => {
+            clearTimeout(timer);
+            reject(this.cancelledError());
+          }, { once: true });
+        });
         try {
           all.push(await this.makeRequest(url.toString(), correlationId) as PageSpeedInsightsResponse);
           onRunComplete?.();
         } catch (e) {
+          if (e instanceof Error && e.name === "AbortError") throw e;
           logger.warn({ run: i + 1, error: e instanceof Error ? e.message : String(e) }, "Run failed, continuing with fewer");
         }
       }
@@ -195,7 +222,7 @@ export class PageSpeedClient {
               method: "POST",
               headers: { "Content-Type": "application/json", "User-Agent": USER_AGENT },
               body: JSON.stringify(body),
-              signal: controller.signal,
+            signal: this.requestSignal(controller),
             });
             if (response.status === 404) return {};
             if (!response.ok) {
@@ -216,7 +243,7 @@ export class PageSpeedClient {
         },
         {
           retries: this.retryAttempts,
-          onFailedAttempt: (error) => { if (error.name === "ClientError") throw error; },
+          onFailedAttempt: (error) => { if (error.name === "ClientError" || error.name === "AbortError") throw error; },
           factor: 2, minTimeout: 1000, maxTimeout: 10000,
         }
       );

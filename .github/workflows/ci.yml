@@ -9,6 +9,7 @@ on:
       - 'mkdocs.yml'
       - 'demo/**'
       - '.github/workflows/publish-docs.yml'
+  workflow_dispatch:
   pull_request:
     branches: [master]
     paths-ignore:
@@ -88,7 +89,7 @@ jobs:
     name: Release
     needs: [test, security]
     runs-on: ubuntu-latest
-    if: github.ref == 'refs/heads/master' && github.event_name == 'push'
+    if: github.ref == 'refs/heads/master' && (github.event_name == 'push' || github.event_name == 'workflow_dispatch')
     permissions:
       contents: write
       packages: write
@@ -172,15 +173,23 @@ jobs:
 
   docker:
     name: Build Docker Image
-    needs: [test, security]
+    needs: [release]
     runs-on: ubuntu-latest
-    if: github.ref == 'refs/heads/master' && github.event_name == 'push'
+    if: github.ref == 'refs/heads/master' && (github.event_name == 'push' || github.event_name == 'workflow_dispatch')
     permissions:
       contents: read
       packages: write
 
     steps:
       - uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+
+      - name: Detect release version
+        id: release_version
+        run: |
+          TAG=$(git tag --points-at HEAD --sort=-v:refname | head -n1)
+          echo "value=${TAG#v}" >> "$GITHUB_OUTPUT"
 
       - name: Set up Node.js
         uses: actions/setup-node@v7
@@ -211,8 +220,7 @@ jobs:
           images: ghcr.io/${{ github.repository }}
           tags: |
             type=ref,event=branch
-            type=semver,pattern={{version}}
-            type=semver,pattern={{major}}.{{minor}}
+            type=raw,value=${{ steps.release_version.outputs.value }},enable=${{ steps.release_version.outputs.value != '' }}
             type=raw,value=latest,enable={{is_default_branch}}
 
       - name: Build and push Docker image

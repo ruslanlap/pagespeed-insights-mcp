@@ -66,3 +66,17 @@ jobs:
         run: |
           chmod +x ./scripts/publish.sh
           ./scripts/publish.sh
+
+      - name: Upload release assets and verify integrity
+        if: ${{ !inputs.dry_run }}
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          TAG=$(git describe --tags --exact-match HEAD)
+          ASSET="pagespeed-insights-mcp-${TAG}-dist.tar.gz"
+          tar -czf "$ASSET" dist package.json README.md
+          sha256sum "$ASSET" > "${ASSET}.sha256"
+          gh release upload "$TAG" "$ASSET" "${ASSET}.sha256" --clobber
+          INFO=$(gh api "repos/${GITHUB_REPOSITORY}/releases/tags/${TAG}")
+          [ "$(echo "$INFO" | jq '.assets | length')" -ge 2 ] || { echo "Release assets missing"; exit 1; }
+          [ "$(npm view pagespeed-insights-mcp@latest version)" = "${TAG#v}" ] || { echo "npm latest does not match $TAG"; exit 1; }

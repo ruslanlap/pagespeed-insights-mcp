@@ -337,6 +337,20 @@ describe("v2 toV2Result envelope", () => {
     expect(parsed.result).toBeDefined();
   });
 
+  it("keeps visual image data in the JSON envelope", async () => {
+    const response = mockPsiResponse();
+    (response.lighthouseResult.audits as any)["final-screenshot"] = {
+      details: { data: "data:image/jpeg;base64,visual-test", width: 360, height: 640 },
+    };
+    nock("https://www.googleapis.com").get("/pagespeedonline/v5/runPagespeed").query(true).reply(200, response);
+
+    const result = await callDispatch(server, "pagespeed_diagnose_page", {
+      url: "https://example.com", focus: "visual", responseFormat: "json",
+    });
+
+    expect(JSON.parse(result.content[0].text).result.finalScreenshot.data).toContain("visual-test");
+  });
+
   it("marks truncated responses and keeps the truncation message", async () => {
     const big = mockPsiResponse({ score: 0.85 });
     // The full report prints audit titles — inflate one past the 25k limit.

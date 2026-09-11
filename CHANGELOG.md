@@ -9,6 +9,8 @@
 * **tools:** preserve public analysis options, reject incomplete Lighthouse runs, isolate page/origin CrUX cache entries, and return CrUX no-data responses consistently.
 * **tools:** parse Lighthouse 13 LCP and CLS insight structures and retain distinct multirun measurements for reliability checks.
 * **release:** make manual publish dry-runs safe, derive recovery versions from tags, serialize registry publishing, and require all CI jobs before Dependabot auto-merge.
+* **tools:** cancel in-flight PSI and CrUX requests when the MCP client disconnects, and retain visual image data in JSON responses.
+* **release:** restore release assets during manual recovery, publish Docker images with the release version, and dispatch CI after Dependabot merges.
 
 # [2.0.0](https://github.com/ruslanlap/pagespeed-insights-mcp/compare/v1.7.4...v2.0.0) (2026-08-26)
 

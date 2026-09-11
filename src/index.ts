@@ -44,6 +44,7 @@ export class PageSpeedInsightsServer {
   private client: PageSpeedClient;
   private recommendationsEngine: PerformanceRecommendationsEngine;
   private logger = getLogger();
+  private readonly disconnectController = new AbortController();
 
   constructor() {
     // Validate environment first
@@ -98,7 +99,10 @@ export class PageSpeedInsightsServer {
       }
 
       try {
-        return await this.dispatchTool(name, args);
+        const signal = extra.signal
+          ? AbortSignal.any([extra.signal, this.disconnectController.signal])
+          : this.disconnectController.signal;
+        return await this.client.withSignal(signal, () => this.dispatchTool(name, args));
       } catch (error) {
         const detail = error instanceof Error ? error.message : "Invalid tool arguments.";
         return this.toolError(`${detail} Review the tool schema and correct the highlighted field.`);
@@ -172,8 +176,10 @@ export class PageSpeedInsightsServer {
     const text = truncated
       ? `${rawText.slice(0, CHARACTER_LIMIT)}\n\n[Truncated at ${CHARACTER_LIMIT} characters. Request a focused diagnostic or a summary report to reduce output.]`
       : rawText;
-    let parsed: unknown = text;
-    try { parsed = JSON.parse(text); } catch { /* Markdown is the canonical human-readable fallback. */ }
+    let parsed: unknown = result.structuredData ?? text;
+    if (result.structuredData === undefined) {
+      try { parsed = JSON.parse(text); } catch { /* Markdown is the canonical human-readable fallback. */ }
+    }
     const structuredContent = {
       tool,
       result: parsed,
@@ -962,6 +968,7 @@ export class PageSpeedInsightsServer {
       }
       
       return {
+        structuredData: visualData,
         content: [
           {
             type: "text",
@@ -1579,6 +1586,9 @@ export class PageSpeedInsightsServer {
   }
 
   async start() {
+    const abort = () => this.disconnectController.abort();
+    process.stdin.once("end", abort);
+    process.stdin.once("close", abort);
     const transport = new StdioServerTransport();
     await this.server.connect(transport);
     this.logger.info("PageSpeed Insights MCP server started");
