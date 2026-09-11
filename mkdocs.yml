@@ -13,14 +13,14 @@ theme:
     - content.code.copy
   palette:
     - scheme: default
-      primary: green
-      accent: green
+      primary: indigo
+      accent: blue
       toggle:
         icon: material/brightness-7
         name: Switch to dark mode
     - scheme: slate
-      primary: green
-      accent: green
+      primary: indigo
+      accent: cyan
       toggle:
         icon: material/brightness-4
         name: Switch to light mode
@@ -36,7 +36,7 @@ nav:
   - Developers:
     - Architecture: developers/architecture.md
     - Contributing: developers/contributing.md
-# Custom CSS - Catppuccin Macchiato (#24273a)
+# Custom CSS - Tokyo Night Storm (#24283b)
 extra_css:
   - stylesheets/extra.css   # ← now included
 markdown_extensions:
@@ -48,4 +48,4 @@ markdown_extensions:
   - pymdownx.inlinehilite
   - pymdownx.snippets
   - attr_list
-copyright: Copyright &copy; 2025 ruslanlap
+copyright: Copyright &copy; 2025–2026 ruslanlap

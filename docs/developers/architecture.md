@@ -4,67 +4,71 @@ This document provides a high-level overview of the PageSpeed Insights MCP Serve
 
 ## Project Structure
 
-The project is built with **TypeScript** and runs on **Node.js**. It uses the official `@modelcontextprotocol/sdk` to implement the MCP server.
+The project is built with **TypeScript** and runs on **Node.js** (>=20.19.0). It uses the official `@modelcontextprotocol/sdk` to implement the MCP server.
 
 ```
 src/
-├── index.ts              # Entry point and Server definition
-├── pagespeed-client.ts   # Google API interaction layer
-├── response-parser.ts    # Data transformation logic
-├── recommendations.ts    # Recommendation engine
-├── cache.ts              # Caching implementation
-├── logger.ts             # Logging utility
-├── env.ts                # Environment variable validation
-├── schemas.ts            # Zod schemas for input validation
-└── types.ts              # TypeScript interfaces
+├── index.ts              # Entry point, MCP server dispatch, and tool handlers
+├── tool-definitions.ts   # v2 tool specifications, descriptions, and JSON schemas
+├── pagespeed-client.ts   # Google API interaction layer with retry & concurrency limits
+├── response-parser.ts    # Data transformation and diagnostic report formatting
+├── recommendations.ts    # Actionable recommendation engine with impact scoring
+├── baselines.ts          # Local baseline storage and regression calculation
+├── multirun.ts           # Multi-run median selection and variance spread calculation
+├── cache.ts              # In-memory caching with TTL
+├── logger.ts             # Pino logger setup with redaction
+├── env.ts                # Environment variable schema validation via Zod
+├── schemas.ts            # Zod input schemas for runtime validation
+├── types.ts              # TypeScript interfaces and shared types
+└── tests/                # Vitest test suites
 ```
 
 ## Key Components
 
-### 1. Server Entry Point (`index.ts`)
-This is the core of the application. It:
-*   Initializes the MCP `Server` instance.
-*   Defines the capabilities (tools) exposed to the client.
-*   Maps tool execution requests to specific handler functions.
-*   Handles the main request/response loop via `StdioServerTransport`.
+### 1. Server Entry Point (`index.ts`) & Tool Definitions (`tool-definitions.ts`)
+*   Defines the 6 workflow-oriented v2 MCP tools: `pagespeed_analyze_page`, `pagespeed_diagnose_page`, `pagespeed_get_field_data`, `pagespeed_compare_pages`, `pagespeed_analyze_batch`, and `pagespeed_clear_cache`.
+*   Registers tools and handlers with `@modelcontextprotocol/sdk`.
+*   Validates parameters against Zod schemas in `schemas.ts`.
+*   Handles transport via `StdioServerTransport`.
 
 ### 2. PageSpeed Client (`pagespeed-client.ts`)
-This class is responsible for communicating with the external Google PageSpeed Insights API.
-*   Constructs the API URL with appropriate parameters (strategy, locale, categories).
-*   Handles authentication using the `GOOGLE_API_KEY`.
-*   Manages network retries and error handling.
-*   Integrates with the caching layer to avoid redundant requests.
+Responsible for communicating with Google PageSpeed Insights and Chrome UX Report APIs:
+*   Constructs API queries with proper parameters (strategy, locale, categories).
+*   Manages concurrency with `p-limit` and resilient retries with exponential backoff using `p-retry`.
+*   Supports request cancellation using `AbortController` and `AsyncLocalStorage`.
+*   Integrates with the in-memory caching layer.
 
 ### 3. Response Parser (`response-parser.ts`)
-The raw JSON response from Google is massive and complex. This component:
-*   Extracts key metrics (LCP, CLS, TBT, etc.).
-*   Simplifies the audit results.
-*   Formats the data into cleaner structures for the AI to consume.
+Converts raw Lighthouse audit outputs into clean markdown summaries, Mermaid performance maps, or structured JSON:
+*   Extracts Core Web Vitals (LCP, CLS, INP, FCP, TTFB).
+*   Filters targeted diagnostic lenses (`visual`, `elements`, `network`, `javascript`, `images`, `render-blocking`, `third-parties`).
 
 ### 4. Recommendation Engine (`recommendations.ts`)
-This component adds value on top of the raw data. It:
-*   Analyzes the audit results.
-*   Assigns priority scores to issues based on their impact.
-*   Generates human-readable advice and "Next Steps".
+*   Analyzes audit opportunities and diagnostics.
+*   Assigns priority rankings based on estimated byte and latency savings.
+*   Provides clear, actionable next steps for remediation.
 
-### 5. Caching (`cache.ts`)
-To improve performance and reduce API quota usage, the server implements an in-memory cache.
-*   Keys are generated based on URL, strategy, and locale.
-*   Results are cached for a configurable TTL (default 1 hour).
+### 5. Baselines & Multi-Run Stability (`baselines.ts`, `multirun.ts`)
+*   `multirun.ts`: Executes 1–5 runs, detects outliers, and selects the median run based on metric distributions.
+*   `baselines.ts`: Persists baseline performance metrics locally and computes regression or improvement deltas.
+
+### 6. Caching (`cache.ts`)
+In-memory cache keyed by request parameters with configurable TTL (default: 1 hour) to minimize Google API quota usage and improve responsiveness.
 
 ## Data Flow
 
-1.  **Request**: The MCP Client (e.g., Claude) sends a `call_tool` request (e.g., `pagespeed_analyze_page`).
-2.  **Validation**: `index.ts` validates the arguments using Zod schemas defined in `schemas.ts`.
-3.  **Check Cache**: The `PageSpeedClient` checks if a valid result exists in the cache.
-4.  **API Call**: If not cached, `PageSpeedClient` fetches data from Google PageSpeed Insights API.
-5.  **Processing**: The raw response is passed to `ResponseParser` or `PerformanceRecommendationsEngine`.
-6.  **Response**: The processed data is returned to the MCP Client as a text content block.
+1.  **Request**: MCP Client sends a `call_tool` request (e.g., `pagespeed_analyze_page`).
+2.  **Validation**: `index.ts` validates arguments against Zod schemas in `schemas.ts`.
+3.  **Check Cache**: `PageSpeedClient` checks if valid cached results exist.
+4.  **API Call**: If uncached, `PageSpeedClient` fetches data from Google PageSpeed Insights API using native `fetch` with `p-limit` and `p-retry`.
+5.  **Processing**: The raw response is processed by `ResponseParser` or `PerformanceRecommendationsEngine`.
+6.  **Response**: The processed report is returned to the client as Markdown or structured JSON.
 
 ## Technologies Used
 
-*   **TypeScript**: For type safety and developer experience.
-*   **@modelcontextprotocol/sdk**: The official MCP implementation.
-*   **Zod**: For runtime schema validation.
-*   **Node-fetch**: For making HTTP requests.
-*   **Pino**: For structured logging.
+*   **TypeScript**: Static type safety and developer productivity.
+*   **@modelcontextprotocol/sdk**: The official Model Context Protocol implementation.
+*   **Zod**: Runtime schema definition and validation.
+*   **Pino & Pino-pretty**: High-performance structured logging.
+*   **Vitest**: Fast unit and integration testing.
+

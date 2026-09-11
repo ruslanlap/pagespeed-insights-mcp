@@ -1,12 +1,12 @@
 # Getting Started
 
-This guide will help you set up the PageSpeed Insights MCP server and connect it to your MCP client (like Claude Desktop).
+This guide will help you set up the PageSpeed Insights MCP server and connect it to your MCP client (Claude Desktop, Cursor, Codex, Grok, etc.).
 
 ## Prerequisites
 
 Before you begin, ensure you have the following:
 
-1.  **Node.js**: Version 18 or higher.
+1.  **Node.js**: Version 20.19.0 or higher (`node -v`).
 2.  **Google API Key**: Required to access the PageSpeed Insights API.
 
 ### Obtaining a Google API Key
@@ -28,17 +28,17 @@ To use the PageSpeed Insights MCP server, you need a Google API key with the Pag
 
 ![Google Cloud Console API Key Setup](assets/3.png)
 
-## Installation
+## Installation & Running
 
 You can run the server using `npx` (recommended), install it globally via `npm`, or use Docker.
 
 ### Option 1: Using `npx` (Recommended)
 
-You can run the server directly without installation:
+You can run the server directly without manual installation:
 
 ```bash
 export GOOGLE_API_KEY=your-google-api-key
-npx pagespeed-insights-mcp
+npx -y -p pino-pretty -p pagespeed-insights-mcp pagespeed-insights-mcp
 ```
 
 ### Option 2: Global Installation
@@ -67,29 +67,27 @@ docker run -e GOOGLE_API_KEY=your-key pagespeed-insights-mcp
 
 ## Configuration
 
-The server requires the `GOOGLE_API_KEY` environment variable.
+The server is configured via environment variables.
 
-| Variable | Description | Required | Default |
-| :--- | :--- | :--- | :--- |
-| `GOOGLE_API_KEY` | Your Google PageSpeed Insights API Key | Yes | - |
-| `LOG_LEVEL` | Logging level (trace, debug, info, warn, error) | No | `info` |
-| `MAX_CONCURRENCY` | Max concurrent requests | No | `3` |
-| `REQUEST_TIMEOUT` | Request timeout in ms | No | `30000` |
-| `CACHE_TTL` | Cache time-to-live in seconds | No | `3600` |
+| Variable | Description | Required | Default | Valid Values |
+| :--- | :--- | :--- | :--- | :--- |
+| `GOOGLE_API_KEY` | Your Google PageSpeed Insights API Key | **Yes** | — | Non-empty string |
+| `LOG_LEVEL` | Logging level | No | `info` | `trace`, `debug`, `info`, `warn`, `error`, `fatal` |
+| `MAX_CONCURRENCY` | Maximum concurrent requests | No | `3` | `1` – `10` |
+| `REQUEST_TIMEOUT` | HTTP request timeout in milliseconds | No | `30000` | `1000` – `60000` |
+| `RETRY_ATTEMPTS` | Network failure retry attempts | No | `3` | `0` – `5` |
+| `CACHE_TTL` | Cache time-to-live in seconds | No | `3600` | `60` – `86400` |
+| `NODE_ENV` | Runtime environment | No | `development` | `development`, `production`, `test` |
 
-## Connecting to Claude Desktop
+## Connecting to MCP Clients
 
-To use this server with Claude Desktop, you need to configure the `claude_desktop_config.json` file.
+### Claude Desktop
 
-**File Location:**
+Edit your `claude_desktop_config.json`:
 
 *   **macOS**: `~/Library/Application Support/Claude/claude_desktop_config.json`
 *   **Windows**: `%APPDATA%\Claude\claude_desktop_config.json`
 *   **Linux**: `~/.config/claude/claude_desktop_config.json`
-
-**Configuration:**
-
-Add the following to your configuration file:
 
 ```json
 {
@@ -98,6 +96,10 @@ Add the following to your configuration file:
       "command": "npx",
       "args": [
         "-y",
+        "-p",
+        "pino-pretty",
+        "-p",
+        "pagespeed-insights-mcp",
         "pagespeed-insights-mcp"
       ],
       "env": {
@@ -108,17 +110,55 @@ Add the following to your configuration file:
 }
 ```
 
-!!! tip "Windows Users"
-    If you are on Windows, make sure to use the full path to the executable if `npx` is not in your PATH, or use the Docker method.
+### Codex / OpenAI / Cursor
 
-After updating the configuration, restart Claude Desktop. You should now see the PageSpeed tools available in the interface.
+Add to your MCP configuration (TOML):
+
+```toml
+[mcp_servers.pagespeed-insights]
+command = "npx"
+args = [
+  "-y",
+  "-p",
+  "pino-pretty",
+  "-p",
+  "pagespeed-insights-mcp",
+  "pagespeed-insights-mcp"
+]
+env = { GOOGLE_API_KEY = "your-google-api-key-here" }
+```
+
+### Grok Build (`config.toml`)
+
+Add to `~/.grok/config.toml` (global) or `<repo>/.grok/config.toml` (project-scoped):
+
+```toml
+[mcp_servers.pagespeed-insights]
+command = "npx"
+args = ["-y", "-p", "pino-pretty", "-p", "pagespeed-insights-mcp", "pagespeed-insights-mcp"]
+env = { GOOGLE_API_KEY = "${GOOGLE_API_KEY}" }
+enabled = true
+```
+
+After updating the configuration, restart your client. The PageSpeed Insights tools will now be available in your sessions.
 
 ## Usage Examples
 
-Once connected, you will see a list of available tools in your MCP client.
+Once connected, your AI client has access to the six v2 tools:
 
-![Available Tools](assets/tool-list.png)
+*   **Audit a site:**  
+    `"Analyze https://example.com and show the top recommendations for mobile."`  
+    *(Calls `pagespeed_analyze_page`)*
+*   **Diagnose render blockers:**  
+    `"What CSS or JS files are blocking rendering on https://example.com?"`  
+    *(Calls `pagespeed_diagnose_page` with `focus="render-blocking"`)*
+*   **Check real-user Core Web Vitals:**  
+    `"Check real-user CrUX field data for https://example.com across mobile devices."`  
+    *(Calls `pagespeed_get_field_data`)*
+*   **Compare environments:**  
+    `"Compare performance between https://staging.example.com and https://example.com."`  
+    *(Calls `pagespeed_compare_pages` with `mode="pages"`)*
+*   **Track regression against baseline:**  
+    `"Record a baseline for https://example.com with 3 runs, then verify if our new changes caused a regression."`  
+    *(Calls `pagespeed_compare_pages` with `mode="baseline"`)*
 
-You can ask Claude to analyze a website, and it will use these tools to provide a comprehensive report.
-
-![Analysis Result](assets/analysis-result.png)

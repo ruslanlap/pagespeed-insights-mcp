@@ -55,6 +55,11 @@ We use **Vitest** for testing.
     npm run test:coverage
     ```
 
+*   **Type check**:
+    ```bash
+    npm run typecheck
+    ```
+
 Please ensure that any new features or bug fixes are accompanied by appropriate tests.
 
 ## Code Style

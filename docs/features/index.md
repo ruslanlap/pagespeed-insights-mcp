@@ -1,38 +1,55 @@
 # Features Overview
 
-The PageSpeed Insights MCP server provides a suite of tools designed to help you understand and improve your website's performance.
+The PageSpeed Insights MCP server provides six workflow-oriented tools designed to help developers and AI assistants analyze, diagnose, compare, and optimize web performance.
 
-## 📊 Performance Analysis
+## 📊 Performance Analysis (`pagespeed_analyze_page`)
 
-At its core, the server allows you to run comprehensive performance audits using Google's Lighthouse technology.
+Run comprehensive Lighthouse audits across configurable categories and device strategies:
 
-*   **Full Reports**: Get detailed breakdowns of Performance, Accessibility, Best Practices, SEO, and PWA scores.
-*   **Core Web Vitals**: Monitor real-world user experience metrics like LCP (Largest Contentful Paint), FID (First Input Delay), and CLS (Cumulative Layout Shift).
-*   **Device Strategies**: Analyze your site as it appears on both **Mobile** and **Desktop** devices to ensure a responsive experience.
+*   **Multi-Category Audits**: Audit Performance, Accessibility, Best Practices, SEO, and PWA scores.
+*   **Core Web Vitals**: In-depth lab metrics including LCP (Largest Contentful Paint), CLS (Cumulative Layout Shift), and INP (Interaction to Next Paint) / TBT (Total Blocking Time).
+*   **Multi-Run Stability**: Execute 1 to 5 runs to calculate the median run and spread, reducing lab variability.
+*   **Tailored Report Types**:
+    *   `summary`: Concise overview with scores, Core Web Vitals, and top opportunities.
+    *   `full`: Complete Lighthouse audit breakdown.
+    *   `recommendations`: Prioritized action plan with estimated byte and time savings.
+    *   `audit`: Detailed non-performance audit findings (accessibility, SEO, best practices).
+    *   `performance-map`: Visual flowchart using Mermaid syntax illustrating performance relationships.
 
-## 🔍 Advanced Diagnostics
+## 🔍 Targeted Diagnostics (`pagespeed_diagnose_page`)
 
-Go beyond the score with detailed diagnostic tools:
+Instead of dumping massive JSON trees, investigate performance bottlenecks through seven focused diagnostic lenses:
 
-*   **Visual Analysis**: See exactly what your users see with filmstrips and screenshots of the loading process.
-*   **Network Waterfall**: Visualize the loading sequence of resources to identify bottlenecks.
-*   **JavaScript Profiling**: Understand how script execution impacts your main thread and interactivity.
-*   **Element Inspection**: Identify specific DOM elements that are causing layout shifts or slow paints.
-*   **Image Optimization**: Find images that are too large, unoptimized, or causing layout shifts.
+*   **`visual`**: Filmstrip loading progression and final page screenshots.
+*   **`elements`**: Specific DOM elements triggering layout shifts (CLS) or slow Largest Contentful Paint (LCP).
+*   **`network`**: Resource transfer sizes, compression, HTTP request waterfalls, and latency bottlenecks.
+*   **`javascript`**: Main-thread script execution time, boot-up evaluation overhead, and long tasks.
+*   **`images`**: Unoptimized images, missing responsive formats (AVIF/WebP), sizing mismatches, and layout shifts.
+*   **`render-blocking`**: Critical CSS and synchronous scripts delaying First Contentful Paint.
+*   **`third-parties`**: Impact of external tags, trackers, analytics, and widgets on page weight and execution.
 
-## ⚖️ Comparison & Benchmarking
+## 🌍 Real-World User Field Data (`pagespeed_get_field_data`)
 
-*   **Side-by-Side Comparison**: Compare two different URLs to see how they stack up against each other. This is perfect for benchmarking against competitors or comparing staging vs. production environments.
-*   **Batch Analysis**: Analyze multiple URLs in a single run to get a quick overview of a group of pages.
+Lab data (Lighthouse) simulates visits under synthetic network conditions. Real-user metrics come from the **Chrome User Experience Report (CrUX)**:
 
-## 💡 Smart Recommendations
+*   **75th Percentile (p75) Metrics**: Real-user distributions for LCP, CLS, INP, and FCP.
+*   **Dual Query Scopes**:
+    *   `scope=page`: Targeted field data for a specific URL.
+    *   `scope=origin`: Aggregate field metrics across the entire origin (domain), essential for newly launched pages or URLs with low traffic.
+*   **Device Form Factors**: Filter by `PHONE`, `DESKTOP`, `TABLET`, or `ALL` (origin scope).
 
-Don't just see the problems—solve them. The server includes a recommendation engine that:
+## ⚖️ Comparison & Regression Baselines (`pagespeed_compare_pages`)
 
-*   **Prioritizes Issues**: Ranks problems based on their estimated impact on your score.
-*   **Provides Actionable Fixes**: Gives you clear instructions on how to resolve specific issues.
-*   **Estimates Savings**: Shows you how much time or data you could save by implementing the fixes.
+Track performance deltas across deployments and environments:
 
-## 🌍 Real-World Data (CrUX)
+*   **Side-by-Side Comparison (`mode=pages`)**: Compare two URLs (e.g. Staging vs. Production, or competitor benchmarking) across all Core Web Vitals.
+*   **Baseline Tracking (`mode=baseline`)**: Store an initial performance baseline locally and measure subsequent runs against it. Accurately verify whether code optimizations or dependency updates improved performance or caused regressions.
 
-Access the Chrome User Experience Report (CrUX) to see how real users are experiencing your site in the wild, complementing the lab data provided by Lighthouse.
+## 📦 Batch Analysis (`pagespeed_analyze_batch`)
+
+Analyze up to 10 URLs in parallel with progress notifications, returning per-page results alongside aggregate pass/fail statistics. Ideal for auditing top landing pages or sitemaps.
+
+## 🧹 Cache Management (`pagespeed_clear_cache`)
+
+The server caches API responses in-memory with a configurable TTL (default: 1 hour) to preserve API quota. Use `pagespeed_clear_cache` to immediately invalidate the local cache after deploying changes, forcing fresh measurements from Google.
+
