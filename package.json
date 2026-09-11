@@ -76,7 +76,7 @@
     "@types/supertest": "^7.2.1",
     "@typescript-eslint/eslint-plugin": "^8.66.0",
     "@typescript-eslint/parser": "^8.66.0",
-    "@vitest/coverage-v8": "^4.1.10",
+    "@vitest/coverage-v8": "^5.0.0",
     "eslint": "^10.9.1",
     "nock": "^14.0.17",
     "prettier": "^3.9.6",
@@ -84,7 +84,7 @@
     "tsx": "^4.23.12",
     "typescript": "^5.8.0",
     "typescript-eslint": "^8.68.0",
-    "vitest": "^4.1.10"
+    "vitest": "^5.0.0"
   },
   "engines": {
     "node": ">=20.19.0"
