@@ -28,6 +28,16 @@ jobs:
           fetch-depth: 0
           token: ${{ github.token }}
 
+      - name: Checkout latest release tag
+        run: |
+          TAG=$(git tag -l 'v*' --sort=-v:refname | head -n1)
+          if [ -z "$TAG" ]; then
+            echo "No release tag found" >&2
+            exit 1
+          fi
+          git checkout "$TAG"
+          echo "Using tag $TAG"
+
       - uses: actions/setup-node@v7
         with:
           node-version: "20"
