@@ -83,4 +83,4 @@ export const cache = new SimpleCache();
 // Cleanup interval (every 10 minutes)
 setInterval(() => {
   cache.cleanup();
-}, 10 * 60 * 1000);
+}, 10 * 60 * 1000).unref();
