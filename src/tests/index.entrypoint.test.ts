@@ -76,6 +76,7 @@ describe("isProcessEntrypoint", () => {
       [
         "--import",
         "tsx",
+        "--input-type=module",
         "-e",
         'import { PageSpeedInsightsServer } from "./src/index.js"; const s = new PageSpeedInsightsServer(); await s.start();',
       ],
