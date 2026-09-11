@@ -190,11 +190,11 @@ We have comprehensive documentation available online.
 
 ## 📝 Release Notes
 
-Current release: **v2.0.0**.
+Current release: see the version badges at the top of this README.
 
 Recent highlights:
 
-- **v2.0.0** — six workflow-oriented `pagespeed_*` tools replace the 19 v1 endpoint-shaped tools; all data tools support Markdown or JSON with structured results.
+- **v2** — six workflow-oriented `pagespeed_*` tools replace the 19 v1 endpoint-shaped tools; all data tools support Markdown or JSON with structured results.
 
 > The badges at the top of this README update **automatically** on every release (npm version, GitHub package version, downloads). No manual edits needed.
 
