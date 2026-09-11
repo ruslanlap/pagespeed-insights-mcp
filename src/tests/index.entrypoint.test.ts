@@ -29,6 +29,8 @@ vi.mock("../logger.js", () => {
   return { getLogger: () => fakeChild, createRequestLogger: () => fakeChild };
 });
 
+import { spawn } from "child_process";
+
 const { isProcessEntrypoint } = await import("../index.js");
 
 describe("isProcessEntrypoint", () => {
@@ -66,5 +68,41 @@ describe("isProcessEntrypoint", () => {
   it("returns false when argv[1] is missing", () => {
     const moduleUrl = pathToFileURL(join(tmpdir(), "ghost.js")).href;
     expect(isProcessEntrypoint(moduleUrl)).toBe(false);
+  });
+
+  it("exits cleanly after stdin close when started as MCP server", async () => {
+    const child = spawn(
+      process.execPath,
+      [
+        "--import",
+        "tsx",
+        "--input-type=module",
+        "-e",
+        'import { PageSpeedInsightsServer } from "./src/index.js"; const s = new PageSpeedInsightsServer(); await s.start();',
+      ],
+      {
+        cwd: process.cwd(),
+        stdio: ["pipe", "pipe", "pipe"],
+        env: { ...process.env, GOOGLE_API_KEY: "test-key" },
+      }
+    );
+
+    const exitPromise = new Promise<{ code: number | null; signal: NodeJS.Signals | null }>((resolve) => {
+      child.on("exit", (code, signal) => resolve({ code, signal }));
+    });
+
+    // Close stdin to simulate MCP client disconnect
+    child.stdin.end();
+
+    const timeout = new Promise<never>((_, reject) =>
+      setTimeout(() => {
+        child.kill();
+        reject(new Error("Process did not exit after stdin close"));
+      }, 5000)
+    );
+
+    const result = await Promise.race([exitPromise, timeout]);
+    expect(result.code).toBe(0);
+    expect(result.signal).toBeNull();
   });
 });
