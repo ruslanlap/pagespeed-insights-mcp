@@ -46,7 +46,7 @@ nav:
   - Developers:
     - Architecture: developers/architecture.md
     - Contributing: developers/contributing.md
-# Custom CSS - Tokyo Night Storm (#24283b)
+# Custom CSS - Tokyo Night Storm (Flat #1f2335)
 extra_css:
   - stylesheets/extra.css   # ← now included
 markdown_extensions:
