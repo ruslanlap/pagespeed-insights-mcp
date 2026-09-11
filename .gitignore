@@ -185,3 +185,5 @@ local-test-*.log
 # Antigravity data
 .antigravitycli/
 mcp_config.json
+
+AGENTS.md
