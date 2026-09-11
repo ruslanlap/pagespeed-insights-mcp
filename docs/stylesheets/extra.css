@@ -9,9 +9,9 @@ html,
 body,
 [data-md-color-scheme="slate"],
 [data-md-color-scheme="default"] {
-    /* --- Official Tokyo Night Storm Palette (Flat Unified #1f2335) --- */
-    --tns-bg: #1f2335;                  /* Flat unified background */
-    --tns-bg-dark: #1f2335;             /* Flat unified */
+    /* --- Official Tokyo Night Storm Palette (Flat Unified #24283b) --- */
+    --tns-bg: #24283b;                  /* Flat unified background */
+    --tns-bg-dark: #24283b;             /* Flat unified */
     --tns-bg-darker: #171926;           /* Code blocks, input, dropdown */
     --tns-bg-highlight: #282e44;        /* Table row hover, line highlight */
     --tns-bg-selection: #2c324a;        /* Active selection, table th */
