@@ -1,48 +1,39 @@
-# Project Rules — pagespeed-insights-mcp (MCP Server)
+# Repository Guidelines
 
-Цей файл доповнює глобальний `~/.grok/AGENTS.md`. Правила з нього мають вищий пріоритет у цьому репозиторії.
+## Project Structure & Module Organization
 
-## Специфіка проєкту
-- TypeScript + Node.js (>=20) MCP server на базі `@modelcontextprotocol/sdk` + Zod.
-- 17 інструментів для Google PageSpeed Insights + Chrome UX Report + Lighthouse.
-- Публікація: npm + GitHub Packages (semantic-release).
-- Docker + docker-compose для локального запуску.
-- Тести: Vitest + nock. Лінтинг: ESLint + Prettier.
-- Документація: MkDocs (docs/ + mkdocs.yml).
-- `.serena/` вже налаштовано (TypeScript + memories для conventions/tech_stack/task_completion).
+This is a TypeScript MCP server for Google PageSpeed Insights, Chrome UX Report, and Lighthouse. Production code is in `src/`: `index.ts` starts the server, `tool-definitions.ts` registers MCP tools, and `pagespeed-client.ts` owns API calls. Keep shared Zod schemas in `schemas.ts`, types in `types.ts`, and feature logic in focused modules such as `cache.ts` or `recommendations.ts`.
 
-## Обов'язкові практики (MCP + TS)
-- При додаванні/редагуванні інструментів — слідуй mcp-builder skill (research → Zod schemas + descriptions з прикладами → annotations: readOnlyHint/destructiveHint/idempotentHint → structured output де можливо).
-- Кожний tool: чітке ім'я, опис, inputSchema (Zod), actionable error messages.
-- Перед публікацією: `npm run lint && npm run typecheck && npm test && npm run build`.
-- Зміни в публічному API / tool signatures — оновлюй README, TESTING.md, CHANGELOG (conventional commits).
-- Локальний MCP для self-dogfooding: використовуй `npx pagespeed-insights-mcp` або `node dist/index.js` з `GOOGLE_API_KEY`.
+Tests live beside the codebase in `src/tests/` (for example, `cache.test.ts`). Documentation is in `docs/`, with site configuration in `mkdocs.yml`; images belong in `assets/` or `docs/assets/`. Docker files support local container runs. Do not edit generated `dist/` output.
 
-## Serena + .serena/
-- Використовуй Serena MCP (`serena__*` tools) для семантичного пошуку, рефакторингу, аналізу символів у TS коді.
-- Поважай `.serena/memories/*.md` (conventions, tech_stack, task_completion) — вони є джерелом правди для цього проєкту.
-- При роботі з великими змінами — спочатку semantic_search / find_symbol, потім безпечні edits.
+## Build, Test, and Development Commands
 
-## Професійні skills тільки
-- Дозволені: mcp-builder, implement, design, review, pr-babysit, execute-plan, check, best-of-n, create-skill (та інші high-star з marketplace, які ти особисто перевірив).
-- **Заборонено** створювати custom `~/.grok/skills/*/` в цьому сетапі без явного дозволу.
+Run these from the repository root:
 
-## Команди (завжди з cd + verify)
 ```bash
-cd /home/ubuntuvm/Projects/pagespeed-insights-mcp
-npm run build
-npm test
-npm run lint:fix && npm run format
-npx @modelcontextprotocol/inspector node dist/index.js   # для ручного тестування MCP tools
+npm run dev           # run src/index.ts through tsx
+npm run build         # compile TypeScript into dist/
+npm run typecheck     # validate types without writing output
+npm test              # run the Vitest suite
+npm run test:coverage # generate text, JSON, and HTML coverage
+npm run lint          # check TypeScript with ESLint
+npm run format        # format source files with Prettier
 ```
 
-## Взаємодія з глобальними правилами
-Глобальний AGENTS.md (мова, тон, security, DevOps дисципліна, WSL/PowerShell, todo_write, планування) застосовується повністю. Цей файл лише додає MCP/TS/Serena деталі.
+Before publishing, run `npm run lint && npm run typecheck && npm test && npm run build`. For a real API smoke test, set `GOOGLE_API_KEY` and run `node dist/index.js` after building.
 
----
-Оновлюй цей файл при зміні архітектури MCP сервера або процесів релізу.
-## Release → MCP Registry (2026-08)
-Теги, створені GITHUB_TOKEN (semantic-release), НЕ трігерять tag-workflows. publish-mcp.yml має daily self-healing schedule + duplicate-guard; ручний dispatch синкає server.json з package.json автоматично.
+## Coding Style & Naming Conventions
 
-## Release assets + integrity gate (2026-08, PR #93)
-Release-джоба CI ПІСЛЯ publish: (1) заливає `pagespeed-insights-mcp-vX.Y.Z-dist.tar.gz` (dist+package.json+README) + `.sha256`; (2) watchdog-гейт — джоба падає, якщо в релізі <2 assets, порожній body, або npm latest не несе нову версію (5×30s retry). Змінюєш release-процес — збережи обидва кроки. НІКОЛИ не комить package.json з версією нижчою за останній реліз (робоче дерево після `git checkout <tag> -- package.json` треба відновити).
+Use TypeScript, two-space indentation, semicolons, and single quotes, matching existing source. Prefer `camelCase` for variables and functions, `PascalCase` for types, and kebab-case MCP tool names such as `pagespeed_analyze_page`. Keep input validation at the boundary with Zod. Tool definitions need clear descriptions, actionable errors, and MCP annotations (`readOnlyHint`, `destructiveHint`, `idempotentHint`) where applicable. Use `_` prefixes for intentionally unused values.
+
+## Testing Guidelines
+
+Write Vitest tests as `src/tests/<module>.test.ts`. Mock HTTP with `nock`; tests must not require a live Google API key. Cover normal output, validation failures, and API-error handling for changed behavior. Run the focused test during development, then `npm test` before opening a PR.
+
+## Commit & Pull Request Guidelines
+
+Use Conventional Commit messages, e.g. `fix(cache): unref cleanup timer` or `chore(deps): bump vitest`. Keep commits scoped and avoid unrelated formatting. PRs should state the user-visible change, testing performed, and linked issue when available. Update `README.md`, `TESTING.md`, and `CHANGELOG.md` for public tool or signature changes; include screenshots only for documentation or visual changes.
+
+## Security & Releases
+
+Never commit `GOOGLE_API_KEY` or other credentials. Preserve release integrity checks and assets in CI; do not commit a `package.json` version below the latest release.

@@ -4,6 +4,12 @@
 
 * **tools:** remove obsolete v1 implementation paths after v2.0.0. The public API remains the six `pagespeed_*` workflow tools.
 
+### Fixed
+
+* **tools:** preserve public analysis options, reject incomplete Lighthouse runs, isolate page/origin CrUX cache entries, and return CrUX no-data responses consistently.
+* **tools:** parse Lighthouse 13 LCP and CLS insight structures and retain distinct multirun measurements for reliability checks.
+* **release:** make manual publish dry-runs safe, derive recovery versions from tags, serialize registry publishing, and require all CI jobs before Dependabot auto-merge.
+
 # [2.0.0](https://github.com/ruslanlap/pagespeed-insights-mcp/compare/v1.7.4...v2.0.0) (2026-08-26)
 
 ### Features

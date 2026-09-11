@@ -11,6 +11,10 @@ on:
         default: "false"
         type: boolean
 
+concurrency:
+  group: registry-publish
+  cancel-in-progress: false
+
 jobs:
   publish:
     name: Dual-publish to Registries
@@ -36,6 +40,7 @@ jobs:
             exit 1
           fi
           git checkout "$TAG"
+          npm version "${TAG#v}" --no-git-tag-version --allow-same-version
           echo "Using tag $TAG"
 
       - uses: actions/setup-node@v7
@@ -50,14 +55,14 @@ jobs:
         run: npm run build
 
       - name: Publish (dry run)
-        if: ${{ inputs.dry_run == 'true' }}
+        if: ${{ inputs.dry_run }}
         run: |
           VERSION=$(node -p "require('./package.json').version")
           echo "Would publish pagespeed-insights-mcp@$VERSION and @ruslanlap/pagespeed-insights-mcp@$VERSION"
           npm pack --dry-run
 
       - name: Dual-publish to Registries
-        if: ${{ inputs.dry_run != 'true' }}
+        if: ${{ !inputs.dry_run }}
         run: |
           chmod +x ./scripts/publish.sh
           ./scripts/publish.sh

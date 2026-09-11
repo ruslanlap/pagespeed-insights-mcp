@@ -10,6 +10,10 @@ on:
         default: "false"
         type: boolean
 
+concurrency:
+  group: registry-publish
+  cancel-in-progress: false
+
 jobs:
   sync:
     name: Sync Registries

@@ -98,10 +98,9 @@ export class ResponseParser {
       elementData.lcpElement = this.normalizeNode(lcpAudit.details.items[0].node);
     } else {
       // Lighthouse 13+: lcp-discovery-insight replaces largest-contentful-paint-element.
-      const lcpInsight = audits['lcp-discovery-insight'];
-      const lcpItem = lcpInsight?.details?.items?.find((i: any) => i?.node?.type === 'node');
-      if (lcpItem?.node) {
-        elementData.lcpElement = this.normalizeNode(lcpItem.node);
+      const lcpNode = this.findNode(audits['lcp-discovery-insight']?.details?.items);
+      if (lcpNode) {
+        elementData.lcpElement = this.normalizeNode(lcpNode);
       }
     }
 
@@ -119,7 +118,7 @@ export class ResponseParser {
       // node is a text cell ({type:"text", value:"Total"}); filter on node.type.
       const clsInsight = audits['cls-culprits-insight'];
       if (clsInsight?.details?.items) {
-        elementData.clsElements = clsInsight.details.items
+        elementData.clsElements = this.findTableRows(clsInsight.details.items)
           .filter((item: any) => item.node?.type === 'node')
           .map((item: any) => ({
             node: this.normalizeNode(item.node),
@@ -133,14 +132,9 @@ export class ResponseParser {
     if (lazyLcpAudit?.details?.items?.[0]?.node) {
       elementData.lazyLoadedLcp = this.normalizeNode(lazyLcpAudit.details.items[0].node);
     } else {
-      // Lighthouse 13+: lcp-discovery-insight carries a lazy-loaded flag.
-      const lcpInsight = audits['lcp-discovery-insight'];
-      const lazyItem = lcpInsight?.details?.items?.find(
-        (i: any) => i?.node?.type === 'node' && (i as any).lazyLoaded
-      );
-      if (lazyItem?.node) {
-        elementData.lazyLoadedLcp = this.normalizeNode(lazyItem.node);
-      }
+      const lazyItem = this.findTableRows(audits['lcp-discovery-insight']?.details?.items)
+        .find((item: any) => item.lazyLoaded && item.node?.type === 'node');
+      if (lazyItem) elementData.lazyLoadedLcp = this.normalizeNode(lazyItem.node);
     }
 
     return elementData;
@@ -595,6 +589,25 @@ export class ResponseParser {
       nodeLabel: node.nodeLabel,
       explanation: node.explanation,
     };
+  }
+
+  private static findNode(items: any): any | null {
+    if (!Array.isArray(items)) return null;
+    for (const item of items) {
+      if (item?.type === 'node') return item;
+      if (item?.node?.type === 'node') return item.node;
+      const nested = this.findNode(item?.items ?? item?.value?.items ?? item?.subItems?.items);
+      if (nested) return nested;
+    }
+    return null;
+  }
+
+  private static findTableRows(items: any): any[] {
+    if (!Array.isArray(items)) return [];
+    return items.flatMap((item) => {
+      if (item?.node) return [item];
+      return this.findTableRows(item?.items ?? item?.value?.items ?? []);
+    });
   }
 
   /**

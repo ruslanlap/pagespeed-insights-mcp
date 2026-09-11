@@ -10,6 +10,13 @@ export interface MultirunStats {
   cachedReplays: number;
 }
 
+export interface MultirunResult {
+  stats: MultirunStats;
+  scores: Record<string, MetricSpread | null>;
+  metrics: Record<string, MetricSpread | null>;
+  runs: PageSpeedRun[];
+}
+
 /**
  * One Lighthouse run is noise: TBT routinely swings 3x between runs on an
  * unchanged page. Report the median of N genuinely distinct analyses, with the
@@ -21,16 +28,13 @@ export interface MultirunStats {
  */
 export function dedupRuns(runs: PageSpeedRun[]): PageSpeedRun[] {
   const stamps = new Set<string>();
-  const fingerprints = new Set<string>();
   const unique: PageSpeedRun[] = [];
   for (const run of runs) {
-    const stamp = run.lighthouseResult?.analysisUTCTimestamp;
-    const fingerprint = fingerprintOf(run);
-    if ((stamp && stamps.has(stamp)) || (fingerprint && fingerprints.has(fingerprint))) {
+    const stamp = run.lighthouseResult?.fetchTime;
+    if (stamp && stamps.has(stamp)) {
       continue;
     }
     if (stamp) stamps.add(stamp);
-    if (fingerprint) fingerprints.add(fingerprint);
     unique.push(run);
   }
   return unique;
@@ -38,29 +42,11 @@ export function dedupRuns(runs: PageSpeedRun[]): PageSpeedRun[] {
 
 interface PageSpeedRun {
   lighthouseResult?: {
+    fetchTime?: string;
     analysisUTCTimestamp?: string;
     categories?: Record<string, { score: number | null }>;
     audits?: Record<string, { numericValue?: number }>;
   };
-}
-
-/** Everything the run measured, as one comparable value. Empty run → null. */
-function fingerprintOf(run: PageSpeedRun): string | null {
-  const lh = run.lighthouseResult;
-  if (!lh) return null;
-  const scores = lh.categories || {};
-  const metrics = lh.audits || {};
-  const body: Record<string, number | null> = {};
-  for (const [k, v] of Object.entries(scores)) body[`s:${k}`] = v.score ?? null;
-  let measured = false;
-  for (const [k, v] of Object.entries(metrics)) {
-    if (typeof v.numericValue === "number") {
-      body[`m:${k}`] = v.numericValue;
-      measured = true;
-    }
-  }
-  if (!measured && Object.keys(scores).length === 0) return null;
-  return JSON.stringify(body);
 }
 
 export function median(values: number[]): number {
@@ -76,7 +62,7 @@ export function spread(values: number[]): MetricSpread | null {
 }
 
 /** Median + spread per category score and per key metric across distinct runs. */
-export function summariseMultirun(runs: PageSpeedRun[]): { stats: MultirunStats; scores: Record<string, MetricSpread | null>; metrics: Record<string, MetricSpread | null> } {
+export function summariseMultirun(runs: PageSpeedRun[]): MultirunResult {
   const unique = dedupRuns(runs);
   const stats: MultirunStats = {
     analyses: unique.length,
@@ -97,6 +83,7 @@ export function summariseMultirun(runs: PageSpeedRun[]): { stats: MultirunStats;
   }
   return {
     stats,
+    runs: unique,
     scores: Object.fromEntries(
       Object.entries(scores).map(([k, v]) => [k, spread(v)] as const)
     ),
@@ -105,4 +92,3 @@ export function summariseMultirun(runs: PageSpeedRun[]): { stats: MultirunStats;
     ),
   };
 }
-

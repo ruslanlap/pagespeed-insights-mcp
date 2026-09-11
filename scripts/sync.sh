@@ -49,6 +49,7 @@ trap cleanup EXIT
 
 # Get all tags matching semver pattern
 TAGS=$(git tag -l "v*.*.*" | sort -V)
+LATEST_BEFORE=$(npm view "$PUBLIC_NAME@latest" version --registry="$NPM_REGISTRY" 2>/dev/null || true)
 
 echo "🔍 Scanning all git tags..."
 
@@ -81,6 +82,7 @@ for TAG in $TAGS; do
   
   echo "📥 Checking out $TAG..."
   git checkout "$TAG"
+  npm version "$VERSION" --no-git-tag-version --allow-same-version
   
   # Build package
   echo "🔨 Building version $VERSION..."
@@ -116,5 +118,10 @@ for TAG in $TAGS; do
   
   rm -f package.json.backup
 done
+
+# Backfilling an old release must never move npm's latest tag backwards.
+if [ -n "$LATEST_BEFORE" ]; then
+  npm dist-tag add "$PUBLIC_NAME@$LATEST_BEFORE" latest --registry="$NPM_REGISTRY"
+fi
 
 echo "✅ Finished registry synchronization!"

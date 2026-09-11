@@ -136,10 +136,17 @@ jobs:
                   check.name !== "review-and-merge" &&
                   !check.name.endsWith(" / review-and-merge")
               );
-              const checksFinished = validationChecks.length > 0 &&
-                validationChecks.every((check) =>
-                  check.status === "completed" && allowedConclusions.has(check.conclusion)
-                );
+              const requiredChecks = [
+                "Security Audit",
+                "Test & Build (20)",
+                "Test & Build (22)",
+                "Test & Build (24)",
+              ];
+              const checksByName = new Map(validationChecks.map((check) => [check.name, check]));
+              const checksFinished = requiredChecks.every((name) => {
+                const check = checksByName.get(name);
+                return check?.status === "completed" && allowedConclusions.has(check.conclusion);
+              });
               const statusesSucceeded =
                 status.state === "success" ||
                 (status.state === "pending" && status.statuses.length === 0);

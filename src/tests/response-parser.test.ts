@@ -213,6 +213,23 @@ describe("ResponseParser — Lighthouse 13 insight fallbacks", () => {
     expect(el.lcpElement!.selector).toBe("h1.hero");
   });
 
+  it("extracts Lighthouse 13 LCP list items and nested CLS table rows", () => {
+    const node = { type: "node", selector: "#hero", snippet: "<img id=hero>" };
+    const response = {
+      lighthouseResult: {
+        audits: {
+          "lcp-discovery-insight": { details: { type: "list", items: [{ type: "checklist", items: {} }, node] } },
+          "cls-culprits-insight": { details: { type: "list", items: [{ type: "table", items: [{ node, score: 0.2 }] }] } },
+        },
+      },
+    } as any;
+
+    const result = ResponseParser.extractElementData(response);
+    expect(result.lcpElement?.selector).toBe("#hero");
+    expect(result.clsElements).toHaveLength(1);
+    expect(result.clsElements[0]?.node.selector).toBe("#hero");
+  });
+
   it("extracts lazy-loaded LCP from lcp-discovery-insight lazyLoaded flag", () => {
     const el = ResponseParser.extractElementData(response);
     expect(el.lazyLoadedLcp).not.toBeNull();

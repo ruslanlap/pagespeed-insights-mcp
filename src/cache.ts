@@ -73,8 +73,8 @@ export function createPSICacheKey(url: string, strategy: string, categories: str
 }
 
 // Create cache key for CrUX data  
-export function createCruxCacheKey(url: string, formFactor?: string): string {
-  return `crux:${url}:${formFactor || 'default'}`;
+export function createCruxCacheKey(scope: "page" | "origin", url: string, formFactor?: string): string {
+  return `crux:${scope}:${url}:${formFactor || "ALL"}`;
 }
 
 // Singleton cache instance

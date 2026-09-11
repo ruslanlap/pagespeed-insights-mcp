@@ -43,16 +43,14 @@ describe("PageSpeedClient CrUX retry", () => {
     expect(scope.isDone()).toBe(true);
   });
 
-  it("does not retry on 4xx", async () => {
+  it("turns CrUX 404 into an empty no-data response", async () => {
     const scope = nock("https://chromeuxreport.googleapis.com")
       .post("/v1/records:queryRecord")
       .query(true)
       .once()
       .reply(404, { error: { message: "no data" } });
 
-    await expect(
-      client.getCruxData({ url: "https://example.com" }, "corr-4xx")
-    ).rejects.toThrow(/CrUX API error: 404/);
+    await expect(client.getCruxData({ url: "https://example.com" }, "corr-4xx")).resolves.toEqual({});
     expect(scope.isDone()).toBe(true);
   });
 

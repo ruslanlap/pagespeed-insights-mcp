@@ -228,13 +228,13 @@ export class PageSpeedInsightsServer {
     const logger = createRequestLogger(correlationId, "performance-summary");
     
     try {
-      const input = PerformanceSummarySchema.parse(args);
+      const input = AnalyzePageSpeedSchema.parse(args);
       logger.info({ url: input.url }, "Getting performance summary");
       
+      const category = [...new Set(["performance", ...input.category])] as AnalyzePageSpeedInput["category"];
       const fullInput: AnalyzePageSpeedInput = {
         ...input,
-        category: ["performance"],
-        locale: "en",
+        category,
       };
       
       const result = await this.client.analyzePageSpeed(fullInput, correlationId);
@@ -268,13 +268,13 @@ export class PageSpeedInsightsServer {
     const logger = createRequestLogger(correlationId, "performance-map");
 
     try {
-      const input = PerformanceSummarySchema.parse(args);
+      const input = AnalyzePageSpeedSchema.parse(args);
       logger.info({ url: input.url }, "Generating performance map");
 
+      const category = [...new Set(["performance", ...input.category])] as AnalyzePageSpeedInput["category"];
       const fullInput: AnalyzePageSpeedInput = {
         ...input,
-        category: ["performance"],
-        locale: "en",
+        category,
       };
 
       const result = await this.client.analyzePageSpeed(fullInput, correlationId);
@@ -549,7 +549,7 @@ export class PageSpeedInsightsServer {
     const logger = createRequestLogger(correlationId, "compare-pages");
     
     try {
-      const input = CompareUrlsSchema.parse(args);
+      const input = CompareUrlsSchema.extend({ runs: z.number().int().min(1).max(5).optional() }).parse(args);
       logger.info({ urlA: input.urlA, urlB: input.urlB }, "Comparing pages");
       
       const [resultA, resultB] = await Promise.all([
@@ -558,12 +558,14 @@ export class PageSpeedInsightsServer {
           strategy: input.strategy,
           category: input.categories,
           locale: "en",
+          runs: input.runs,
         }, correlationId),
         this.client.analyzePageSpeed({
           url: input.urlB, 
           strategy: input.strategy,
           category: input.categories,
           locale: "en",
+          runs: input.runs,
         }, correlationId),
       ]);
       
@@ -597,7 +599,7 @@ export class PageSpeedInsightsServer {
     const logger = createRequestLogger(correlationId, "batch-analyze");
     
     try {
-      const input = BatchAnalyzeSchema.parse(args);
+      const input = BatchAnalysisSchema.parse(args);
       logger.info({ urlCount: input.urls.length }, "Starting batch analysis");
       
       const results: Array<{ url: string; result?: any; error?: string }> = [];
@@ -614,7 +616,12 @@ export class PageSpeedInsightsServer {
             locale: input.locale,
           }, correlationId);
           
-          results.push({ url, result: this.createPerformanceSummary(result, { url, strategy: input.strategy }) });
+          results.push({
+            url,
+            result: input.report === "full"
+              ? this.formatAnalysisReport(result, { url, strategy: input.strategy, category: input.category, locale: input.locale })
+              : this.createPerformanceSummary(result, { url, strategy: input.strategy }),
+          });
         } catch (error) {
           const urlErrorMessage = error instanceof Error ? error.message : "Unknown error occurred";
           logger.warn({ url, error: urlErrorMessage }, "URL analysis failed");
@@ -809,7 +816,7 @@ export class PageSpeedInsightsServer {
     return report;
   }
 
-  private createPerformanceSummary(data: PageSpeedInsightsResponse, input: { url: string; strategy: string }) {
+  private createPerformanceSummary(data: PageSpeedInsightsResponse, input: { url: string; strategy: string }): Record<string, unknown> {
     const lighthouse = data.lighthouseResult;
     const performance = lighthouse?.categories?.performance;
     const audits = lighthouse?.audits;
@@ -839,6 +846,9 @@ export class PageSpeedInsightsServer {
           displayValue: audits?.[ref.id]?.displayValue,
         }))
         ?.slice(0, 5) || [],
+      ...(data.desktopResult?.lighthouseResult?.categories?.performance?.score != null
+        ? { desktop: this.createPerformanceSummary(data.desktopResult, { url: input.url, strategy: "desktop" }) }
+        : {}),
     };
   }
 
@@ -1478,18 +1488,18 @@ export class PageSpeedInsightsServer {
     const logger = createRequestLogger(correlationId, "get-full-audit");
     
     try {
-      const input = { 
-        url: args.url, 
-        strategy: args.strategy || 'mobile',
-        categories: args.categories || ["performance", "accessibility", "best-practices", "seo"]
-      };
+      const input = AnalyzePageSpeedSchema.parse({
+        ...args,
+        category: args.categories || args.category || ["performance", "accessibility", "best-practices", "seo"],
+      });
       logger.info({ url: input.url, strategy: input.strategy }, "Getting full audit");
       
       const result = await this.client.analyzePageSpeed({
         url: input.url,
         strategy: input.strategy,
-        category: input.categories,
-        locale: "en",
+        category: input.category,
+        locale: input.locale,
+        runs: input.runs,
       }, correlationId);
       
       const categoryData = ResponseParser.extractOtherCategories(result);

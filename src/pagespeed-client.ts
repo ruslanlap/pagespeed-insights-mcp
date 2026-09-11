@@ -36,6 +36,13 @@ export class PageSpeedClient {
     return text.replaceAll(this.apiKey, "[REDACTED]");
   }
 
+  private sanitizedError(error: unknown): Error {
+    const message = error instanceof Error ? error.message : "Unknown error";
+    const sanitized = new Error(this.redact(message));
+    sanitized.name = error instanceof Error ? error.name : "Error";
+    return sanitized;
+  }
+
   private async makeRequest(url: string, correlationId: string): Promise<any> {
     const logger = createRequestLogger(correlationId, "psi-request");
 
@@ -54,8 +61,6 @@ export class PageSpeedClient {
             },
           });
           
-          clearTimeout(timeoutId);
-          
           if (!response.ok) {
             const errorText = await response.text();
             const error = new Error(`PSI API error: ${response.status} ${response.statusText} - ${errorText}`);
@@ -69,6 +74,9 @@ export class PageSpeedClient {
           }
           
           const data = await response.json();
+          if (data?.lighthouseResult?.runtimeError) {
+            throw new Error(`Lighthouse could not analyze this page: ${data.lighthouseResult.runtimeError.message || data.lighthouseResult.runtimeError.code || "unknown runtime error"}`);
+          }
           logger.info({ 
             url: new URL(url).searchParams.get("url"),
             strategy: new URL(url).searchParams.get("strategy"),
@@ -77,10 +85,12 @@ export class PageSpeedClient {
           
           return data;
         } catch (error) {
-          clearTimeout(timeoutId);
-          const errorMessage = error instanceof Error ? error.message : "Unknown error";
+          const sanitized = this.sanitizedError(error);
+          const errorMessage = sanitized.message;
           logger.warn({ attempt, error: this.redact(errorMessage) }, "PSI request failed");
-          throw error;
+          throw sanitized;
+        } finally {
+          clearTimeout(timeoutId);
         }
       },
       {
@@ -187,7 +197,7 @@ export class PageSpeedClient {
               body: JSON.stringify(body),
               signal: controller.signal,
             });
-            clearTimeout(timeoutId);
+            if (response.status === 404) return {};
             if (!response.ok) {
               const errorText = await response.text();
               const error = new Error(`CrUX API error: ${response.status} ${response.statusText} - ${errorText}`);
@@ -196,10 +206,12 @@ export class PageSpeedClient {
             }
             return await response.json();
           } catch (error) {
-            clearTimeout(timeoutId);
-            const msg = error instanceof Error ? error.message : "Unknown error";
+            const sanitized = this.sanitizedError(error);
+            const msg = sanitized.message;
             logger.warn({ error: this.redact(msg) }, `${label} failed`);
-            throw error;
+            throw sanitized;
+          } finally {
+            clearTimeout(timeoutId);
           }
         },
         {
@@ -214,7 +226,7 @@ export class PageSpeedClient {
 
   async getCruxData(input: CruxSummaryInput, correlationId: string): Promise<any> {
     const logger = createRequestLogger(correlationId, "crux-summary");
-    const cacheKey = createCruxCacheKey(input.url, input.formFactor);
+    const cacheKey = createCruxCacheKey("page", input.url, input.formFactor);
 
     const cached = cache.get(cacheKey);
     if (cached) {
@@ -237,7 +249,7 @@ export class PageSpeedClient {
 
   async getOriginCruxData(input: OriginCruxInput, correlationId: string): Promise<any> {
     const logger = createRequestLogger(correlationId, "origin-crux");
-    const cacheKey = createCruxCacheKey(input.origin, input.formFactor || "ALL");
+    const cacheKey = createCruxCacheKey("origin", input.origin, input.formFactor);
 
     const cached = cache.get(cacheKey);
     if (cached) {
@@ -248,7 +260,7 @@ export class PageSpeedClient {
     logger.info({ origin: input.origin }, "Fetching origin CrUX data");
 
     const requestBody: Record<string, unknown> = { origin: input.origin };
-    if (input.formFactor) requestBody.formFactor = input.formFactor;
+    if (input.formFactor && input.formFactor !== "ALL") requestBody.formFactor = input.formFactor;
 
     const data = await this.cruxPost(requestBody, correlationId, "origin-crux");
     cache.set(cacheKey, data, this.cacheTTL);

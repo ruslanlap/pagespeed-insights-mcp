@@ -97,6 +97,18 @@ describe("v2 dispatchTool routing (public tool surface)", () => {
     expect(result.structuredContent?.tool).toBe("pagespeed_analyze_page");
   });
 
+  it("preserves runs and locale for a summary request", async () => {
+    const spy = vi.spyOn((server as any).client, "analyzePageSpeed").mockResolvedValue(mockPsiResponse());
+    try {
+      await callDispatch(server, "pagespeed_analyze_page", {
+        url: "https://example.com", report: "summary", runs: 3, locale: "uk-UA", categories: ["seo"],
+      });
+      expect(spy).toHaveBeenCalledWith(expect.objectContaining({ runs: 3, locale: "uk-UA", category: ["performance", "seo"] }), expect.any(String));
+    } finally {
+      spy.mockRestore();
+    }
+  });
+
   it("routes report=full to the full markdown report", async () => {
     nock("https://www.googleapis.com")
       .get("/pagespeedonline/v5/runPagespeed")
@@ -192,6 +204,12 @@ describe("v2 dispatchTool routing (public tool surface)", () => {
     // Compare handler returns a JSON payload with both URLs.
     expect(result.content[0].text).toContain("https://example.org");
     expect(result.structuredContent?.tool).toBe("pagespeed_compare_pages");
+  });
+
+  it("returns detailed batch results when report=full", async () => {
+    nock("https://www.googleapis.com").get("/pagespeedonline/v5/runPagespeed").query(true).reply(200, mockPsiResponse());
+    const result = await callDispatch(server, "pagespeed_analyze_batch", { urls: ["https://example.com"], report: "full" });
+    expect(result.content[0].text).toContain("# PageSpeed Insights Analysis");
   });
 
   it("routes pagespeed_compare_pages mode=baseline with replaceBaseline to baseline recording", async () => {

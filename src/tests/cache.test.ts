@@ -67,8 +67,9 @@ describe("cache key builders", () => {
     expect(createPSICacheKey("https://x.com", "mobile", ["performance"], "uk")).not.toBe(base);
   });
 
-  it("CrUX key defaults formFactor", () => {
-    expect(createCruxCacheKey("https://x.com")).toBe("crux:https://x.com:default");
-    expect(createCruxCacheKey("https://x.com", "PHONE")).toBe("crux:https://x.com:PHONE");
+  it("CrUX key includes scope and form factor", () => {
+    expect(createCruxCacheKey("page", "https://x.com")).toBe("crux:page:https://x.com:ALL");
+    expect(createCruxCacheKey("origin", "https://x.com", "PHONE")).toBe("crux:origin:https://x.com:PHONE");
+    expect(createCruxCacheKey("page", "https://x.com", "PHONE")).not.toBe(createCruxCacheKey("origin", "https://x.com", "PHONE"));
   });
 });

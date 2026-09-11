@@ -11,8 +11,6 @@ updates:
       - "dependencies"
     commit-message:
       prefix: "chore(deps)"
-    # Auto-approve patch and minor updates for safe auto-merge
-    auto-merge: true
     # GitHub-side: Dependabot security updates must be enabled in
     # Settings → Code security → Dependabot security updates. With it on,
     # dependabot opens daily PRs for any GHSA in the dependency graph and the
@@ -61,7 +59,6 @@ updates:
       - "ci"
     commit-message:
       prefix: "chore(ci)"
-    auto-merge: true
 
   # Docker
   - package-ecosystem: "docker"

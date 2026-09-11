@@ -92,6 +92,9 @@ jobs:
     permissions:
       contents: write
       packages: write
+    concurrency:
+      group: registry-publish
+      cancel-in-progress: false
     env:
       GITHUB_TOKEN: ${{ github.token }}
       GH_TOKEN: ${{ github.token }}

@@ -293,10 +293,13 @@ export class PerformanceRecommendationsEngine {
     // another is the instrument moving, not a fact about the page. Only keep
     // faults that failed in EVERY distinct analysis.
     const failedInAllRuns = new Map<string, boolean>();
-    const runs: any[] = [(data as any).multirun?.runs].filter(Boolean).flat();
+    const runs: any[] = (data as any).multirun?.runs ?? [];
     if (runs.length > 1) {
       for (const auditId of Object.keys(audits)) {
-        failedInAllRuns.set(auditId, runs.every((r) => r?.audits?.[auditId]?.score !== null && r?.audits?.[auditId]?.score < 0.9));
+        failedInAllRuns.set(auditId, runs.every((r) => {
+          const runAudit = (r?.lighthouseResult?.audits ?? r?.audits)?.[auditId];
+          return runAudit?.score !== null && runAudit?.score < 0.9;
+        }));
       }
     }
 

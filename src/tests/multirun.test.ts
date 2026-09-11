@@ -3,7 +3,7 @@ import { dedupRuns, median, spread, summariseMultirun } from "../multirun.js";
 
 const run = (stamp: string, score = 50, tbt = 300) => ({
   lighthouseResult: {
-    analysisUTCTimestamp: stamp,
+      fetchTime: stamp,
     categories: { performance: { score: score / 100 } },
     audits: { "total-blocking-time": { numericValue: tbt } },
   },
@@ -15,10 +15,10 @@ describe("dedupRuns", () => {
     expect(unique).toHaveLength(2);
   });
 
-  it("drops identical fingerprints without stamps", () => {
+  it("keeps measurements when the API omits fetchTime", () => {
     const a = run("", 50, 300);
     const b = { lighthouseResult: { ...a.lighthouseResult, analysisUTCTimestamp: "" } };
-    expect(dedupRuns([a, b])).toHaveLength(1);
+    expect(dedupRuns([a, b])).toHaveLength(2);
   });
 
   it("keeps empty runs — two failures are not one replay", () => {
