@@ -8,6 +8,7 @@ on:
     paths:
       - 'docs/**'
       - 'mkdocs.yml'
+      - 'requirements-docs.txt'
       - 'demo/**'
       - 'README.md'
       - '.github/workflows/publish-docs.yml'
@@ -20,6 +21,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
       
       - name: Configure Git Credentials
         run: |
@@ -34,12 +37,13 @@ jobs:
       
       - uses: actions/cache@v6
         with:
-          key: mkdocs-material-${{ env.cache_id }}
+          key: mkdocs-material-${{ env.cache_id }}-${{ hashFiles('requirements-docs.txt') }}
           path: .cache
           restore-keys: |
+            mkdocs-material-${{ env.cache_id }}-
             mkdocs-material-
             
-      - run: pip install mkdocs-material 
+      - run: pip install -r requirements-docs.txt
       
       - run: mkdocs build
 
