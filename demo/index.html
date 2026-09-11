@@ -1,0 +1,1564 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PageSpeed Insights MCP Server — Web Performance Intelligence</title>
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32' fill='none'%3E%3Crect width='32' height='32' rx='8' fill='%23000000' stroke='%23222222' stroke-width='1'/%3E%3Ccircle cx='16' cy='16' r='11' stroke='rgba(255,255,255,0.15)' stroke-width='2' stroke-dasharray='45 15' stroke-dashoffset='15'/%3E%3Cpath d='M16 5 A11 11 0 0 1 27 16' stroke='%230070f3' stroke-width='2.5' stroke-linecap='round'/%3E%3Cpath d='M16 16 L22 10' stroke='%2300e599' stroke-width='2' stroke-linecap='round'/%3E%3Ccircle cx='16' cy='16' r='2.5' fill='%23ffffff'/%3E%3C/svg%3E">
+<link rel="shortcut icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32' fill='none'%3E%3Crect width='32' height='32' rx='8' fill='%23000000' stroke='%23222222' stroke-width='1'/%3E%3Ccircle cx='16' cy='16' r='11' stroke='rgba(255,255,255,0.15)' stroke-width='2' stroke-dasharray='45 15' stroke-dashoffset='15'/%3E%3Cpath d='M16 5 A11 11 0 0 1 27 16' stroke='%230070f3' stroke-width='2.5' stroke-linecap='round'/%3E%3Cpath d='M16 16 L22 10' stroke='%2300e599' stroke-width='2' stroke-linecap='round'/%3E%3Ccircle cx='16' cy='16' r='2.5' fill='%23ffffff'/%3E%3C/svg%3E">
+
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600;700&display=swap');
+
+  :root {
+    --bg: #000000;
+    --bg2: #080808;
+    --bg3: #111111;
+    --surface: #0d0d0f;
+    --surface-hover: #141417;
+    --border: rgba(255, 255, 255, 0.1);
+    --border-hover: rgba(255, 255, 255, 0.24);
+    --text: #ededed;
+    --text-dim: #888888;
+    --accent: #ffffff;
+    --accent-blue: #0070f3;
+    --accent-cyan: #50e3c2;
+    --green: #00e599;
+    --green-dim: rgba(0, 229, 153, 0.12);
+    --yellow: #f5a623;
+    --yellow-dim: rgba(245, 166, 35, 0.12);
+    --red: #ff0055;
+    --red-dim: rgba(255, 0, 85, 0.12);
+    --gradient: linear-gradient(180deg, #ffffff 0%, #888888 100%);
+    --gradient-blue: linear-gradient(135deg, #0070f3, #00dfd8);
+    --glow: 0 0 35px rgba(0, 112, 243, 0.35);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  html {
+    scroll-behavior: smooth;
+    scrollbar-width: thin;
+    scrollbar-color: var(--border) var(--bg);
+  }
+
+  body {
+    font-family: 'Inter', -apple-system, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    overflow-x: hidden;
+    line-height: 1.6;
+    background-image: 
+      radial-gradient(circle at 50% -20%, rgba(0, 112, 243, 0.15) 0%, transparent 65%),
+      linear-gradient(to right, rgba(255, 255, 255, 0.02) 1px, transparent 1px),
+      linear-gradient(to bottom, rgba(255, 255, 255, 0.02) 1px, transparent 1px);
+    background-size: 100% 100%, 32px 32px, 32px 32px;
+  }
+
+  /* ============ CANVAS PARTICLES ============ */
+  #particles-canvas {
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    z-index: 0;
+    pointer-events: none;
+  }
+
+  /* ============ NAV ============ */
+  nav {
+    position: fixed; top: 0; left: 0; right: 0;
+    z-index: 100;
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    background: rgba(0, 0, 0, 0.8);
+    border-bottom: 1px solid var(--border);
+    padding: 0 1.5rem;
+    height: 56px;
+    display: flex; align-items: center; justify-content: space-between;
+    transition: all .3s;
+  }
+  nav.scrolled { background: rgba(0, 0, 0, 0.95); box-shadow: 0 4px 24px rgba(0,0,0,0.8); }
+  
+  .nav-brand {
+    display: flex; align-items: center; gap: .6rem; font-weight: 700; font-size: 0.95rem;
+    color: #fff; text-decoration: none;
+  }
+  .nav-brand .brand-logo-svg { width: 26px; height: 26px; flex-shrink: 0; }
+  .badge-v2 {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.65rem; font-weight: 600;
+    padding: 0.1rem 0.4rem; border-radius: 999px;
+    background: var(--bg3); color: #fff;
+    border: 1px solid var(--border);
+  }
+
+  .nav-links { display: flex; gap: 1.5rem; list-style: none; align-items: center; }
+  .nav-links a {
+    color: var(--text-dim); text-decoration: none; font-size: .85rem; font-weight: 500;
+    transition: color .2s;
+  }
+  .nav-links a:hover { color: #fff; }
+  
+  .nav-actions {
+    display: flex; align-items: center; gap: 0.6rem;
+  }
+
+  .nav-cta {
+    background: #fff;
+    color: #000; border: none; border-radius: 6px;
+    padding: .35rem .9rem; font-size: .8rem; font-weight: 600;
+    cursor: pointer; text-decoration: none;
+    display: inline-flex; align-items: center; gap: .4rem;
+    transition: transform .2s, background .2s;
+  }
+  .nav-cta:hover { transform: translateY(-1px); background: #eaeaea; }
+
+  /* Mobile Hamburger Button */
+  .hamburger-btn {
+    display: none;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: 32px;
+    height: 32px;
+    border-radius: 6px;
+    background: var(--bg3);
+    border: 1px solid var(--border);
+    cursor: pointer;
+    gap: 4px;
+    padding: 6px;
+  }
+  .hamburger-line {
+    width: 100%;
+    height: 2px;
+    background-color: var(--text);
+    border-radius: 2px;
+    transition: all 0.25s ease;
+  }
+  .hamburger-btn.active .hamburger-line:nth-child(1) {
+    transform: translateY(6px) rotate(45deg);
+  }
+  .hamburger-btn.active .hamburger-line:nth-child(2) {
+    opacity: 0;
+  }
+  .hamburger-btn.active .hamburger-line:nth-child(3) {
+    transform: translateY(-6px) rotate(-45deg);
+  }
+
+  /* Mobile Drawer Menu */
+  .mobile-drawer {
+    display: none;
+    position: fixed;
+    top: 48px;
+    left: 0;
+    right: 0;
+    background: rgba(4, 4, 6, 0.98);
+    backdrop-filter: blur(24px);
+    -webkit-backdrop-filter: blur(24px);
+    border-bottom: 1px solid var(--border);
+    padding: 1rem 1.25rem;
+    flex-direction: column;
+    gap: 0.5rem;
+    z-index: 99;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.9);
+    transform: translateY(-8px);
+    opacity: 0;
+    pointer-events: none;
+    transition: all 0.25s ease;
+  }
+  .mobile-drawer.open {
+    display: flex;
+    transform: translateY(0);
+    opacity: 1;
+    pointer-events: auto;
+  }
+  .mobile-drawer a {
+    color: var(--text);
+    text-decoration: none;
+    font-size: 0.9rem;
+    font-weight: 500;
+    padding: 0.6rem 0.5rem;
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+  }
+  .mobile-drawer a:hover {
+    color: #fff;
+    background: var(--bg3);
+  }
+
+  /* ============ HERO ============ */
+  .hero {
+    position: relative;
+    min-height: 88vh;
+    display: flex; align-items: center; justify-content: center;
+    text-align: center;
+    padding: 5.5rem 1.5rem 4rem;
+    z-index: 1;
+  }
+  .hero-content { max-width: 900px; position: relative; }
+
+  .hero h1 {
+    font-size: clamp(2.25rem, 5.5vw, 4.2rem);
+    font-weight: 900;
+    line-height: 1.12;
+    letter-spacing: -.035em;
+    margin-bottom: 1.5rem;
+    animation: fadeInUp .8s ease both;
+  }
+  .hero h1 .gradient-text {
+    background: var(--gradient);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+  .hero p {
+    font-size: clamp(1rem, 2vw, 1.25rem);
+    color: var(--text-dim);
+    max-width: 680px;
+    margin: 0 auto 2.5rem;
+    animation: fadeInUp .8s ease .1s both;
+  }
+  .hero-actions {
+    display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap;
+    animation: fadeInUp .8s ease .2s both;
+  }
+  .btn {
+    display: inline-flex; align-items: center; gap: .5rem;
+    padding: .85rem 2rem;
+    border-radius: 10px;
+    font-size: 0.95rem; font-weight: 600;
+    text-decoration: none;
+    cursor: pointer;
+    transition: all .25s;
+    border: none;
+  }
+  .btn-primary {
+    background: #fff;
+    color: #000;
+  }
+  .btn-primary:hover { transform: translateY(-2px); background: #eaeaea; box-shadow: 0 8px 30px rgba(255, 255, 255, 0.15); }
+  .btn-secondary {
+    background: var(--bg3);
+    color: var(--text);
+    border: 1px solid var(--border);
+  }
+  .btn-secondary:hover { border-color: var(--border-hover); background: var(--surface); color: #fff; }
+
+  .hero-stats {
+    display: flex; justify-content: center; gap: 3rem; margin-top: 3.5rem;
+    animation: fadeInUp .8s ease .4s both;
+    flex-wrap: wrap;
+  }
+  .hero-stat { text-align: center; }
+  .hero-stat .num {
+    font-size: 2rem; font-weight: 800;
+    background: var(--gradient);
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+  }
+  .hero-stat .label { font-size: .8rem; color: var(--text-dim); margin-top: .25rem; }
+
+  @keyframes fadeInUp {
+    from { opacity: 0; transform: translateY(30px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* ============ SECTIONS ============ */
+  section { position: relative; z-index: 1; padding: 5rem 1.5rem; }
+  .container { max-width: 1200px; margin: 0 auto; }
+  .section-label {
+    display: inline-flex; align-items: center; gap: .5rem;
+    font-size: .75rem; font-weight: 600; text-transform: uppercase; letter-spacing: .1em;
+    color: var(--accent-blue);
+    margin-bottom: 1rem;
+    font-family: 'JetBrains Mono', monospace;
+  }
+  .section-title {
+    font-size: clamp(1.8rem, 4vw, 2.8rem);
+    font-weight: 800;
+    line-height: 1.2;
+    margin-bottom: 1rem;
+    color: #fff;
+    letter-spacing: -.025em;
+  }
+  .section-desc {
+    color: var(--text-dim);
+    font-size: 1.05rem;
+    max-width: 620px;
+    margin-bottom: 3rem;
+  }
+
+  /* ============ LIVE DEMO & CHAT ============ */
+  .demo-section { background: var(--bg2); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); }
+  
+  .demo-controls {
+    display: flex; justify-content: center; gap: .75rem; margin-bottom: 2rem; flex-wrap: wrap;
+  }
+  .demo-btn {
+    padding: .55rem 1.35rem;
+    background: var(--bg3);
+    border: 1px solid var(--border);
+    color: var(--text-dim);
+    border-radius: 8px;
+    font-size: .85rem; font-weight: 600;
+    cursor: pointer;
+    transition: all .2s;
+  }
+  .demo-btn:hover { border-color: var(--border-hover); color: #fff; }
+  .demo-btn.active { background: #fff; color: #000; border-color: #fff; }
+
+  .chat-demo {
+    max-width: 780px;
+    margin: 0 auto;
+    background: var(--surface);
+    border-radius: 14px;
+    border: 1px solid var(--border);
+    overflow: hidden;
+    box-shadow: 0 24px 80px rgba(0,0,0,.8);
+  }
+  .chat-header {
+    background: var(--bg3);
+    padding: .85rem 1.25rem;
+    display: flex; align-items: center; gap: .75rem;
+    border-bottom: 1px solid var(--border);
+  }
+  .chat-avatar {
+    width: 32px; height: 32px; border-radius: 8px;
+    background: #000;
+    border: 1px solid var(--border);
+    color: #d97706;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .chat-header-text { font-size: .85rem; font-weight: 600; color: #fff; }
+  .chat-header-sub { font-size: .7rem; color: var(--text-dim); }
+  
+  .chat-body { padding: 1.5rem; display: flex; flex-direction: column; gap: 1rem; min-height: 360px; }
+  .chat-msg {
+    max-width: 88%;
+    padding: .85rem 1.15rem;
+    border-radius: 12px;
+    font-size: .85rem;
+    line-height: 1.6;
+    opacity: 0; transform: translateY(10px);
+    transition: all .4s;
+  }
+  .chat-msg.visible { opacity: 1; transform: translateY(0); }
+  .chat-user {
+    align-self: flex-end;
+    background: #fff;
+    color: #000;
+    font-weight: 500;
+    border-bottom-right-radius: 3px;
+  }
+  .chat-ai {
+    align-self: flex-start;
+    background: var(--bg3);
+    color: var(--text);
+    border-bottom-left-radius: 3px;
+    border: 1px solid var(--border);
+  }
+  .chat-ai .chat-score {
+    display: inline-flex; align-items: center; gap: .4rem;
+    background: var(--green-dim);
+    color: var(--green);
+    border: 1px solid rgba(0, 229, 153, 0.3);
+    padding: .2rem .6rem;
+    border-radius: 6px;
+    font-weight: 700;
+    font-size: .85rem;
+    margin: .5rem .25rem 0 0;
+  }
+  .chat-ai .chat-score.warn {
+    background: var(--yellow-dim);
+    color: var(--yellow);
+    border-color: rgba(245, 166, 35, 0.3);
+  }
+  .chat-ai .chat-score.bad {
+    background: var(--red-dim);
+    color: var(--red);
+    border-color: rgba(255, 0, 85, 0.3);
+  }
+
+  .typing-indicator {
+    align-self: flex-start;
+    display: flex; gap: 4px;
+    padding: .85rem 1.1rem;
+    background: var(--bg3);
+    border-radius: 12px;
+    opacity: 0; transition: opacity .3s;
+    border: 1px solid var(--border);
+  }
+  .typing-indicator.visible { opacity: 1; }
+  .typing-dot {
+    width: 6px; height: 6px;
+    background: var(--text-dim);
+    border-radius: 50%;
+    animation: typingBounce 1.4s infinite;
+  }
+  .typing-dot:nth-child(2) { animation-delay: .2s; }
+  .typing-dot:nth-child(3) { animation-delay: .4s; }
+  @keyframes typingBounce {
+    0%,60%,100% { transform: translateY(0); }
+    30% { transform: translateY(-5px); }
+  }
+
+  /* Terminal Simulation */
+  .terminal-wrapper {
+    max-width: 780px;
+    margin: 3rem auto 0;
+    border-radius: 14px;
+    overflow: hidden;
+    border: 1px solid var(--border);
+    box-shadow: 0 24px 80px rgba(0,0,0,.8);
+  }
+  .terminal-header {
+    background: var(--bg3);
+    padding: .75rem 1rem;
+    display: flex; align-items: center; gap: .5rem;
+    border-bottom: 1px solid var(--border);
+  }
+  .terminal-dot { width: 12px; height: 12px; border-radius: 50%; }
+  .terminal-dot.red { background: #ff0055; }
+  .terminal-dot.yellow { background: #f5a623; }
+  .terminal-dot.green { background: #00e599; }
+  .terminal-title {
+    flex: 1; text-align: center;
+    font-size: .75rem; color: var(--text-dim);
+    font-family: 'JetBrains Mono', monospace;
+  }
+  .terminal-body {
+    background: #040405;
+    padding: 1.5rem;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: .8rem;
+    line-height: 1.8;
+    min-height: 380px;
+    position: relative;
+    overflow-x: auto;
+  }
+  .term-line { opacity: 0; transform: translateY(8px); transition: all .4s; white-space: pre-wrap; }
+  .term-line.visible { opacity: 1; transform: translateY(0); }
+  .term-prompt { color: var(--green); }
+  .term-cmd { color: #fff; font-weight: 600; }
+  .term-comment { color: var(--text-dim); font-style: italic; }
+  .term-output { color: var(--text-dim); }
+  .term-success { color: var(--green); }
+  .term-warn { color: var(--yellow); }
+  .term-error { color: var(--red); }
+  .term-accent { color: var(--accent-blue); }
+  .term-cyan { color: var(--accent-cyan); }
+  .cursor-blink {
+    display: inline-block; width: 8px; height: 16px;
+    background: var(--green);
+    animation: blink 1s step-end infinite;
+    vertical-align: middle; margin-left: 2px;
+  }
+  @keyframes blink { 50% { opacity: 0; } }
+
+  /* ============ TOOLS GRID ============ */
+  .tools-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+    gap: 1.25rem;
+  }
+  .tool-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 1.5rem;
+    transition: all .25s;
+    position: relative;
+    overflow: hidden;
+  }
+  .tool-card::before {
+    content: '';
+    position: absolute; top: 0; left: 0; right: 0;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
+    opacity: 0;
+    transition: opacity .3s;
+  }
+  .tool-card:hover { border-color: var(--border-hover); transform: translateY(-3px); background: var(--surface-hover); }
+  .tool-card:hover::before { opacity: 1; }
+  .tool-icon {
+    width: 44px; height: 44px;
+    border-radius: 10px;
+    display: flex; align-items: center; justify-content: center;
+    margin-bottom: 1rem;
+    border: 1px solid var(--border);
+    background: var(--bg3);
+  }
+  .tool-card h3 { font-size: 1.02rem; font-weight: 700; margin-bottom: .5rem; font-family: 'JetBrains Mono', monospace; color: #fff; }
+  .tool-card p { font-size: .85rem; color: var(--text-dim); line-height: 1.55; }
+  .tool-tag {
+    display: inline-block;
+    background: var(--bg3);
+    color: var(--text);
+    padding: .2rem .65rem;
+    border-radius: 100px;
+    font-size: .725rem; font-weight: 600;
+    margin-top: .85rem;
+    border: 1px solid var(--border);
+    font-family: 'JetBrains Mono', monospace;
+  }
+
+  /* ============ GAUGES & METRICS ============ */
+  .gauges-section { background: var(--bg2); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); }
+  .gauges-row {
+    display: flex; justify-content: center; gap: 3rem; flex-wrap: wrap;
+    margin-bottom: 3rem;
+  }
+  .gauge-item { text-align: center; }
+  .gauge-svg { width: 130px; height: 130px; }
+  .gauge-bg { fill: none; stroke: var(--bg3); stroke-width: 8; }
+  .gauge-fill { fill: none; stroke-width: 8; stroke-linecap: round; transition: stroke-dashoffset 2s ease; }
+  .gauge-text { font-size: 2rem; font-weight: 800; fill: var(--text); font-family: 'Inter', sans-serif; }
+  .gauge-label { font-size: .85rem; color: var(--text-dim); margin-top: .5rem; font-weight: 600; }
+
+  .metrics-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1rem;
+    max-width: 900px;
+    margin: 0 auto;
+  }
+  .metric-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 1.25rem;
+    text-align: center;
+    transition: transform .25s, border-color .25s;
+  }
+  .metric-card:hover { transform: translateY(-2px); border-color: var(--border-hover); }
+  .metric-value { font-size: 1.5rem; font-weight: 800; margin-bottom: .25rem; }
+  .metric-name { font-size: .75rem; color: var(--text-dim); text-transform: uppercase; letter-spacing: .05em; font-weight: 600; font-family: 'JetBrains Mono', monospace; }
+
+  /* ============ WORKFLOW ============ */
+  .workflow-steps {
+    display: flex;
+    gap: 1.5rem;
+    overflow-x: auto;
+    padding: 1.5rem 0;
+  }
+  .workflow-step {
+    flex: 1;
+    min-width: 250px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 1.75rem;
+    transition: all .25s;
+  }
+  .workflow-step:hover { border-color: var(--border-hover); transform: translateY(-3px); }
+  .step-number {
+    width: 36px; height: 36px;
+    background: #fff;
+    color: #000;
+    border-radius: 8px;
+    display: flex; align-items: center; justify-content: center;
+    font-weight: 800; font-size: 1.05rem;
+    margin-bottom: 1.25rem;
+  }
+  .workflow-step h3 { font-size: 1.05rem; font-weight: 700; margin-bottom: .5rem; color: #fff; }
+  .workflow-step p { font-size: .85rem; color: var(--text-dim); }
+  .workflow-step code {
+    display: block;
+    background: #000;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: .75rem;
+    margin-top: 1rem;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: .75rem;
+    color: var(--green);
+    overflow-x: auto;
+  }
+
+  /* ============ COMPARISON TABLE ============ */
+  .comparison-table {
+    width: 100%;
+    max-width: 860px;
+    margin: 0 auto;
+    border-collapse: separate;
+    border-spacing: 0;
+    border-radius: 14px;
+    overflow: hidden;
+    border: 1px solid var(--border);
+    background: var(--surface);
+  }
+  .comparison-table th {
+    background: var(--bg3);
+    padding: 1.1rem;
+    font-size: .8rem;
+    text-transform: uppercase;
+    letter-spacing: .05em;
+    color: var(--text-dim);
+    font-weight: 700;
+    text-align: left;
+    font-family: 'JetBrains Mono', monospace;
+  }
+  .comparison-table td {
+    padding: .9rem 1.1rem;
+    border-top: 1px solid var(--border);
+    font-size: .875rem;
+  }
+  .comparison-table tr:nth-child(even) td { background: rgba(255,255,255,.015); }
+  .check { color: var(--green); font-weight: 700; }
+  .cross { color: var(--text-dim); }
+
+  /* ============ CTA SECTION ============ */
+  .cta-section {
+    text-align: center;
+    padding: 6rem 1.5rem;
+    position: relative;
+    border-top: 1px solid var(--border);
+  }
+  .cta-section h2 {
+    font-size: clamp(2rem, 5vw, 3.2rem);
+    font-weight: 900;
+    margin-bottom: 1.25rem;
+    letter-spacing: -.03em;
+  }
+  .cta-section p {
+    color: var(--text-dim);
+    font-size: 1.1rem;
+    max-width: 500px;
+    margin: 0 auto 2.5rem;
+  }
+  .install-block {
+    display: inline-flex; align-items: center; gap: .75rem;
+    background: #000;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: .85rem 1.5rem;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: .9rem;
+    margin-bottom: 2rem;
+    cursor: pointer;
+    transition: all .2s;
+  }
+  .install-block:hover { border-color: var(--border-hover); background: var(--surface); }
+  .install-block .dollar { color: var(--green); }
+  .install-block .copy-icon { color: var(--text-dim); transition: color .2s; }
+  .install-block:hover .copy-icon { color: #fff; }
+
+  /* ============ FOOTER ============ */
+  footer {
+    border-top: 1px solid var(--border);
+    padding: 3rem 1.5rem;
+    text-align: center;
+    color: var(--text-dim);
+    font-size: .85rem;
+    background: var(--bg2);
+  }
+  footer a { color: #fff; text-decoration: none; }
+  footer a:hover { text-decoration: underline; }
+
+  /* ============ SCROLL REVEAL ============ */
+  .reveal {
+    opacity: 0; transform: translateY(30px);
+    transition: opacity .7s ease, transform .7s ease;
+  }
+  .reveal.visible {
+    opacity: 1; transform: translateY(0);
+  }
+
+  /* ============ INTEGRATIONS LOGOS ============ */
+  .integrations-row {
+    display: flex; justify-content: center; align-items: center; gap: 2.5rem; flex-wrap: wrap;
+    margin-top: 1.5rem;
+  }
+  .integration-item {
+    display: flex; align-items: center; gap: .6rem;
+    font-size: .875rem; font-weight: 600; color: var(--text);
+    padding: 0.4rem 0.8rem;
+    border-radius: 8px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    transition: border-color 0.2s ease;
+  }
+  .integration-item:hover { border-color: var(--border-hover); }
+  .integration-item svg { width: 20px; height: 20px; flex-shrink: 0; }
+
+  /* ============ RESPONSIVE ============ */
+  @media (max-width: 820px) {
+    nav {
+      height: 48px;
+      padding: 0 0.85rem;
+    }
+    .nav-brand .brand-logo-svg { width: 22px; height: 22px; }
+    .nav-brand .brand-name { font-size: 0.875rem; }
+    .badge-v2 { display: none; }
+    .nav-cta { padding: 0.28rem 0.65rem; font-size: 0.75rem; }
+    .nav-links { display: none; }
+    .hamburger-btn { display: flex; }
+    .hero { padding: 5rem 1.25rem 3rem; min-height: 85vh; }
+    .hero-stats { gap: 1.25rem; margin-top: 2.5rem; }
+    .tools-grid { grid-template-columns: 1fr; }
+    .gauges-row { gap: 1.5rem; }
+    .workflow-steps { flex-direction: column; }
+    .workflow-step { min-width: auto; }
+    section { padding: 3.5rem 1.25rem; }
+  }
+</style>
+</head>
+<body>
+
+<canvas id="particles-canvas"></canvas>
+
+<!-- NAV -->
+<nav id="main-nav">
+  <a href="#" class="nav-brand">
+    <svg viewBox="0 0 32 32" fill="none" class="brand-logo-svg">
+      <rect width="32" height="32" rx="8" fill="#000000" stroke="#262626" stroke-width="1.2"/>
+      <circle cx="16" cy="16" r="11" stroke="rgba(255,255,255,0.15)" stroke-width="2" stroke-dasharray="45 15" stroke-dashoffset="15"/>
+      <path d="M16 5 A11 11 0 0 1 27 16" stroke="url(#nav-logo-grad)" stroke-width="2.5" stroke-linecap="round"/>
+      <path d="M16 16 L22 10" stroke="#00e599" stroke-width="2" stroke-linecap="round"/>
+      <circle cx="16" cy="16" r="2.5" fill="#ffffff"/>
+      <defs>
+        <linearGradient id="nav-logo-grad" x1="16" y1="5" x2="27" y2="16" gradientUnits="userSpaceOnUse">
+          <stop stop-color="#00dfd8"/>
+          <stop offset="1" stop-color="#0070f3"/>
+        </linearGradient>
+      </defs>
+    </svg>
+    <span class="brand-name">PageSpeed MCP</span>
+    <span class="badge-v2">v2.0</span>
+  </a>
+
+  <ul class="nav-links">
+    <li><a href="#demo">Demo</a></li>
+    <li><a href="#tools">Tools</a></li>
+    <li><a href="#scores">Metrics</a></li>
+    <li><a href="#how-it-works">How It Works</a></li>
+    <li><a href="#compare">Compare</a></li>
+    <li><a href="https://ruslanlap.github.io/pagespeed-insights-mcp/" target="_blank">Docs</a></li>
+  </ul>
+
+  <div class="nav-actions">
+    <a href="https://github.com/ruslanlap/pagespeed-insights-mcp" class="nav-cta" target="_blank">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 .297c-6.63 0-12 5.373-12 12c0 5.303 3.438 9.8 8.205 11.385c.6.113.82-.258.82-.577c0-.285-.01-1.04-.015-2.04c-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729c1.205.084 1.838 1.236 1.838 1.236c1.07 1.835 2.809 1.305 3.495.998c.108-.776.417-1.305.76-1.605c-2.665-.3-5.466-1.332-5.466-5.93c0-1.31.465-2.38 1.235-3.22c-.135-.303-.54-1.523.105-3.176c0 0 1.005-.322 3.3 1.23c.96-.267 1.98-.399 3-.405c1.02.006 2.04.138 3 .405c2.28-1.552 3.285-1.23 3.285-1.23c.645 1.653.24 2.873.12 3.176c.765.84 1.23 1.91 1.23 3.22c0 4.61-2.805 5.625-5.475 5.92c.42.36.81 1.096.81 2.22c0 1.606-.015 2.896-.015 3.286c0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"/></svg>
+      <span>GitHub</span>
+    </a>
+    <button class="hamburger-btn" id="mobile-toggle" aria-label="Toggle navigation menu" onclick="toggleMobileMenu()">
+      <div class="hamburger-line"></div>
+      <div class="hamburger-line"></div>
+      <div class="hamburger-line"></div>
+    </button>
+  </div>
+</nav>
+
+<!-- Mobile Navigation Drawer -->
+<div class="mobile-drawer" id="mobile-drawer">
+  <a href="#demo" onclick="closeMobileMenu()">
+    <span>Interactive Demo</span>
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
+  </a>
+  <a href="#tools" onclick="closeMobileMenu()">
+    <span>6 Workflow Tools</span>
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
+  </a>
+  <a href="#scores" onclick="closeMobileMenu()">
+    <span>Live Metrics &amp; Gauges</span>
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
+  </a>
+  <a href="#how-it-works" onclick="closeMobileMenu()">
+    <span>Getting Started</span>
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
+  </a>
+  <a href="#compare" onclick="closeMobileMenu()">
+    <span>Comparison Matrix</span>
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
+  </a>
+  <a href="https://ruslanlap.github.io/pagespeed-insights-mcp/" target="_blank" onclick="closeMobileMenu()">
+    <span>Documentation</span>
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+  </a>
+</div>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-content">
+    <h1>
+      Web Performance Intelligence<br>
+      <span class="gradient-text">For AI Coding Assistants</span>
+    </h1>
+    <p>
+      Give Claude, Cursor, and Devin Desktop direct diagnostic access to Lighthouse audits, Chrome UX Report (CrUX) field data, and actionable code remediation patches.
+    </p>
+    <div class="hero-actions">
+      <a href="https://github.com/ruslanlap/pagespeed-insights-mcp" class="btn btn-primary" target="_blank">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 .297c-6.63 0-12 5.373-12 12c0 5.303 3.438 9.8 8.205 11.385c.6.113.82-.258.82-.577c0-.285-.01-1.04-.015-2.04c-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729c1.205.084 1.838 1.236 1.838 1.236c1.07 1.835 2.809 1.305 3.495.998c.108-.776.417-1.305.76-1.605c-2.665-.3-5.466-1.332-5.466-5.93c0-1.31.465-2.38 1.235-3.22c-.135-.303-.54-1.523.105-3.176c0 0 1.005-.322 3.3 1.23c.96-.267 1.98-.399 3-.405c1.02.006 2.04.138 3 .405c2.28-1.552 3.285-1.23 3.285-1.23c.645 1.653.24 2.873.12 3.176c.765.84 1.23 1.91 1.23 3.22c0 4.61-2.805 5.625-5.475 5.92c.42.36.81 1.096.81 2.22c0 1.606-.015 2.896-.015 3.286c0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"/></svg>
+        Get Started
+      </a>
+      <a href="#demo" class="btn btn-secondary">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+        Watch Live Demo
+      </a>
+    </div>
+    <div class="hero-stats">
+      <div class="hero-stat">
+        <div class="num" id="counter-tools">6</div>
+        <div class="label">v2 Workflow Tools</div>
+      </div>
+      <div class="hero-stat">
+        <div class="num" id="counter-categories">5</div>
+        <div class="label">Audit Categories</div>
+      </div>
+      <div class="hero-stat">
+        <div class="num" id="counter-metrics">50+</div>
+        <div class="label">Metrics &amp; CWV Tracked</div>
+      </div>
+      <div class="hero-stat">
+        <div class="num">Apache-2.0</div>
+        <div class="label">Open Source License</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- AUTHENTIC CLIENT INTEGRATIONS -->
+<section style="padding: 2rem 1.5rem 4rem; z-index: 1; position: relative;">
+  <div class="container reveal">
+    <p style="text-align: center; color: var(--text-dim); font-size: .85rem; margin-bottom: 1.25rem; font-family: 'JetBrains Mono', monospace;">Native MCP Support for Modern AI Environments</p>
+    <div class="integrations-row">
+      <!-- Authentic Claude Logo -->
+      <div class="integration-item">
+        <svg viewBox="0 0 24 24" fill="currentColor" style="color: #d97706;">
+          <path d="M17.304 3.541h-3.672l6.696 16.918H24Zm-10.608 0L0 20.459h3.744l1.37-3.553h7.005l1.369 3.553h3.744L10.536 3.541Zm-.371 10.223L8.616 7.82l2.291 5.945Z"/>
+        </svg>
+        <span>Claude Desktop</span>
+      </div>
+
+      <!-- Authentic Cursor Logo -->
+      <div class="integration-item">
+        <svg viewBox="0 0 24 24" fill="currentColor" style="color: #ffffff;">
+          <path d="M11.503.131L1.891 5.678a.84.84 0 0 0-.42.726v11.188c0 .3.162.575.42.724l9.609 5.55a1 1 0 0 0 .998 0l9.61-5.55a.84.84 0 0 0 .42-.724V6.404a.84.84 0 0 0-.42-.726L12.497.131a1.01 1.01 0 0 0-.996 0M2.657 6.338h18.55c.263 0 .43.287.297.515L12.23 22.918c-.062.107-.229.064-.229-.06V12.335a.59.59 0 0 0-.295-.51l-9.11-5.257c-.109-.063-.064-.23.061-.23"/>
+        </svg>
+        <span>Cursor</span>
+      </div>
+
+      <!-- Authentic Devin Desktop Logo -->
+      <div class="integration-item">
+        <svg viewBox="0 0 24 24" width="20" height="20" fill="none">
+          <path d="M2.033 9.867l2.554 1.483a.589.589 0 00.592 0l2.554-1.483.01-.008a.608.608 0 00.11-.084l.013-.015a.631.631 0 00.076-.1c.003-.005.008-.01.01-.016a.558.558 0 00.052-.125l.007-.028a.611.611 0 00.019-.14V7.868c0-.572.307-1.105.8-1.392a1.595 1.595 0 011.598 0l1.277.742a.54.54 0 00.129.053l.028.01c.044.01.088.015.133.016h.006l.013-.002a.587.587 0 00.27-.074l.011-.004 2.554-1.483a.596.596 0 00.297-.516V2.253a.595.595 0 00-.297-.516L12.293.257a.587.587 0 00-.591 0L9.148 1.737l-.01.01a.609.609 0 00-.109.083l-.014.015a.632.632 0 00-.076.1c-.003.005-.008.01-.01.016a.57.57 0 00-.052.124l-.007.028a.612.612 0 00-.018.14v1.483c0 .572-.307 1.105-.8 1.393a1.597 1.597 0 01-1.599 0l-1.276-.742a.603.603 0 00-.13-.053l-.028-.008a.658.658 0 00-.133-.018h-.02a.57.57 0 00-.269.074c-.003.002-.008.002-.012.005L2.033 5.872a.596.596 0 00-.297.515v2.966c0 .213.113.41.297.515z" fill="#3969CA"/>
+          <path d="M15.943 10.607a1.596 1.596 0 011.599 0l1.276.74c.041.025.085.04.13.055l.028.008c.043.01.088.016.133.018h.005c.005 0 .01-.002.014-.003a.474.474 0 00.122-.016l.021-.005a.616.616 0 00.126-.052c.004-.002.009-.002.013-.005l2.554-1.482a.597.597 0 00.297-.516V6.383a.596.596 0 00-.297-.515l-2.552-1.483a.587.587 0 00-.592 0l-2.553 1.482-.011.008a.61.61 0 00-.108.084l-.014.016a.637.637 0 00-.076.1c-.003.005-.008.01-.01.016a.57.57 0 00-.052.124l-.007.029a.612.612 0 00-.018.14v1.482c0 .572-.307 1.105-.8 1.393a1.597 1.597 0 01-1.599 0l-1.276-.742a.584.584 0 00-.13-.053l-.028-.008a.62.62 0 00-.133-.018h-.02a.587.587 0 00-.269.074l-.012.004L9.15 10a.596.596 0 00-.296.516v2.966c0 .212.112.409.296.515l2.554 1.483s.008.002.012.005c.04.022.082.04.126.052l.02.004a.57.57 0 00.123.017l.014.002h.006c.054 0 .108-.01.16-.025a.587.587 0 00.13-.054l1.277-.741a1.597 1.597 0 012.398 1.392v1.482c0 .049.007.095.019.14l.007.028a.619.619 0 00.051.125c.004.006.008.01.01.016a.6.6 0 00.076.1l.014.015c.033.032.069.06.108.084.004.002.006.006.011.008l2.554 1.483a.59.59 0 00.593 0l2.554-1.483a.597.597 0 00.296-.516v-2.965a.595.595 0 00-.296-.516l-2.554-1.483s-.008-.002-.012-.005a.54.54 0 00-.126-.051c-.007-.003-.013-.003-.02-.005a.635.635 0 00-.125-.017h-.018a.557.557 0 00-.16.026.588.588 0 00-.13.053l-1.276.742a1.595 1.595 0 01-1.598 0 1.615 1.615 0 010-2.785l-.005-.001z" fill="#21C19A"/>
+          <path d="M14.848 18.265l-2.554-1.482-.012-.005a.526.526 0 00-.126-.052c-.007-.002-.014-.002-.02-.005a.64.64 0 00-.124-.017h-.02a.56.56 0 00-.16.026.588.588 0 00-.13.053l-1.276.742a1.594 1.594 0 01-1.598 0c-.493-.286-.8-.82-.8-1.393V14.65a.563.563 0 00-.018-.14l-.008-.028a.604.604 0 00-.051-.124l-.01-.017a.603.603 0 00-.076-.1l-.014-.015a.596.596 0 00-.109-.084c-.003-.002-.005-.006-.01-.008L5.178 12.65a.587.587 0 00-.591 0l-2.554 1.483a.596.596 0 00-.297.516v2.965c0 .213.113.41.297.516l2.554 1.483.012.004a.618.618 0 00.267.074l.016.002h.007a.55.55 0 00.16-.026.584.584 0 00.129-.053l1.277-.742a1.597 1.597 0 012.398 1.393v1.482c0 .05.007.095.019.14l.007.028c.013.044.03.085.051.125l.01.016c.022.036.047.07.076.1l.014.015c.032.032.069.06.109.084l.01.008 2.554 1.483a.587.587 0 00.593 0l2.554-1.483a.596.596 0 00.296-.515v-2.966a.596.596 0 00-.296-.516h-.002z" fill="#0294DE"/>
+        </svg>
+        <span>Devin Desktop</span>
+      </div>
+
+      <!-- Authentic OpenAI Logo -->
+      <div class="integration-item">
+        <svg viewBox="0 0 24 24" fill="currentColor" style="color: #10a37f;">
+          <path d="M22.282 9.821a6 6 0 0 0-.516-4.91a6.05 6.05 0 0 0-6.51-2.9A6.065 6.065 0 0 0 4.981 4.18a6 6 0 0 0-3.998 2.9a6.05 6.05 0 0 0 .743 7.097a5.98 5.98 0 0 0 .51 4.911a6.05 6.05 0 0 0 6.515 2.9A6 6 0 0 0 13.26 24a6.06 6.06 0 0 0 5.772-4.206a6 6 0 0 0 3.997-2.9a6.06 6.06 0 0 0-.747-7.073M13.26 22.43a4.48 4.48 0 0 1-2.876-1.04l.141-.081l4.779-2.758a.8.8 0 0 0 .392-.681v-6.737l2.02 1.168a.07.07 0 0 1 .038.052v5.583a4.504 4.504 0 0 1-4.494 4.494M3.6 18.304a4.47 4.47 0 0 1-.535-3.014l.142.085l4.783 2.759a.77.77 0 0 0 .78 0l5.843-3.369v2.332a.08.08 0 0 1-.033.062L9.74 19.95a4.5 4.5 0 0 1-6.14-1.646M2.34 7.896a4.5 4.5 0 0 1 2.366-1.973V11.6a.77.77 0 0 0 .388.677l5.815 3.354l-2.02 1.168a.08.08 0 0 1-.071 0l-4.83-2.786A4.504 4.504 0 0 1 2.34 7.872zm16.597 3.855l-5.833-3.387L15.119 7.2a.08.08 0 0 1 .071 0l4.83 2.791a4.494 4.494 0 0 1-.676 8.105v-5.678a.79.79 0 0 0-.407-.667m2.01-3.023l-.141-.085l-4.774-2.782a.78.78 0 0 0-.785 0L9.409 9.23V6.897a.07.07 0 0 1 .028-.061l4.83-2.787a4.5 4.5 0 0 1 6.68 4.66zm-12.64 4.135l-2.02-1.164a.08.08 0 0 1-.038-.057V6.075a4.5 4.5 0 0 1 7.375-3.453l-.142.08L8.704 5.46a.8.8 0 0 0-.393.681zm1.097-2.365l2.602-1.5l2.607 1.5v2.999l-2.597 1.5l-2.607-1.5Z"/>
+        </svg>
+        <span>OpenAI Codex</span>
+      </div>
+
+      <!-- Authentic Docker Logo -->
+      <div class="integration-item">
+        <svg viewBox="0 0 24 24" fill="currentColor" style="color: #2496ed;">
+          <path d="M13.983 11.078h2.119a.186.186 0 0 0 .186-.185V9.006a.186.186 0 0 0-.186-.186h-2.119a.185.185 0 0 0-.185.185v1.888c0 .102.083.185.185.185m-2.954-5.43h2.118a.186.186 0 0 0 .186-.186V3.574a.186.186 0 0 0-.186-.185h-2.118a.185.185 0 0 0-.185.185v1.888c0 .102.082.185.185.185m0 2.716h2.118a.187.187 0 0 0 .186-.186V6.29a.186.186 0 0 0-.186-.185h-2.118a.185.185 0 0 0-.185.185v1.887c0 .102.082.185.185.186m-2.93 0h2.12a.186.186 0 0 0 .184-.186V6.29a.185.185 0 0 0-.185-.185H8.1a.185.185 0 0 0-.185.185v1.887c0 .102.083.185.185.186m-2.964 0h2.119a.186.186 0 0 0 .185-.186V6.29a.185.185 0 0 0-.185-.185H5.136a.186.186 0 0 0-.186.185v1.887c0 .102.084.185.186.186m5.893 2.715h2.118a.186.186 0 0 0 .186-.185V9.006a.186.186 0 0 0-.186-.186h-2.118a.185.185 0 0 0-.185.185v1.888c0 .102.082.185.185.185m-2.93 0h2.12a.185.185 0 0 0 .184-.185V9.006a.185.185 0 0 0-.184-.186h-2.12a.185.185 0 0 0-.184.185v1.888c0 .102.083.185.185.185m-2.964 0h2.119a.185.185 0 0 0 .185-.185V9.006a.185.185 0 0 0-.184-.186h-2.12a.185.185 0 0 0-.186.186v1.887c0 .102.084.185.186.185m-2.92 0h2.12a.185.185 0 0 0 .184-.185V9.006a.185.185 0 0 0-.184-.186h-2.12a.185.185 0 0 0-.184.185v1.888c0 .102.082.185.185.185M23.763 9.89c-.065-.051-.672-.51-1.954-.51q-.508.001-1.01.087c-.248-1.7-1.653-2.53-1.716-2.566l-.344-.199l-.226.327c-.284.438-.49.922-.612 1.43c-.23.97-.09 1.882.403 2.661c-.595.332-1.55.413-1.744.42H.751a.75.75 0 0 0-.75.748a11.4 11.4 0 0 0 .692 4.062c.545 1.428 1.355 2.48 2.41 3.124c1.18.723 3.1 1.137 5.275 1.137a15.7 15.7 0 0 0 2.93-.266a12.3 12.3 0 0 0 3.823-1.389a10.5 10.5 0 0 0 2.61-2.136c1.252-1.418 1.998-2.997 2.553-4.4h.221c1.372 0 2.215-.549 2.68-1.009c.309-.293.55-.65.707-1.046l.098-.288Z"/>
+        </svg>
+        <span>Docker</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- LIVE DEMO -->
+<section id="demo" class="demo-section">
+  <div class="container">
+    <div class="reveal" style="text-align: center;">
+      <div class="section-label">Interactive Simulation</div>
+      <h2 class="section-title">See It In Action</h2>
+      <p class="section-desc" style="margin: 0 auto 2rem;">Watch how PageSpeed MCP analyzes websites and generates actionable fixes directly inside your AI assistant.</p>
+    </div>
+
+    <div class="demo-controls reveal">
+      <button class="demo-btn active" data-demo="analyze" onclick="runDemo('analyze', this)">Full Analysis</button>
+      <button class="demo-btn" data-demo="recommendations" onclick="runDemo('recommendations', this)">Recommendations</button>
+      <button class="demo-btn" data-demo="diagnose" onclick="runDemo('diagnose', this)">Diagnose Problem</button>
+      <button class="demo-btn" data-demo="compare" onclick="runDemo('compare', this)">Compare URLs</button>
+    </div>
+
+    <!-- Chat-style Demo -->
+    <div class="reveal">
+      <div class="chat-demo" id="chat-demo">
+        <div class="chat-header">
+          <div class="chat-avatar">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+              <path d="M17.304 3.541h-3.672l6.696 16.918H24Zm-10.608 0L0 20.459h3.744l1.37-3.553h7.005l1.369 3.553h3.744L10.536 3.541Zm-.371 10.223L8.616 7.82l2.291 5.945Z"/>
+            </svg>
+          </div>
+          <div>
+            <div class="chat-header-text">Claude + PageSpeed MCP</div>
+            <div class="chat-header-sub">pagespeed-insights-mcp (stdio connected)</div>
+          </div>
+        </div>
+        <div class="chat-body" id="chat-body">
+          <!-- Injected by JS -->
+        </div>
+      </div>
+    </div>
+
+    <!-- Terminal Demo -->
+    <div class="reveal">
+      <div class="terminal-wrapper">
+        <div class="terminal-header">
+          <span class="terminal-dot red"></span>
+          <span class="terminal-dot yellow"></span>
+          <span class="terminal-dot green"></span>
+          <span class="terminal-title">pagespeed-insights-mcp &mdash; stdio transport</span>
+        </div>
+        <div class="terminal-body" id="terminal-body">
+          <!-- Injected by JS -->
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- TOOLS -->
+<section id="tools">
+  <div class="container">
+    <div class="reveal">
+      <div class="section-label">v2 Tool Suite</div>
+      <h2 class="section-title">6 Focused Workflow Tools</h2>
+      <p class="section-desc">Streamlined v2 architecture designed for high-signal AI agent tool calls.</p>
+    </div>
+    <div class="tools-grid reveal">
+      <div class="tool-card">
+        <div class="tool-icon" style="color: #0070f3;">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4.5 16.5c-1.5 1.26-2 5-2 5s3.74-.5 5-2c.71-.84.7-2.13-.09-2.91a2.18 2.18 0 0 0-2.91-.09z"/><path d="m12 15-3-3a22 22 0 0 1 2-3.95A12.88 12.88 0 0 1 22 2c0 2.72-.78 7.5-2.05 11a22.35 22.35 0 0 1-4 2z"/><path d="M9 12H4s.55-3.03 2-4.5c1.47-1.47 4.5-2 4.5-2"/><path d="M12 15v5s3.03-.55 4.5-2c1.47-1.47 2-4.5 2-4.5"/></svg>
+        </div>
+        <h3>pagespeed_analyze_page</h3>
+        <p>One-page Lighthouse health check, recommendations, audit findings, or performance map with Mermaid charts.</p>
+        <span class="tool-tag">Analyze</span>
+      </div>
+      <div class="tool-card">
+        <div class="tool-icon" style="color: #f5a623;">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
+        </div>
+        <h3>pagespeed_diagnose_page</h3>
+        <p>Inspect one specific bottleneck lens: visual, elements, network, JavaScript, images, render-blocking, or third parties.</p>
+        <span class="tool-tag">Diagnose</span>
+      </div>
+      <div class="tool-card">
+        <div class="tool-icon" style="color: #00e599;">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M22 12h-4"/><path d="M6 12H2"/><path d="M12 6V2"/><path d="M12 22v-4"/></svg>
+        </div>
+        <h3>pagespeed_get_field_data</h3>
+        <p>Real-user Core Web Vitals from Chrome UX Report (CrUX) 28-day p75 for single URL or bare origin fallback.</p>
+        <span class="tool-tag">CrUX Field Data</span>
+      </div>
+      <div class="tool-card">
+        <div class="tool-icon" style="color: #50e3c2;">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="18" r="3"/><circle cx="6" cy="6" r="3"/><path d="M13 6h3a2 2 0 0 1 2 2v7"/><path d="M11 18H8a2 2 0 0 1-2-2V9"/></svg>
+        </div>
+        <h3>pagespeed_compare_pages</h3>
+        <p>Compare two pages side-by-side (staging vs prod) or measure one page against its saved baseline.</p>
+        <span class="tool-tag">Regression Baseline</span>
+      </div>
+      <div class="tool-card">
+        <div class="tool-icon" style="color: #00dfd8;">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m12.83 2.18a2 2 0 0 0-1.66 0L2.6 6.08a1 1 0 0 0 0 1.83l8.58 3.91a2 2 0 0 0 1.66 0l8.58-3.9a1 1 0 0 0 0-1.83Z"/><path d="m22 12.5-8.58 3.91a2 2 0 0 1-1.66 0L2 12.5"/><path d="m22 17.5-8.58 3.91a2 2 0 0 1-1.66 0L2 17.5"/></svg>
+        </div>
+        <h3>pagespeed_analyze_batch</h3>
+        <p>Triage 1–10 public URLs in parallel with concurrency rate limiting and progress notifications.</p>
+        <span class="tool-tag">Batch Triage</span>
+      </div>
+      <div class="tool-card">
+        <div class="tool-icon" style="color: #ff0055;">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/><line x1="10" x2="10" y1="11" y2="17"/><line x1="14" x2="14" y1="11" y2="17"/></svg>
+        </div>
+        <h3>pagespeed_clear_cache</h3>
+        <p>Purge in-memory PageSpeed response cache immediately after deploying performance optimizations.</p>
+        <span class="tool-tag">Lifecycle Utility</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SCORES / GAUGES -->
+<section id="scores" class="gauges-section">
+  <div class="container" style="text-align: center;">
+    <div class="reveal">
+      <div class="section-label">Live Telemetry &amp; Gauges</div>
+      <h2 class="section-title">Actionable Telemetry Reports</h2>
+      <p class="section-desc" style="margin: 0 auto 3rem;">Lighthouse lab audits and real-world Core Web Vitals delivered in structured formats.</p>
+    </div>
+
+    <div class="gauges-row reveal" id="gauges-container">
+      <div class="gauge-item">
+        <svg class="gauge-svg" viewBox="0 0 120 120">
+          <circle class="gauge-bg" cx="60" cy="60" r="50"/>
+          <circle class="gauge-fill" cx="60" cy="60" r="50" stroke="#00e599"
+            stroke-dasharray="314" stroke-dashoffset="314" data-target="96"
+            transform="rotate(-90 60 60)"/>
+          <text class="gauge-text" x="60" y="66" text-anchor="middle">96</text>
+        </svg>
+        <div class="gauge-label">Performance</div>
+      </div>
+      <div class="gauge-item">
+        <svg class="gauge-svg" viewBox="0 0 120 120">
+          <circle class="gauge-bg" cx="60" cy="60" r="50"/>
+          <circle class="gauge-fill" cx="60" cy="60" r="50" stroke="#00e599"
+            stroke-dasharray="314" stroke-dashoffset="314" data-target="98"
+            transform="rotate(-90 60 60)"/>
+          <text class="gauge-text" x="60" y="66" text-anchor="middle">98</text>
+        </svg>
+        <div class="gauge-label">Accessibility</div>
+      </div>
+      <div class="gauge-item">
+        <svg class="gauge-svg" viewBox="0 0 120 120">
+          <circle class="gauge-bg" cx="60" cy="60" r="50"/>
+          <circle class="gauge-fill" cx="60" cy="60" r="50" stroke="#00e599"
+            stroke-dasharray="314" stroke-dashoffset="314" data-target="100"
+            transform="rotate(-90 60 60)"/>
+          <text class="gauge-text" x="60" y="66" text-anchor="middle">100</text>
+        </svg>
+        <div class="gauge-label">Best Practices</div>
+      </div>
+      <div class="gauge-item">
+        <svg class="gauge-svg" viewBox="0 0 120 120">
+          <circle class="gauge-bg" cx="60" cy="60" r="50"/>
+          <circle class="gauge-fill" cx="60" cy="60" r="50" stroke="#00e599"
+            stroke-dasharray="314" stroke-dashoffset="314" data-target="100"
+            transform="rotate(-90 60 60)"/>
+          <text class="gauge-text" x="60" y="66" text-anchor="middle">100</text>
+        </svg>
+        <div class="gauge-label">SEO</div>
+      </div>
+    </div>
+
+    <div class="metrics-grid reveal">
+      <div class="metric-card">
+        <div class="metric-value" style="color: var(--green);">0.8s</div>
+        <div class="metric-name">First Contentful Paint</div>
+      </div>
+      <div class="metric-card">
+        <div class="metric-value" style="color: var(--green);">1.2s</div>
+        <div class="metric-name">Largest Contentful Paint</div>
+      </div>
+      <div class="metric-card">
+        <div class="metric-value" style="color: var(--green);">0.000</div>
+        <div class="metric-name">Cumulative Layout Shift</div>
+      </div>
+      <div class="metric-card">
+        <div class="metric-value" style="color: var(--green);">35ms</div>
+        <div class="metric-name">Interaction to Next Paint</div>
+      </div>
+      <div class="metric-card">
+        <div class="metric-value" style="color: var(--green);">15ms</div>
+        <div class="metric-name">Total Blocking Time</div>
+      </div>
+      <div class="metric-card">
+        <div class="metric-value" style="color: var(--green);">60ms</div>
+        <div class="metric-name">Server Response (TTFB)</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- HOW IT WORKS -->
+<section id="how-it-works">
+  <div class="container">
+    <div class="reveal" style="text-align: center;">
+      <div class="section-label">Quickstart Guide</div>
+      <h2 class="section-title">Up and Running in 60 Seconds</h2>
+      <p class="section-desc" style="margin: 0 auto 3rem;">Three simple steps to unlock AI-powered web performance engineering.</p>
+    </div>
+    <div class="workflow-steps reveal">
+      <div class="workflow-step">
+        <div class="step-number">1</div>
+        <h3>Get API Key</h3>
+        <p>Enable PageSpeed Insights API in Google Cloud Console.</p>
+        <code>export GOOGLE_API_KEY=your-key</code>
+      </div>
+      <div class="workflow-step">
+        <div class="step-number">2</div>
+        <h3>Configure Client</h3>
+        <p>Add the MCP server to Claude Desktop, Cursor, or Devin Desktop config.</p>
+        <code>{
+  "mcpServers": {
+    "pagespeed-insights": {
+      "command": "npx",
+      "args": ["-y", "pagespeed-insights-mcp"]
+    }
+  }
+}</code>
+      </div>
+      <div class="workflow-step">
+        <div class="step-number">3</div>
+        <h3>Start Analyzing</h3>
+        <p>Prompt your AI assistant naturally to analyze and optimize your web app.</p>
+        <code>"Analyze https://mysite.com mobile LCP and generate code fixes"</code>
+      </div>
+      <div class="workflow-step">
+        <div class="step-number">4</div>
+        <h3>Apply Fixes</h3>
+        <p>Receive ranked opportunities with estimated KB savings and patches.</p>
+        <code>Score: 96/100 (Pass)
+LCP: 1.2s (Fast)
+Diff: +&lt;Image priority /&gt;</code>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- COMPARISON TABLE -->
+<section id="compare" style="background: var(--bg2); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border);">
+  <div class="container" style="text-align: center;">
+    <div class="reveal">
+      <div class="section-label">Architecture Comparison</div>
+      <h2 class="section-title">Beyond Manual Testing</h2>
+      <p class="section-desc" style="margin: 0 auto 3rem;">Stop tab-switching. Integrate live performance audits directly into your AI coding workflow.</p>
+    </div>
+    <div class="reveal">
+      <table class="comparison-table">
+        <thead>
+          <tr>
+            <th>Feature</th>
+            <th>Manual PageSpeed</th>
+            <th style="color: #fff;">pagespeed-insights-mcp v2</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Natural Language Agent Invocation</td>
+            <td><span class="cross"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#555" stroke-width="2" stroke-linecap="round" style="vertical-align: -2px;"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></span></td>
+            <td><span class="check"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#00e599" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="vertical-align: -2px; margin-right: 4px;"><polyline points="20 6 9 17 4 12"/></svg>Claude, Cursor, Devin Desktop Ready</span></td>
+          </tr>
+          <tr>
+            <td>Focused Diagnostic Lenses (7 Domains)</td>
+            <td><span class="cross"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#555" stroke-width="2" stroke-linecap="round" style="vertical-align: -2px;"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></span></td>
+            <td><span class="check"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#00e599" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="vertical-align: -2px; margin-right: 4px;"><polyline points="20 6 9 17 4 12"/></svg>JS, CSS, Render-Blocking, Images</span></td>
+          </tr>
+          <tr>
+            <td>CrUX Field Data + Origin Fallback</td>
+            <td>Basic</td>
+            <td><span class="check"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#00e599" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="vertical-align: -2px; margin-right: 4px;"><polyline points="20 6 9 17 4 12"/></svg>28-day p75 URL &amp; Origin</span></td>
+          </tr>
+          <tr>
+            <td>Regression Tracking &amp; Stored Baselines</td>
+            <td><span class="cross"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#555" stroke-width="2" stroke-linecap="round" style="vertical-align: -2px;"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></span></td>
+            <td><span class="check"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#00e599" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="vertical-align: -2px; margin-right: 4px;"><polyline points="20 6 9 17 4 12"/></svg>1–5 Runs with Median &amp; Spread</span></td>
+          </tr>
+          <tr>
+            <td>Batch Multi-URL Triage (1–10)</td>
+            <td><span class="cross"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#555" stroke-width="2" stroke-linecap="round" style="vertical-align: -2px;"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></span></td>
+            <td><span class="check"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#00e599" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="vertical-align: -2px; margin-right: 4px;"><polyline points="20 6 9 17 4 12"/></svg>Parallel with Rate Limiting</span></td>
+          </tr>
+          <tr>
+            <td>Smart Code Remediation Diffs</td>
+            <td><span class="cross"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#555" stroke-width="2" stroke-linecap="round" style="vertical-align: -2px;"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></span></td>
+            <td><span class="check"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#00e599" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="vertical-align: -2px; margin-right: 4px;"><polyline points="20 6 9 17 4 12"/></svg>Actionable AI Engineering Plans</span></td>
+          </tr>
+          <tr>
+            <td>In-Memory Cache Layer &amp; Invalidation</td>
+            <td><span class="cross"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#555" stroke-width="2" stroke-linecap="round" style="vertical-align: -2px;"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></span></td>
+            <td><span class="check"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#00e599" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="vertical-align: -2px; margin-right: 4px;"><polyline points="20 6 9 17 4 12"/></svg>TTL Cache + Explicit Purge</span></td>
+          </tr>
+          <tr>
+            <td>Docker &amp; CLI Stdio Transport</td>
+            <td>N/A</td>
+            <td><span class="check"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#00e599" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="vertical-align: -2px; margin-right: 4px;"><polyline points="20 6 9 17 4 12"/></svg>Ready out-of-the-box</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section class="cta-section">
+  <div class="container reveal">
+    <h2>Ready to <span class="gradient-text">Supercharge</span><br>Your Performance Workflow?</h2>
+    <p>Install in one command. Start analyzing in seconds.</p>
+    <div class="install-block" onclick="copyInstall(this)">
+      <span class="dollar">$</span>
+      <span>npx -y pagespeed-insights-mcp</span>
+      <svg class="copy-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>
+    </div>
+    <br><br>
+    <div style="display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap;">
+      <a href="https://github.com/ruslanlap/pagespeed-insights-mcp" class="btn btn-primary" target="_blank">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 .297c-6.63 0-12 5.373-12 12c0 5.303 3.438 9.8 8.205 11.385c.6.113.82-.258.82-.577c0-.285-.01-1.04-.015-2.04c-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729c1.205.084 1.838 1.236 1.838 1.236c1.07 1.835 2.809 1.305 3.495.998c.108-.776.417-1.305.76-1.605c-2.665-.3-5.466-1.332-5.466-5.93c0-1.31.465-2.38 1.235-3.22c-.135-.303-.54-1.523.105-3.176c0 0 1.005-.322 3.3 1.23c.96-.267 1.98-.399 3-.405c1.02.006 2.04.138 3 .405c2.28-1.552 3.285-1.23 3.285-1.23c.645 1.653.24 2.873.12 3.176c.765.84 1.23 1.91 1.23 3.22c0 4.61-2.805 5.625-5.475 5.92c.42.36.81 1.096.81 2.22c0 1.606-.015 2.896-.015 3.286c0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"/></svg>
+        View on GitHub
+      </a>
+      <a href="https://www.npmjs.com/package/pagespeed-insights-mcp" class="btn btn-secondary" target="_blank">
+        View on npm
+      </a>
+      <a href="https://ruslanlap.github.io/pagespeed-insights-mcp/" class="btn btn-secondary" target="_blank">
+        Documentation
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <p>
+    Maintained by <a href="https://github.com/ruslanlap">@ruslanlap</a> &middot;
+    Apache-2.0 License &middot;
+    <a href="https://github.com/ruslanlap/pagespeed-insights-mcp">GitHub</a> &middot;
+    <a href="https://www.npmjs.com/package/pagespeed-insights-mcp">npm</a> &middot;
+    <a href="https://ruslanlap.github.io/pagespeed-insights-mcp/">Docs</a>
+  </p>
+</footer>
+
+<script>
+// ============ MOBILE DRAWER TOGGLE ============
+function toggleMobileMenu() {
+  const btn = document.getElementById('mobile-toggle');
+  const drawer = document.getElementById('mobile-drawer');
+  btn.classList.toggle('active');
+  drawer.classList.toggle('open');
+}
+
+function closeMobileMenu() {
+  const btn = document.getElementById('mobile-toggle');
+  const drawer = document.getElementById('mobile-drawer');
+  btn.classList.remove('active');
+  drawer.classList.remove('open');
+}
+
+// ============ CANVAS PARTICLES (Vercel-style clean cyan/blue dots) ============
+const canvas = document.getElementById('particles-canvas');
+const ctx = canvas.getContext('2d');
+let particles = [];
+
+function resizeCanvas() {
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+}
+window.addEventListener('resize', resizeCanvas);
+resizeCanvas();
+
+class Particle {
+  constructor() { this.reset(); }
+  reset() {
+    this.x = Math.random() * canvas.width;
+    this.y = Math.random() * canvas.height;
+    this.size = Math.random() * 1.5 + 0.5;
+    this.speedX = (Math.random() - 0.5) * 0.35;
+    this.speedY = (Math.random() - 0.5) * 0.35;
+    this.opacity = Math.random() * 0.35 + 0.15;
+    this.isBlue = Math.random() > 0.4;
+  }
+  update() {
+    this.x += this.speedX;
+    this.y += this.speedY;
+    if (this.x < 0 || this.x > canvas.width || this.y < 0 || this.y > canvas.height) this.reset();
+  }
+  draw() {
+    ctx.beginPath();
+    ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+    ctx.fillStyle = this.isBlue ? `rgba(0, 112, 243, ${this.opacity})` : `rgba(255, 255, 255, ${this.opacity * 0.8})`;
+    ctx.fill();
+  }
+}
+for (let i = 0; i < 70; i++) particles.push(new Particle());
+
+function animateParticles() {
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  particles.forEach(p => { p.update(); p.draw(); });
+  for (let i = 0; i < particles.length; i++) {
+    for (let j = i + 1; j < particles.length; j++) {
+      const dx = particles[i].x - particles[j].x;
+      const dy = particles[i].y - particles[j].y;
+      const dist = Math.sqrt(dx * dx + dy * dy);
+      if (dist < 110) {
+        ctx.beginPath();
+        ctx.moveTo(particles[i].x, particles[i].y);
+        ctx.lineTo(particles[j].x, particles[j].y);
+        ctx.strokeStyle = `rgba(0, 112, 243, ${0.08 * (1 - dist / 110)})`;
+        ctx.stroke();
+      }
+    }
+  }
+  requestAnimationFrame(animateParticles);
+}
+animateParticles();
+
+// ============ NAV SCROLL ============
+window.addEventListener('scroll', () => {
+  document.getElementById('main-nav').classList.toggle('scrolled', window.scrollY > 40);
+});
+
+// ============ SCROLL REVEAL ============
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
+}, { threshold: 0.15 });
+document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+
+// ============ GAUGE ANIMATION ============
+const gaugeObserver = new IntersectionObserver((entries) => {
+  entries.forEach(e => {
+    if (e.isIntersecting) {
+      document.querySelectorAll('.gauge-fill').forEach(circle => {
+        const target = parseInt(circle.dataset.target);
+        const circumference = 314;
+        const offset = circumference - (target / 100) * circumference;
+        circle.style.strokeDashoffset = offset;
+        if (target >= 90) circle.setAttribute('stroke', '#00e599');
+        else if (target >= 50) circle.setAttribute('stroke', '#f5a623');
+        else circle.setAttribute('stroke', '#ff0055');
+      });
+      gaugeObserver.disconnect();
+    }
+  });
+}, { threshold: 0.25 });
+const gaugesContainer = document.getElementById('gauges-container');
+if (gaugesContainer) gaugeObserver.observe(gaugesContainer);
+
+// ============ CHAT DEMOS ============
+const demos = {
+  analyze: [
+    { type: 'user', text: 'Analyze the performance of https://example.com for mobile devices' },
+    { type: 'typing', delay: 1400 },
+    { type: 'ai', html: `<strong>PageSpeed Insights Lighthouse Analysis</strong><br><br>
+      <strong>URL:</strong> https://example.com &middot; <strong>Strategy:</strong> Mobile<br><br>
+      <div style="display:flex;gap:.5rem;flex-wrap:wrap;">
+        <span class="chat-score">Performance: 96</span>
+        <span class="chat-score">Accessibility: 98</span>
+        <span class="chat-score">Best Practices: 100</span>
+        <span class="chat-score">SEO: 100</span>
+      </div><br>
+      <strong>Core Web Vitals Telemetry:</strong><br>
+      &bull; <strong>LCP:</strong> 1.2s <span style="color:var(--green);">Fast</span><br>
+      &bull; <strong>INP:</strong> 35ms <span style="color:var(--green);">Fast</span><br>
+      &bull; <strong>CLS:</strong> 0.000 <span style="color:var(--green);">Fast</span><br>
+      &bull; <strong>FCP:</strong> 0.8s &middot; <strong>TTFB:</strong> 60ms<br><br>
+      <strong>Audit Diagnostics:</strong><br>
+      &bull; Efficient cache headers served on static chunks<br>
+      &bull; Critical CSS inlined in document head` },
+  ],
+  recommendations: [
+    { type: 'user', text: 'Get smart recommendations for improving https://mystore.org performance' },
+    { type: 'typing', delay: 1600 },
+    { type: 'ai', html: `<strong>Prioritized Performance Recommendations</strong><br><br>
+      <span style="color:var(--red);font-weight:700;">[CRITICAL PRIORITY]</span><br>
+      &bull; <strong>Optimize LCP Banner</strong> — Reduce hero image weight by serving WebP/AVIF (Est. savings: 1.2 MB / 850ms)<br>
+      &bull; <strong>Eliminate Render-Blocking CSS</strong> — Defer secondary stylesheet <code>theme-extra.css</code><br><br>
+      <span style="color:var(--yellow);font-weight:700;">[HIGH PRIORITY]</span><br>
+      &bull; <strong>Reduce unused JavaScript</strong> — Split vendor bundle (-280 KB)<br>
+      &bull; <strong>Preconnect to CDN origin</strong> — Faster asset handshakes (-60ms)<br><br>
+      <span style="color:var(--green);font-weight:700;">[BEST PRACTICES]</span><br>
+      &bull; Add explicit <code>width</code> and <code>height</code> attributes to prevent layout shifts (CLS &lt; 0.01)` },
+  ],
+  diagnose: [
+    { type: 'user', text: 'Diagnose render-blocking resources for https://myapp.dev' },
+    { type: 'typing', delay: 1500 },
+    { type: 'ai', html: `<strong>Diagnostic Lens: Render-Blocking Resources</strong><br><br>
+      <strong>Culprit Analysis:</strong><br>
+      1. <code>/assets/app.css</code> (42 KB) — Blocks FCP by <strong>420ms</strong><br>
+      2. <code>/js/analytics.js</code> (18 KB, synchronous in head) — Blocks FCP by <strong>180ms</strong><br><br>
+      <strong>Remediation Patch:</strong><br>
+      <code>&lt;script src="/js/analytics.js" defer fetchpriority="low"&gt;&lt;/script&gt;</code><br><br>
+      <em>Applying this patch eliminates 600ms of critical rendering delay.</em>` },
+  ],
+  compare: [
+    { type: 'user', text: 'Compare performance between staging and production URL' },
+    { type: 'typing', delay: 1700 },
+    { type: 'ai', html: `<strong>Performance Comparison (Staging vs Production)</strong><br><br>
+      <table style="width:100%;font-size:.8rem;border-collapse:collapse;">
+        <tr style="border-bottom:1px solid var(--border);">
+          <td style="padding:.4rem;color:var(--text-dim);">Metric</td>
+          <td style="padding:.4rem;font-weight:600;">Staging (Optimized)</td>
+          <td style="padding:.4rem;font-weight:600;">Production</td>
+        </tr>
+        <tr style="border-bottom:1px solid var(--border);">
+          <td style="padding:.4rem;color:var(--text-dim);">Performance</td>
+          <td style="padding:.4rem;color:var(--green);font-weight:700;">96/100</td>
+          <td style="padding:.4rem;color:var(--yellow);">76/100</td>
+        </tr>
+        <tr style="border-bottom:1px solid var(--border);">
+          <td style="padding:.4rem;color:var(--text-dim);">LCP</td>
+          <td style="padding:.4rem;color:var(--green);">1.2s</td>
+          <td style="padding:.4rem;color:var(--red);">3.6s</td>
+        </tr>
+        <tr style="border-bottom:1px solid var(--border);">
+          <td style="padding:.4rem;color:var(--text-dim);">CLS</td>
+          <td style="padding:.4rem;color:var(--green);">0.000</td>
+          <td style="padding:.4rem;color:var(--yellow);">0.120</td>
+        </tr>
+        <tr>
+          <td style="padding:.4rem;color:var(--text-dim);">TBT</td>
+          <td style="padding:.4rem;color:var(--green);">15ms</td>
+          <td style="padding:.4rem;color:var(--yellow);">180ms</td>
+        </tr>
+      </table><br>
+      <span style="color:var(--green);font-weight:600;">+ Staging shows +20pt score improvement</span> &amp; sub-1.5s LCP.` },
+  ],
+};
+
+let chatAnimating = false;
+function runDemo(type, btnEl) {
+  if (chatAnimating) return;
+  chatAnimating = true;
+
+  document.querySelectorAll('.demo-btn').forEach(b => b.classList.remove('active'));
+  if (btnEl) {
+    btnEl.classList.add('active');
+  } else {
+    const found = document.querySelector(`.demo-btn[data-demo="${type}"]`);
+    if (found) found.classList.add('active');
+  }
+
+  const body = document.getElementById('chat-body');
+  body.innerHTML = '';
+  const messages = demos[type] || demos.analyze;
+  let delay = 0;
+
+  messages.forEach((msg, i) => {
+    if (msg.type === 'typing') {
+      delay += 350;
+      setTimeout(() => {
+        const el = document.createElement('div');
+        el.className = 'typing-indicator';
+        el.innerHTML = '<div class="typing-dot"></div><div class="typing-dot"></div><div class="typing-dot"></div>';
+        el.id = 'typing-' + i;
+        body.appendChild(el);
+        setTimeout(() => el.classList.add('visible'), 40);
+      }, delay);
+      delay += msg.delay;
+      setTimeout(() => {
+        const el = document.getElementById('typing-' + i);
+        if (el) el.remove();
+      }, delay);
+    } else {
+      delay += 250;
+      setTimeout(() => {
+        const el = document.createElement('div');
+        el.className = `chat-msg chat-${msg.type}`;
+        el.innerHTML = msg.html || msg.text;
+        body.appendChild(el);
+        setTimeout(() => el.classList.add('visible'), 40);
+        body.scrollTop = body.scrollHeight;
+      }, delay);
+    }
+  });
+
+  setTimeout(() => { chatAnimating = false; }, delay + 400);
+  runTerminalDemo(type);
+}
+
+// ============ TERMINAL DEMOS ============
+const terminalDemos = {
+  analyze: [
+    { text: '<span class="term-prompt">$</span> <span class="term-cmd">npx pagespeed-insights-mcp</span>', delay: 0 },
+    { text: '<span class="term-accent">[pagespeed-mcp]</span> <span class="term-output">Server started on stdio transport</span>', delay: 500 },
+    { text: '<span class="term-accent">[pagespeed-mcp]</span> <span class="term-output">Registered 6 v2 workflow tools</span>', delay: 200 },
+    { text: '', delay: 150 },
+    { text: '<span class="term-cyan">▶ tools/call</span> <span class="term-cmd">pagespeed_analyze_page</span>', delay: 350 },
+    { text: '  <span class="term-output">url: "https://example.com"</span>', delay: 80 },
+    { text: '  <span class="term-output">strategy: "mobile"</span>', delay: 80 },
+    { text: '  <span class="term-output">categories: ["performance", "seo", "accessibility"]</span>', delay: 80 },
+    { text: '', delay: 200 },
+    { text: '<span class="term-accent">[pagespeed-mcp]</span> <span class="term-output">Querying Google PageSpeed API &amp; CrUX...</span>', delay: 600 },
+    { text: '<span class="term-accent">[pagespeed-mcp]</span> <span class="term-success">[OK] Analysis complete (2.1s)</span>', delay: 800 },
+    { text: '', delay: 100 },
+    { text: '<span class="term-success">━━━━━━━━ Structured Output ━━━━━━━━</span>', delay: 150 },
+    { text: '  <span class="term-output">Performance:</span>    <span class="term-success">96/100</span>', delay: 80 },
+    { text: '  <span class="term-output">Accessibility:</span>  <span class="term-success">98/100</span>', delay: 80 },
+    { text: '  <span class="term-output">Core Web Vitals:</span> <span class="term-success">Passed (LCP: 1.2s, INP: 35ms)</span>', delay: 80 },
+    { text: '<span class="term-success">━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━</span>', delay: 100 },
+  ],
+  recommendations: [
+    { text: '<span class="term-prompt">$</span> <span class="term-cmd">npx pagespeed-insights-mcp</span>', delay: 0 },
+    { text: '<span class="term-accent">[pagespeed-mcp]</span> <span class="term-output">Server running...</span>', delay: 400 },
+    { text: '', delay: 150 },
+    { text: '<span class="term-cyan">▶ tools/call</span> <span class="term-cmd">pagespeed_analyze_page</span>', delay: 300 },
+    { text: '  <span class="term-output">url: "https://mystore.org"</span>', delay: 80 },
+    { text: '  <span class="term-output">report: "recommendations"</span>', delay: 80 },
+    { text: '', delay: 200 },
+    { text: '<span class="term-accent">[pagespeed-mcp]</span> <span class="term-output">Parsing 47 Lighthouse audits...</span>', delay: 500 },
+    { text: '<span class="term-accent">[pagespeed-mcp]</span> <span class="term-success">[OK] Generated ranked recommendations</span>', delay: 500 },
+    { text: '', delay: 100 },
+    { text: '  <span class="term-error">[CRITICAL]</span> <span class="term-output">Optimize LCP Hero Image (-1.2 MB / WebP)</span>', delay: 150 },
+    { text: '  <span class="term-warn">[HIGH]</span>     <span class="term-output">Eliminate render-blocking CSS (-420ms)</span>', delay: 150 },
+    { text: '  <span class="term-success">[MEDIUM]</span>   <span class="term-output">Reduce unused JavaScript (-280 KB)</span>', delay: 150 },
+  ],
+  diagnose: [
+    { text: '<span class="term-prompt">$</span> <span class="term-cmd">npx pagespeed-insights-mcp</span>', delay: 0 },
+    { text: '<span class="term-accent">[pagespeed-mcp]</span> <span class="term-output">Server running...</span>', delay: 400 },
+    { text: '', delay: 150 },
+    { text: '<span class="term-cyan">▶ tools/call</span> <span class="term-cmd">pagespeed_diagnose_page</span>', delay: 300 },
+    { text: '  <span class="term-output">url: "https://myapp.dev"</span>', delay: 80 },
+    { text: '  <span class="term-output">focus: "render-blocking"</span>', delay: 80 },
+    { text: '', delay: 200 },
+    { text: '<span class="term-accent">[pagespeed-mcp]</span> <span class="term-output">Inspecting critical rendering path...</span>', delay: 600 },
+    { text: '<span class="term-accent">[pagespeed-mcp]</span> <span class="term-success">[OK] Isolated 2 render-blocking resources</span>', delay: 400 },
+    { text: '', delay: 100 },
+    { text: '  <span class="term-warn">/assets/app.css</span>   &rarr; <span class="term-output">420ms delay</span>', delay: 120 },
+    { text: '  <span class="term-warn">/js/analytics.js</span>  &rarr; <span class="term-output">180ms delay (sync in head)</span>', delay: 120 },
+  ],
+  compare: [
+    { text: '<span class="term-prompt">$</span> <span class="term-cmd">npx pagespeed-insights-mcp</span>', delay: 0 },
+    { text: '<span class="term-cyan">▶ tools/call</span> <span class="term-cmd">pagespeed_compare_pages</span>', delay: 300 },
+    { text: '  <span class="term-output">mode: "pages"</span>', delay: 80 },
+    { text: '  <span class="term-output">url: "https://staging.app"</span>', delay: 80 },
+    { text: '  <span class="term-output">against: "https://prod.app"</span>', delay: 80 },
+    { text: '', delay: 200 },
+    { text: '<span class="term-accent">[pagespeed-mcp]</span> <span class="term-output">Running dual-target measurement...</span>', delay: 700 },
+    { text: '<span class="term-accent">[pagespeed-mcp]</span> <span class="term-success">[OK] Delta calculated</span>', delay: 400 },
+    { text: '', delay: 100 },
+    { text: '  <span class="term-output">            Staging   Production</span>', delay: 100 },
+    { text: '  <span class="term-output">Score       </span><span class="term-success">96</span>        <span class="term-warn">76</span>', delay: 100 },
+    { text: '  <span class="term-output">LCP         </span><span class="term-success">1.2s</span>      <span class="term-error">3.6s</span>', delay: 100 },
+    { text: '  <span class="term-output">CLS         </span><span class="term-success">0.000</span>     <span class="term-warn">0.120</span>', delay: 100 },
+    { text: '  <span class="term-success">[RESULT] Outcome: Staging is +20 points ahead</span>', delay: 200 },
+  ],
+};
+
+function runTerminalDemo(type) {
+  const body = document.getElementById('terminal-body');
+  body.innerHTML = '';
+  const lines = terminalDemos[type] || terminalDemos.analyze;
+  let delay = 0;
+
+  lines.forEach(line => {
+    delay += line.delay;
+    setTimeout(() => {
+      const el = document.createElement('div');
+      el.className = 'term-line';
+      el.innerHTML = line.text;
+      body.appendChild(el);
+      setTimeout(() => el.classList.add('visible'), 25);
+      body.scrollTop = body.scrollHeight;
+    }, delay);
+  });
+
+  delay += 250;
+  setTimeout(() => {
+    const el = document.createElement('div');
+    el.className = 'term-line';
+    el.innerHTML = '<span class="term-prompt">$</span> <span class="cursor-blink"></span>';
+    body.appendChild(el);
+    setTimeout(() => el.classList.add('visible'), 25);
+  }, delay);
+}
+
+// ============ COPY INSTALL ============
+function copyInstall(el) {
+  navigator.clipboard.writeText('npx -y pagespeed-insights-mcp');
+  el.querySelector('.copy-icon').innerHTML = '<polyline points="20 6 9 17 4 12" stroke="#00e599" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/>';
+  el.style.borderColor = 'var(--green)';
+  setTimeout(() => {
+    el.querySelector('.copy-icon').innerHTML = '<rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/>';
+    el.style.borderColor = '';
+  }, 2000);
+}
+
+// ============ AUTO-START ============
+setTimeout(() => runDemo('analyze', null), 1000);
+</script>
+
+</body>
+</html>

@@ -1,0 +1,358 @@
+/* ==========================================================================
+   Tokyo Night Storm Theme for MkDocs Material
+   Based on official: https://github.com/tokyo-night/tokyo-night-vscode-theme
+   Variant: Tokyo Night Storm (Always Dark)
+   ========================================================================== */
+
+:root,
+html,
+body,
+[data-md-color-scheme="slate"],
+[data-md-color-scheme="default"] {
+    /* --- Official Tokyo Night Storm Palette --- */
+    --tns-bg: #24283b;                  /* editor.background */
+    --tns-bg-dark: #1f2335;             /* sideBar.background, activityBar.background */
+    --tns-bg-darker: #1b1e2e;           /* input.background, dropdown.background */
+    --tns-bg-highlight: #292e42;        /* editor.lineHighlightBackground, dropBackground */
+    --tns-bg-selection: #2c324a;        /* list.activeSelectionBackground, toolbar */
+    --tns-bg-secondary-btn: #41496b;    /* button.secondaryBackground */
+
+    /* Borders & Separators */
+    --tns-border: #1b1e2e;              /* sideBar.border, window.border */
+    --tns-border-subtle: #282e44;       /* input.border */
+    --tns-indent-guide: #2e344f;        /* tree.indentGuidesStroke */
+    --tns-gutter: #3b4261;              /* editorLineNumber, whitespace */
+
+    /* Foregrounds & Typography */
+    --tns-fg: #a9b1d6;                  /* editor.foreground, input.foreground */
+    --tns-fg-bright: #c0caf5;           /* editorCursor, variable */
+    --tns-fg-muted: #8089b3;            /* foreground, sideBar.foreground */
+    --tns-fg-comment: #565f89;          /* comments */
+    --tns-fg-subtle: #545c7e;           /* descriptionForeground, disabledForeground */
+
+    /* Accent & Syntax Colors */
+    --tns-blue: #7aa2f7;                /* blue accent, links, bracket 1 */
+    --tns-blue-btn: #3d59a1;            /* button.background, badges */
+    --tns-cyan: #7dcfff;                /* cyan accent, bracket 2 */
+    --tns-cyan-dark: #2ac3de;           /* defaultLibrary, bracket 4 */
+    --tns-teal: #73daca;                /* property.declaration */
+    --tns-green: #9ece6a;               /* strings, bracket 5 */
+    --tns-yellow: #e0af68;              /* parameters, warnings, bracket 6 */
+    --tns-orange: #ff9e64;              /* constants, numbers */
+    --tns-magenta: #bb9af7;             /* variable.declaration, bracket 3 */
+    --tns-purple: #9d7cd8;              /* keywords, controls */
+    --tns-red: #f7768e;                 /* errors, unexpected brackets */
+    --tns-red-alt: #db4b4b;
+
+    /* --- MkDocs Material Design System Overrides --- */
+    --md-default-bg-color: var(--tns-bg);
+    --md-default-fg-color: var(--tns-fg);
+    --md-default-fg-color--light: var(--tns-fg-muted);
+    --md-default-fg-color--lighter: var(--tns-fg-subtle);
+    --md-default-fg-color--lightest: var(--tns-gutter);
+
+    --md-primary-fg-color: var(--tns-blue);
+    --md-primary-fg-color--light: var(--tns-cyan);
+    --md-primary-fg-color--dark: var(--tns-blue-btn);
+    --md-primary-bg-color: var(--tns-fg-bright);
+    --md-primary-bg-color--light: var(--tns-fg);
+
+    --md-accent-fg-color: var(--tns-cyan);
+    --md-accent-fg-color--transparent: rgba(125, 207, 255, 0.15);
+    --md-accent-bg-color: var(--tns-fg-bright);
+
+    /* Code Blocks & Highlighting */
+    --md-code-bg-color: var(--tns-bg-darker);
+    --md-code-fg-color: var(--tns-fg);
+    --md-code-hl-color: var(--tns-bg-highlight);
+    --md-code-hl-number-color: var(--tns-orange);
+    --md-code-hl-special-color: var(--tns-magenta);
+    --md-code-hl-function-color: var(--tns-blue);
+    --md-code-hl-constant-color: var(--tns-orange);
+    --md-code-hl-keyword-color: var(--tns-magenta);
+    --md-code-hl-string-color: var(--tns-green);
+    --md-code-hl-name-color: var(--tns-fg-bright);
+    --md-code-hl-operator-color: var(--tns-cyan);
+    --md-code-hl-punctuation-color: var(--tns-fg-muted);
+    --md-code-hl-comment-color: var(--tns-fg-comment);
+    --md-code-hl-generic-color: var(--tns-teal);
+    --md-code-hl-variable-color: var(--tns-fg-bright);
+
+    /* Typography & Links */
+    --md-typeset-color: var(--tns-fg);
+    --md-typeset-a-color: var(--tns-blue);
+
+    /* Admonitions */
+    --md-admonition-bg-color: var(--tns-bg-dark);
+
+    /* Footer */
+    --md-footer-bg-color: var(--tns-bg-dark);
+    --md-footer-bg-color--dark: var(--tns-bg-darker);
+    --md-footer-fg-color: var(--tns-fg);
+    --md-footer-fg-color--light: var(--tns-fg-muted);
+    --md-footer-fg-color--lighter: var(--tns-fg-comment);
+
+    /* Tables */
+    --md-typeset-table-color: var(--tns-fg);
+    --md-typeset-table-color--light: var(--tns-bg-highlight);
+
+    /* Elevation & Shadows */
+    --md-shadow-z1: 0 0.2rem 0.5rem rgba(13, 15, 23, 0.4);
+    --md-shadow-z2: 0 0.3rem 0.8rem rgba(13, 15, 23, 0.55);
+    --md-shadow-z3: 0 0.5rem 1.2rem rgba(13, 15, 23, 0.7);
+}
+
+/* Base Body & Layout */
+html, body {
+    background-color: var(--tns-bg) !important;
+    color: var(--tns-fg) !important;
+}
+
+/* Header & Main Navigation Tabs */
+.md-header {
+    background-color: var(--tns-bg-dark) !important;
+    border-bottom: 0.05rem solid var(--tns-border);
+    box-shadow: var(--md-shadow-z1);
+}
+
+.md-header__title,
+.md-header__topic {
+    color: var(--tns-fg-bright) !important;
+}
+
+.md-tabs {
+    background-color: var(--tns-bg-dark) !important;
+    border-bottom: 0.05rem solid var(--tns-border-subtle);
+}
+
+.md-tabs__link {
+    color: var(--tns-fg-muted) !important;
+    transition: color 0.15s ease-in-out;
+}
+
+.md-tabs__link:hover {
+    color: var(--tns-cyan) !important;
+}
+
+.md-tabs__item--active .md-tabs__link {
+    color: var(--tns-blue) !important;
+    border-bottom: 2px solid var(--tns-blue);
+}
+
+/* Sidebar & Navigation Tree */
+.md-sidebar {
+    background-color: var(--tns-bg-dark) !important;
+}
+
+.md-sidebar--primary {
+    border-right: 0.05rem solid var(--tns-border);
+}
+
+.md-nav__link {
+    color: var(--tns-fg-muted) !important;
+}
+
+.md-nav__link:hover {
+    color: var(--tns-cyan) !important;
+}
+
+.md-nav__link--active {
+    color: var(--tns-blue) !important;
+    font-weight: 600;
+}
+
+.md-nav__item--nested > .md-nav__link {
+    color: var(--tns-fg) !important;
+}
+
+/* Search Box & Quick Results */
+.md-search__input {
+    background-color: var(--tns-bg-darker) !important;
+    color: var(--tns-fg-bright) !important;
+    border: 0.05rem solid var(--tns-border-subtle) !important;
+    border-radius: 0.35rem;
+}
+
+.md-search__input::placeholder {
+    color: var(--tns-fg-comment) !important;
+}
+
+.md-search__input:hover,
+.md-search__input:focus {
+    background-color: var(--tns-bg-dark) !important;
+    border-color: var(--tns-blue) !important;
+}
+
+.md-search-result {
+    background-color: var(--tns-bg-darker) !important;
+    color: var(--tns-fg) !important;
+    border: 0.05rem solid var(--tns-border);
+    box-shadow: var(--md-shadow-z3);
+}
+
+.md-search-result__meta {
+    background-color: var(--tns-bg-dark) !important;
+    color: var(--tns-fg-muted) !important;
+}
+
+.md-search-result__item:hover {
+    background-color: var(--tns-bg-selection) !important;
+}
+
+/* Main Content Area */
+.md-main {
+    background-color: var(--tns-bg) !important;
+}
+
+.md-content {
+    background-color: var(--tns-bg) !important;
+}
+
+/* Typography & Links */
+.md-typeset h1,
+.md-typeset h2,
+.md-typeset h3,
+.md-typeset h4,
+.md-typeset h5,
+.md-typeset h6 {
+    color: var(--tns-fg-bright);
+    font-weight: 600;
+}
+
+.md-typeset a {
+    color: var(--tns-blue) !important;
+    text-decoration: none;
+    transition: color 0.15s ease-in-out;
+}
+
+.md-typeset a:hover {
+    color: var(--tns-cyan) !important;
+    text-decoration: underline;
+}
+
+/* Code Blocks & Inline Code */
+.md-typeset pre {
+    background-color: var(--tns-bg-darker) !important;
+    border: 0.05rem solid var(--tns-border-subtle) !important;
+    border-radius: 0.35rem;
+    box-shadow: var(--md-shadow-z1);
+}
+
+.md-typeset pre > code {
+    background-color: transparent !important;
+    color: var(--tns-fg) !important;
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+}
+
+.md-typeset code {
+    background-color: var(--tns-bg-dark) !important;
+    color: var(--tns-cyan) !important;
+    border: 0.05rem solid var(--tns-border-subtle);
+    border-radius: 0.25rem;
+    padding: 0.1rem 0.35rem;
+}
+
+/* Tables */
+.md-typeset table:not([class]) {
+    background-color: var(--tns-bg-dark) !important;
+    border: 0.05rem solid var(--tns-border-subtle);
+    border-radius: 0.35rem;
+    overflow: hidden;
+}
+
+.md-typeset table:not([class]) th {
+    background-color: var(--tns-bg-selection) !important;
+    color: var(--tns-fg-bright) !important;
+    border-bottom: 0.05rem solid var(--tns-border);
+}
+
+.md-typeset table:not([class]) td {
+    border-top: 0.05rem solid var(--tns-border-subtle);
+}
+
+.md-typeset table:not([class]) tr:hover {
+    background-color: var(--tns-bg-highlight) !important;
+}
+
+/* Buttons */
+.md-typeset .md-button {
+    background-color: var(--tns-bg-highlight) !important;
+    color: var(--tns-blue) !important;
+    border: 0.05rem solid var(--tns-blue) !important;
+    border-radius: 0.3rem;
+    transition: all 0.15s ease-in-out;
+}
+
+.md-typeset .md-button:hover {
+    background-color: var(--tns-blue) !important;
+    color: var(--tns-bg-darker) !important;
+}
+
+.md-typeset .md-button--primary {
+    background-color: var(--tns-blue-btn) !important;
+    color: #ffffff !important;
+    border: none !important;
+}
+
+.md-typeset .md-button--primary:hover {
+    background-color: var(--tns-blue) !important;
+    color: var(--tns-bg-darker) !important;
+}
+
+/* Admonitions Styled with Tokyo Night Accents */
+.md-typeset .admonition {
+    background-color: var(--tns-bg-dark) !important;
+    border-left: 0.2rem solid var(--tns-blue) !important;
+    border-radius: 0.35rem;
+    box-shadow: var(--md-shadow-z1);
+}
+
+.md-typeset .admonition.note,
+.md-typeset .admonition.info {
+    border-left-color: var(--tns-blue) !important;
+}
+
+.md-typeset .admonition.tip {
+    border-left-color: var(--tns-green) !important;
+}
+
+.md-typeset .admonition.warning {
+    border-left-color: var(--tns-yellow) !important;
+}
+
+.md-typeset .admonition.danger {
+    border-left-color: var(--tns-red) !important;
+}
+
+.md-typeset .admonition__title {
+    background-color: var(--tns-bg-highlight) !important;
+    color: var(--tns-fg-bright) !important;
+}
+
+/* Blockquotes */
+.md-typeset blockquote {
+    border-left: 0.2rem solid var(--tns-gutter);
+    color: var(--tns-fg-muted);
+    background-color: var(--tns-bg-dark);
+    padding: 0.5rem 1rem;
+    border-radius: 0 0.3rem 0.3rem 0;
+}
+
+/* Scrollbars */
+::-webkit-scrollbar {
+    width: 0.45rem;
+    height: 0.45rem;
+}
+
+::-webkit-scrollbar-track {
+    background: var(--tns-bg-dark);
+}
+
+::-webkit-scrollbar-thumb {
+    background: var(--tns-gutter);
+    border-radius: 0.25rem;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: var(--tns-fg-muted);
+}
