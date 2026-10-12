@@ -94,7 +94,9 @@
   },
   "mcpName": "io.github.ruslanlap/pagespeed-insights-mcp",
   "overrides": {
+    "fast-copy": "^4.1.2",
     "fast-uri": "^3.1.8",
+    "proxy-addr": "^2.0.8",
     "qs": "^6.16.0"
   }
 }
