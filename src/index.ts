@@ -122,6 +122,9 @@ export class PageSpeedInsightsServer {
       case "pagespeed_analyze_page": {
         const { categories, ...analysisArgs } = inputArgs;
         const input = AnalysisReportSchema.parse({ ...analysisArgs, category: categories ?? analysisArgs.category });
+        if (input.strategy === "both" && !["summary", "full"].includes(input.report)) {
+          return this.handleBothStrategies(name, input, responseFormat);
+        }
         const legacy = { ...input, category: input.category };
         result = input.report === "summary" ? await this.handlePerformanceSummary(legacy)
           : input.report === "full" ? await this.handleAnalyzePageSpeed(legacy)
@@ -132,6 +135,7 @@ export class PageSpeedInsightsServer {
       }
       case "pagespeed_diagnose_page": {
         const input = DiagnoseSchema.parse(inputArgs);
+        if (input.strategy === "both") return this.handleBothStrategies(name, input, responseFormat);
         const handlers = {
           visual: () => this.handleGetVisualAnalysis(input), elements: () => this.handleGetElementAnalysis(input),
           network: () => this.handleGetNetworkAnalysis(input), javascript: () => this.handleGetJavaScriptAnalysis(input),
@@ -168,6 +172,16 @@ export class PageSpeedInsightsServer {
         return this.toolError(`Unknown tool '${name}'. Call tools/list and use one of the pagespeed_* v2 tool names.`);
     }
     return this.toV2Result(name, result, responseFormat);
+  }
+
+  private async handleBothStrategies(name: string, input: Record<string, unknown>, responseFormat: unknown) {
+    const mobile = await this.dispatchTool(name, { ...input, strategy: "mobile" });
+    const desktop = await this.dispatchTool(name, { ...input, strategy: "desktop" });
+    return this.toV2Result(name, {
+      content: [{ type: "text", text: `## Mobile\n\n${mobile.content[0].text}\n\n## Desktop\n\n${desktop.content[0].text}` }],
+      structuredData: { mobile: mobile.structuredContent.result, desktop: desktop.structuredContent.result },
+      ...(mobile.isError || desktop.isError ? { isError: true } : {}),
+    }, responseFormat);
   }
 
   private toV2Result(tool: string, result: any, responseFormat: unknown): any {
@@ -832,7 +846,7 @@ export class PageSpeedInsightsServer {
       strategy: input.strategy,
       timestamp: data.analysisUTCTimestamp,
       performance: {
-        score: performance?.score ? Math.round(performance.score * 100) : null,
+        score: performance?.score != null ? Math.round(performance.score * 100) : null,
         metrics: {
           firstContentfulPaint: audits?.["first-contentful-paint"]?.displayValue,
           largestContentfulPaint: audits?.["largest-contentful-paint"]?.displayValue,

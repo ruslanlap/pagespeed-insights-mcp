@@ -48,6 +48,24 @@ describe("PageSpeedClient redaction", () => {
     logCalls.length = 0;
   });
 
+  it.each(["psi", "page", "origin"])("redacts secrets from %s HTTP errors, stacks and logs", async (kind) => {
+    const scope = kind === "psi"
+      ? nock("https://www.googleapis.com").get("/pagespeedonline/v5/runPagespeed").query(true)
+      : nock("https://chromeuxreport.googleapis.com").post("/v1/records:queryRecord").query(true);
+    const completed = scope.reply(400, `rejected key=${SECRET_KEY}; repeated=${SECRET_KEY}`);
+    const request = kind === "psi"
+      ? client.analyzePageSpeed({ url: "https://example.com", strategy: "mobile", category: ["performance"], locale: "en" }, "secret")
+      : kind === "page" ? client.getCruxData({ url: "https://example.com" }, "secret")
+      : client.getOriginCruxData({ origin: "https://example.com" }, "secret");
+    const error = await request.catch((error: Error) => error);
+    expect(error).toBeInstanceOf(Error);
+    expect(String(error)).toContain("[REDACTED]");
+    expect(String(error)).not.toContain(SECRET_KEY);
+    expect((error as Error).stack).not.toContain(SECRET_KEY);
+    expect(JSON.stringify(logCalls)).not.toContain(SECRET_KEY);
+    expect(completed.isDone()).toBe(true);
+  });
+
   it("does not log the API key on a fetch network failure", async () => {
     // Simulate a network error from googleapis. node-fetch wraps the cause
     // into error.message; we want to confirm the message is redacted before

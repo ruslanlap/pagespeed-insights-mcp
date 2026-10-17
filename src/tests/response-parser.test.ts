@@ -251,6 +251,158 @@ describe("ResponseParser — Lighthouse 13 insight fallbacks", () => {
   });
 });
 
+// Keep fixtures local: each extractor consumes the real audit payload, not mocks.
+function auditResponse(audits: Record<string, any> = {}): PageSpeedInsightsResponse {
+  return { lighthouseResult: { audits } } as PageSpeedInsightsResponse;
+}
+
+describe("ResponseParser — diagnostic contracts", () => {
+  it.each([{}, { lighthouseResult: {} }, { lighthouseResult: { audits: null, categories: null } }])("returns explicit empty diagnostics for missing sections: %j", response => {
+    const data = response as PageSpeedInsightsResponse;
+    expect(ResponseParser.extractVisualData(data)).toEqual({ finalScreenshot: null, filmstrip: [], fullPageScreenshot: null });
+    expect(ResponseParser.extractElementData(data)).toEqual({ lcpElement: null, clsElements: [], lazyLoadedLcp: null });
+    expect(ResponseParser.extractNetworkData(data)).toEqual({ requests: [], resourceSummary: [], totalByteWeight: 0, requestCount: 0, rtt: null, serverLatency: null });
+    expect(ResponseParser.extractJavaScriptData(data)).toEqual({ bootupTime: [], mainThreadWork: [], unusedJavaScript: [], duplicatedJavaScript: [], legacyJavaScript: [] });
+    expect(ResponseParser.extractImageOptimizationData(data)).toEqual({ responsiveImages: [], offscreenImages: [], unoptimizedImages: [], modernFormats: [] });
+    expect(ResponseParser.extractRenderBlockingData(data)).toEqual({ resources: [], totalWastedMs: 0, criticalChains: null });
+    expect(ResponseParser.extractThirdPartyData(data)).toEqual({ summary: [], totalBlockingTime: 0, totalTransferSize: 0, facades: [] });
+    expect(ResponseParser.extractOtherCategories(data)).toEqual(Object.fromEntries(['accessibility', 'seo', 'bestPractices', 'pwa'].map(key => [key, { score: null, keyAudits: [] }])));
+    expect(ResponseParser.extractDetailedMetrics(data)).toEqual({ firstContentfulPaint: undefined, largestContentfulPaint: undefined, cumulativeLayoutShift: undefined, totalBlockingTime: undefined, maxPotentialFID: undefined, speedIndex: undefined, timeToInteractive: undefined });
+  });
+
+  it("preserves legacy screenshots and filmstrip timing, with documented defaults", () => {
+    const screenshot = { data: 'full', width: 1440, height: 2400 };
+    const response = auditResponse({
+      'final-screenshot': { details: { data: 'final' } },
+      'screenshot-thumbnails': { details: { items: [{ timing: 100, timestamp: 123, data: 'frame' }, {}] } },
+      'full-page-screenshot': { details: { screenshot } },
+    });
+    (response.lighthouseResult as any).fullPageScreenshot = { screenshot: { data: 'do-not-use' } };
+    expect(ResponseParser.extractVisualData(response)).toEqual({
+      finalScreenshot: { data: 'final', width: 360, height: 640 },
+      filmstrip: [{ timing: 100, timestamp: 123, data: 'frame' }, { timing: 0, timestamp: 0, data: '' }],
+      fullPageScreenshot: { screenshot, nodes: {} },
+    });
+  });
+
+  it("normalizes legacy element metadata without losing layout shift scores", () => {
+    const node = { type: 'node', selector: '#hero', snippet: '<img>', lhId: '1', path: '1,HTML,1,BODY', nodeLabel: 'Hero', explanation: 'Moved', boundingRect: { top: 0, left: 0, right: 100, bottom: 50, width: 100, height: 50 } };
+    expect(ResponseParser.extractElementData(auditResponse({
+      'largest-contentful-paint-element': { details: { items: [{ node }] } },
+      'layout-shift-elements': { details: { items: [{ node, score: 0.125 }, { node }, { score: 0.9 }] } },
+      'lcp-lazy-loaded': { details: { items: [{ node }] } },
+    }))).toEqual({ lcpElement: node, lazyLoadedLcp: node, clsElements: [{ node, score: 0.125 }, { node, score: 0 }] });
+  });
+
+  it("preserves network byte counts, timings and unfinished requests", () => {
+    const request = { url: 'https://x/app.js', protocol: 'h2', startTime: 0.1, endTime: 1.2, finished: false, transferSize: 1024, resourceSize: 4096, statusCode: 200, mimeType: 'text/javascript', resourceType: 'Script', priority: 'High', experimentalFromMainFrame: false };
+    const parsed = ResponseParser.extractNetworkData(auditResponse({
+      'network-requests': { details: { items: [request, {}] } },
+      'resource-summary': { details: { items: [{ resourceType: 'script', requestCount: 2, transferSize: 1024 }, {}] } },
+      'total-byte-weight': { numericValue: 1024 }, 'network-rtt': { numericValue: 0 }, 'network-server-latency': { numericValue: 125.5 },
+    }));
+    expect(parsed).toEqual({ requests: [request, { url: '', startTime: 0, endTime: 0, finished: true, transferSize: 0, resourceSize: 0, statusCode: 0, mimeType: '', resourceType: '' }], requestCount: 2, resourceSummary: [{ resourceType: 'script', count: 2, size: 1024 }, { resourceType: '', count: 0, size: 0 }], totalByteWeight: 1024, rtt: 0, serverLatency: 125.5 });
+  });
+
+  it("extracts JS CPU milliseconds separately from unused and duplicated bytes", () => {
+    expect(ResponseParser.extractJavaScriptData(auditResponse({
+      'bootup-time': { details: { items: [{ url: 'app.js', total: 120, scripting: 90, scriptParseCompile: 30 }, {}] } },
+      'mainthread-work-breakdown': { details: { items: [{ group: 'scriptEvaluation', groupLabel: 'Script Evaluation', duration: 90 }, {}] } },
+      'unused-javascript': { details: { items: [{ url: 'app.js', totalBytes: 1000, wastedBytes: 250, wastedPercent: 25 }, {}] } },
+      'duplicated-javascript': { details: { items: [{ url: 'vendor.js', totalBytes: 500, wastedBytes: 100 }, {}] } },
+      'legacy-javascript': { details: { items: [{ source: 'polyfill.js', totalBytes: 200, wastedBytes: 150 }, {}] } },
+    }))).toEqual({
+      bootupTime: [{ url: 'app.js', total: 120, scripting: 90, scriptParseCompile: 30 }, { url: '', total: 0, scripting: 0, scriptParseCompile: 0 }],
+      mainThreadWork: [{ group: 'scriptEvaluation', groupLabel: 'Script Evaluation', duration: 90 }, { group: '', groupLabel: '', duration: 0 }],
+      unusedJavaScript: [{ url: 'app.js', totalBytes: 1000, wastedBytes: 250, wastedPercent: 25 }, { url: '', totalBytes: 0, wastedBytes: 0, wastedPercent: 0 }],
+      duplicatedJavaScript: [{ source: 'vendor.js', totalBytes: 500, wastedBytes: 100 }, { source: '', totalBytes: 0, wastedBytes: 0 }],
+      legacyJavaScript: [{ source: 'polyfill.js', totalBytes: 200, wastedBytes: 150 }, { source: '', totalBytes: 0, wastedBytes: 0 }],
+    });
+  });
+
+  it("extracts all legacy image opportunities without confusing percent with bytes", () => {
+    const item = { url: 'hero.png', totalBytes: 1000, wastedBytes: 250, wastedPercent: 25 };
+    const result = ResponseParser.extractImageOptimizationData(auditResponse(Object.fromEntries(['uses-responsive-images', 'offscreen-images', 'uses-optimized-images', 'modern-image-formats'].map(id => [id, { details: { items: [item, {}] } }]))));
+    for (const items of Object.values(result)) expect(items).toEqual([item, { url: '', totalBytes: 0, wastedBytes: 0, wastedPercent: 0 }]);
+  });
+
+  it("handles item-level image insight reasons and zero-size images", () => {
+    const result = ResponseParser.extractImageOptimizationData(auditResponse({ 'image-delivery-insight': { details: { items: [
+      { url: 'unknown.png', totalBytes: 1000, wastedBytes: 125, reason: 'unknown' },
+      { url: 'empty.png', reason: 'lazy', wastedBytes: 0 },
+    ] } } }));
+    expect(result).toEqual({ responsiveImages: [{ url: 'unknown.png', totalBytes: 1000, wastedBytes: 125, wastedPercent: 13 }], offscreenImages: [{ url: 'empty.png', totalBytes: 0, wastedBytes: 0, wastedPercent: 0 }], unoptimizedImages: [], modernFormats: [] });
+  });
+
+  it("extracts legacy render-blocking savings and unmodified dependency chains", () => {
+    const chains = { type: 'criticalrequestchain', chains: { root: { request: { url: 'https://x', transferSize: 50 } } } };
+    expect(ResponseParser.extractRenderBlockingData(auditResponse({
+      'render-blocking-resources': { details: { overallSavingsMs: 1200, items: [{ url: 'style.css', totalBytes: 2048, wastedMs: 600 }, {}] } },
+      'critical-request-chains': { details: chains },
+    }))).toEqual({ resources: [{ url: 'style.css', totalBytes: 2048, wastedMs: 600 }, { url: '', totalBytes: 0, wastedMs: 0 }], totalWastedMs: 1200, criticalChains: chains });
+  });
+
+  it("totals legacy third-party costs without discarding facade guidance", () => {
+    const item = { entity: 'Video', transferSize: 2048, blockingTime: 120, mainThreadTime: 200, subItems: { items: [{ url: 'embed.js' }] } };
+    expect(ResponseParser.extractThirdPartyData(auditResponse({
+      'third-party-summary': { details: { items: [item, {}] } },
+      'third-party-facades': { details: { items: [{ product: 'Video embed', transferSize: 2048, blockingTime: 120 }, {}] } },
+    }))).toEqual({ summary: [item, { entity: '', transferSize: 0, blockingTime: 0, mainThreadTime: 0 }], totalTransferSize: 2048, totalBlockingTime: 120, facades: [{ product: 'Video embed', transferSize: 2048, blockingTime: 120 }, { product: '', transferSize: 0, blockingTime: 0 }] });
+  });
+
+  it("limits category failures to five and excludes missing, passing and unscored audits", () => {
+    const response = auditResponse(Object.fromEntries(Array.from({ length: 7 }, (_, i) => [`fail-${i}`, { title: i === 0 ? '' : `Failure ${i}`, score: i / 10, description: `Fix ${i}` }])));
+    Object.assign(response.lighthouseResult!.audits, { pass: { score: 1 }, manual: { score: null } });
+    response.lighthouseResult!.categories = { 'best-practices': { score: 0.65, auditRefs: ['missing', 'pass', 'manual', ...Array.from({ length: 7 }, (_, i) => `fail-${i}`)].map(id => ({ id })) } } as any;
+    expect(ResponseParser.extractOtherCategories(response).bestPractices).toEqual({ score: 0.65, keyAudits: Array.from({ length: 5 }, (_, i) => ({ id: `fail-${i}`, title: i === 0 ? 'fail-0' : `Failure ${i}`, score: i / 10, description: `Fix ${i}` })) });
+  });
+
+  it("returns no LCP node when nested discovery lists contain only summary text", () => {
+    expect(ResponseParser.extractElementData(auditResponse({
+      'lcp-discovery-insight': { details: { items: [{ type: 'list', value: { items: [{ type: 'text', value: 'Summary' }] } }, null] } },
+    }))).toEqual({ lcpElement: null, clsElements: [], lazyLoadedLcp: null });
+  });
+
+  it("falls back to individual audit values without converting milliseconds or CLS", () => {
+    const ids = ['first-contentful-paint', 'largest-contentful-paint', 'cumulative-layout-shift', 'total-blocking-time', 'max-potential-fid', 'speed-index', 'interactive'];
+    const values = [1800, 4000, 0.25, 600, 300, 5800, 7000];
+    expect(ResponseParser.extractDetailedMetrics(auditResponse(Object.fromEntries(ids.map((id, i) => [id, { numericValue: values[i] }]))))).toEqual({ firstContentfulPaint: 1800, largestContentfulPaint: 4000, cumulativeLayoutShift: 0.25, totalBlockingTime: 600, maxPotentialFID: 300, speedIndex: 5800, timeToInteractive: 7000 });
+  });
+
+  it("keeps lab metric units intact and falls back from null aggregate values", () => {
+    const response = auditResponse({
+      metrics: { details: { items: [{ firstContentfulPaint: null, largestContentfulPaint: 2500, cumulativeLayoutShift: 0.1, totalBlockingTime: 200, maxPotentialFID: 100, speedIndex: 3400, interactive: 5000 }] } },
+      'first-contentful-paint': { numericValue: 1800 },
+    });
+    expect(ResponseParser.extractDetailedMetrics(response)).toEqual({ firstContentfulPaint: 1800, largestContentfulPaint: 2500, cumulativeLayoutShift: 0.1, totalBlockingTime: 200, maxPotentialFID: 100, speedIndex: 3400, timeToInteractive: 5000 });
+  });
+});
+
+describe("ResponseParser — numeric fidelity", () => {
+  it("preserves zero category scores rather than reporting unavailable", () => {
+    const response = lighthouse13Response();
+    for (const id of ['accessibility', 'seo', 'best-practices', 'pwa']) {
+      response.lighthouseResult!.categories[id] = { id, title: id, score: 0, auditRefs: [] };
+    }
+    expect(ResponseParser.extractOtherCategories(response)).toEqual({
+      accessibility: { score: 0, keyAudits: [] }, seo: { score: 0, keyAudits: [] },
+      bestPractices: { score: 0, keyAudits: [] }, pwa: { score: 0, keyAudits: [] },
+    });
+  });
+
+  it("preserves zero aggregate metrics instead of substituting individual audits", () => {
+    const response = lighthouse13Response();
+    const keys = ['firstContentfulPaint', 'largestContentfulPaint', 'cumulativeLayoutShift', 'totalBlockingTime', 'maxPotentialFID', 'speedIndex', 'interactive'];
+    const ids = ['first-contentful-paint', 'largest-contentful-paint', 'cumulative-layout-shift', 'total-blocking-time', 'max-potential-fid', 'speed-index', 'interactive'];
+    response.lighthouseResult!.audits = Object.fromEntries(ids.map(id => [id, { numericValue: 999 }])) as any;
+    response.lighthouseResult!.audits.metrics = { details: { items: [Object.fromEntries(keys.map(key => [key, 0]))] } } as any;
+    expect(ResponseParser.extractDetailedMetrics(response)).toEqual({
+      firstContentfulPaint: 0, largestContentfulPaint: 0, cumulativeLayoutShift: 0,
+      totalBlockingTime: 0, maxPotentialFID: 0, speedIndex: 0, timeToInteractive: 0,
+    });
+  });
+});
+
 describe("ResponseParser — backward compat (legacy audits still win)", () => {
   it("prefers legacy uses-responsive-images over image-delivery-insight", () => {
     const response: PageSpeedInsightsResponse = {

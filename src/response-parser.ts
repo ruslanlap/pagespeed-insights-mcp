@@ -531,19 +531,19 @@ export class ResponseParser {
     
     const categoryData = {
       accessibility: {
-        score: categories.accessibility?.score || null,
+        score: categories.accessibility?.score ?? null,
         keyAudits: [] as Array<{ id: string; title: string; score: number | null; description?: string }>,
       },
       seo: {
-        score: categories.seo?.score || null,
+        score: categories.seo?.score ?? null,
         keyAudits: [] as Array<{ id: string; title: string; score: number | null; description?: string }>,
       },
       bestPractices: {
-        score: categories['best-practices']?.score || null,
+        score: categories['best-practices']?.score ?? null,
         keyAudits: [] as Array<{ id: string; title: string; score: number | null; description?: string }>,
       },
       pwa: {
-        score: categories.pwa?.score || null,
+        score: categories.pwa?.score ?? null,
         keyAudits: [] as Array<{ id: string; title: string; score: number | null; description?: string }>,
       },
     };
@@ -619,15 +619,15 @@ export class ResponseParser {
     
     return {
       // Core Web Vitals
-      firstContentfulPaint: metrics.firstContentfulPaint || audits['first-contentful-paint']?.numericValue,
-      largestContentfulPaint: metrics.largestContentfulPaint || audits['largest-contentful-paint']?.numericValue,
-      cumulativeLayoutShift: metrics.cumulativeLayoutShift || audits['cumulative-layout-shift']?.numericValue,
-      totalBlockingTime: metrics.totalBlockingTime || audits['total-blocking-time']?.numericValue,
-      maxPotentialFID: metrics.maxPotentialFID || audits['max-potential-fid']?.numericValue,
+      firstContentfulPaint: metrics.firstContentfulPaint ?? audits['first-contentful-paint']?.numericValue,
+      largestContentfulPaint: metrics.largestContentfulPaint ?? audits['largest-contentful-paint']?.numericValue,
+      cumulativeLayoutShift: metrics.cumulativeLayoutShift ?? audits['cumulative-layout-shift']?.numericValue,
+      totalBlockingTime: metrics.totalBlockingTime ?? audits['total-blocking-time']?.numericValue,
+      maxPotentialFID: metrics.maxPotentialFID ?? audits['max-potential-fid']?.numericValue,
       
       // Other metrics
-      speedIndex: metrics.speedIndex || audits['speed-index']?.numericValue,
-      timeToInteractive: metrics.interactive || audits['interactive']?.numericValue,
+      speedIndex: metrics.speedIndex ?? audits['speed-index']?.numericValue,
+      timeToInteractive: metrics.interactive ?? audits['interactive']?.numericValue,
     };
   }
 }

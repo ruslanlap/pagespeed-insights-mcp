@@ -298,7 +298,9 @@ export class PerformanceRecommendationsEngine {
       for (const auditId of Object.keys(audits)) {
         failedInAllRuns.set(auditId, runs.every((r) => {
           const runAudit = (r?.lighthouseResult?.audits ?? r?.audits)?.[auditId];
-          return runAudit?.score !== null && runAudit?.score < 0.9;
+          if (runAudit?.score === 1) return false;
+          if (auditId.endsWith('-insight') && (runAudit?.details?.items?.length ?? 0) > 0) return true;
+          return runAudit?.score != null && runAudit.score < 0.9;
         }));
       }
     }
@@ -312,7 +314,7 @@ export class PerformanceRecommendationsEngine {
       const isInsightWithItems =
         auditId.endsWith('-insight') && (audit.details?.items?.length ?? 0) > 0;
       if (audit.score === 1) return; // score 1 = pass, skip regardless
-      if (!isInsightWithItems && audit.score === null) return;
+      if (!isInsightWithItems && audit.score == null) return;
       if (failedInAllRuns.get(auditId) === false) return;
 
       const baseRecommendation = this.auditMappings.get(auditId);
