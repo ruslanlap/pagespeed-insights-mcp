@@ -8,22 +8,20 @@
 import { spawn } from 'child_process';
 import { createInterface } from 'readline';
 
-// Get API key from command line or environment
-const apiKey = process.argv[2] || process.env.GOOGLE_API_KEY;
+// Read the key from the environment; command-line arguments are visible in process listings.
+const apiKey = process.env.GOOGLE_API_KEY;
 
 if (!apiKey) {
   console.error('❌ Error: Google API key is required');
   console.log('\nUsage:');
-  console.log('  node test-all-new-tools.js YOUR_API_KEY');
-  console.log('  OR');
-  console.log('  export GOOGLE_API_KEY=your-api-key');
-  console.log('  node test-all-new-tools.js');
+  console.log('  Set GOOGLE_API_KEY in your environment');
+  console.log('  node scripts/test-tools.js');
   process.exit(1);
 }
 
 console.log('🧪 Testing PageSpeed Insights MCP Tools');
 console.log('=====================================');
-console.log(`API Key: ${apiKey.substring(0, 10)}...`);
+console.log('API Key: [redacted]');
 console.log('');
 
 // Start the MCP server
