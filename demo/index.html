@@ -884,6 +884,7 @@
       <button class="demo-btn" data-demo="recommendations" onclick="runDemo('recommendations', this)">Recommendations</button>
       <button class="demo-btn" data-demo="diagnose" onclick="runDemo('diagnose', this)">Diagnose Problem</button>
       <button class="demo-btn" data-demo="compare" onclick="runDemo('compare', this)">Compare URLs</button>
+      <button class="demo-btn" data-demo="prompts" onclick="runDemo('prompts', this)">MCP Prompts (/)</button>
     </div>
 
     <!-- Chat-style Demo -->
@@ -1324,16 +1325,19 @@ const demos = {
     { type: 'typing', delay: 1400 },
     { type: 'ai', html: `<strong>PageSpeed Insights Lighthouse Analysis</strong><br><br>
       <strong>URL:</strong> https://example.com &middot; <strong>Strategy:</strong> Mobile<br><br>
-      <div style="display:flex;gap:.5rem;flex-wrap:wrap;">
+      <div style="font-family:monospace;color:var(--green);margin-bottom:0.6rem;background:rgba(0,229,153,0.08);padding:0.4rem 0.6rem;border-radius:6px;border:1px solid rgba(0,229,153,0.2);">
+        <code>███████████████░ 96/100 🟢 (Good)</code>
+      </div>
+      <div style="display:flex;gap:.5rem;flex-wrap:wrap;margin-bottom:0.6rem;">
         <span class="chat-score">Performance: 96</span>
         <span class="chat-score">Accessibility: 98</span>
         <span class="chat-score">Best Practices: 100</span>
         <span class="chat-score">SEO: 100</span>
-      </div><br>
+      </div>
       <strong>Core Web Vitals Telemetry:</strong><br>
-      &bull; <strong>LCP:</strong> 1.2s <span style="color:var(--green);">Fast</span><br>
-      &bull; <strong>INP:</strong> 35ms <span style="color:var(--green);">Fast</span><br>
-      &bull; <strong>CLS:</strong> 0.000 <span style="color:var(--green);">Fast</span><br>
+      &bull; <strong>LCP:</strong> 1.2s <span style="color:var(--green);">🟢 Good</span><br>
+      &bull; <strong>INP:</strong> 35ms <span style="color:var(--green);">🟢 Good</span><br>
+      &bull; <strong>CLS:</strong> 0.000 <span style="color:var(--green);">🟢 Good</span><br>
       &bull; <strong>FCP:</strong> 0.8s &middot; <strong>TTFB:</strong> 60ms<br><br>
       <strong>Audit Diagnostics:</strong><br>
       &bull; Efficient cache headers served on static chunks<br>
@@ -1343,6 +1347,12 @@ const demos = {
     { type: 'user', text: 'Get smart recommendations for improving https://mystore.org performance' },
     { type: 'typing', delay: 1600 },
     { type: 'ai', html: `<strong>Prioritized Performance Recommendations</strong><br><br>
+      <div style="font-family:monospace;color:var(--yellow);margin-bottom:0.5rem;background:rgba(245,166,35,0.08);padding:0.4rem 0.6rem;border-radius:6px;border:1px solid rgba(245,166,35,0.2);">
+        <code>███████████░░░░░ 72/100 🟠 (Needs Improvement)</code>
+      </div>
+      <div style="margin-bottom:0.75rem;font-size:0.8rem;color:var(--text-dim);background:var(--bg3);padding:0.35rem 0.6rem;border-radius:6px;border:1px solid var(--border);">
+        🔴 <strong>2</strong> High &nbsp;|&nbsp; 🟡 <strong>2</strong> Medium &nbsp;|&nbsp; 🟢 <strong>1</strong> Low &nbsp;|&nbsp; <strong>Impact:</strong> High
+      </div>
       <span style="color:var(--red);font-weight:700;">[CRITICAL PRIORITY]</span><br>
       &bull; <strong>Optimize LCP Banner</strong> — Reduce hero image weight by serving WebP/AVIF (Est. savings: 1.2 MB / 850ms)<br>
       &bull; <strong>Eliminate Render-Blocking CSS</strong> — Defer secondary stylesheet <code>theme-extra.css</code><br><br>
@@ -1351,6 +1361,18 @@ const demos = {
       &bull; <strong>Preconnect to CDN origin</strong> — Faster asset handshakes (-60ms)<br><br>
       <span style="color:var(--green);font-weight:700;">[BEST PRACTICES]</span><br>
       &bull; Add explicit <code>width</code> and <code>height</code> attributes to prevent layout shifts (CLS &lt; 0.01)` },
+  ],
+  prompts: [
+    { type: 'user', text: '/performance-audit url: https://mysite.com strategy: mobile' },
+    { type: 'typing', delay: 1500 },
+    { type: 'ai', html: `<strong>⚡ Native MCP Prompt: /performance-audit</strong><br><br>
+      <div style="font-family:monospace;color:var(--green);margin-bottom:0.6rem;background:rgba(0,229,153,0.08);padding:0.4rem 0.6rem;border-radius:6px;border:1px solid rgba(0,229,153,0.2);">
+        <code>███████████████░ 94/100 🟢 (Good)</code>
+      </div>
+      <strong>1. Health Check:</strong> Mobile Lighthouse Lab Score: <strong>94/100</strong><br>
+      <strong>2. Real User CrUX:</strong> LCP: <strong>1.4s (p75) 🟢 Good</strong> &middot; INP: <strong>48ms (p75) 🟢 Good</strong> &middot; CLS: <strong>0.00 (p75) 🟢 Good</strong><br>
+      <strong>3. Diagnostic Focus:</strong> 0 render-blocking assets. Static assets efficiently cached.<br>
+      <strong>4. Actionable Next Steps:</strong> Serve WebP format for secondary footer icons to save ~120ms.` },
   ],
   diagnose: [
     { type: 'user', text: 'Diagnose render-blocking resources for https://myapp.dev' },

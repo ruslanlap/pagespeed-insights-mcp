@@ -65,6 +65,9 @@ Most PageSpeed MCP servers wrap **one** tool: "run PSI on a URL." This server sh
 - [⚙️ Claude Desktop Configuration](#-claude-desktop-configuration)
 - [💻 Usage](#-usage)
 - [Available Tools](#available-tools)
+- [MCP Prompts (Slash Commands)](#mcp-prompts-slash-commands)
+- [MCP Resources](#mcp-resources)
+- [✨ Rich Visual & Aesthetic Outputs](#-rich-visual--aesthetic-outputs)
 - [Development](#development)
 - [Troubleshooting](#troubleshooting)
 - [Requirements](#requirements)
@@ -509,6 +512,34 @@ Version 2 replaces the former 19 endpoint-shaped tools with six workflow tools. 
 ### Example
 
 answer example from Claude Desktop with pagespeed-insights-mcp 🔥🔥🔥
+
+## MCP Prompts (Slash Commands)
+
+This server exposes built-in **MCP Prompts** that appear automatically in the prompt / slash menu (`/`) in Claude Desktop, Cursor, and Cline:
+
+| Prompt | Description | Arguments |
+|---|---|---|
+| `performance-audit` | Guided 4-step performance triage: Lighthouse summary, CrUX field data, targeted diagnostic, and prioritized fix ticket. | `url` (required), `strategy` (`mobile` / `desktop`) |
+| `release-comparison` | Automated pre-release comparison: staging vs production with directional metrics and a clear **GO / NO-GO** release recommendation. | `productionUrl` (required), `stagingUrl` (required), `strategy` |
+| `core-web-vitals-deepdive` | Root-cause investigation into real-user CrUX metrics vs synthetic Lighthouse lab scores for LCP, INP, and CLS. | `url` (required), `scope` (`page` / `origin`) |
+
+## MCP Resources
+
+Access reference guides and local state directly through standard MCP resource URIs:
+
+| Resource URI | MIME Type | Content |
+|---|---|---|
+| `pagespeed://web-vitals-guide` | `text/markdown` | Official 2026 Core Web Vitals thresholds (Good / Needs Improvement / Poor) for LCP, INP, CLS, FCP, TTFB, and TBT. |
+| `pagespeed://baselines` | `application/json` | Locally stored performance baselines recorded by `pagespeed_compare_pages`. |
+
+## ✨ Rich Visual & Aesthetic Outputs
+
+Outputs returned to Claude Desktop, Cursor, and Cline feature rich aesthetic formatting:
+
+- **Unicode Score Bars**: Gauge progress visualization (e.g. `\`█████████████░░░\` **85/100** 🟢 *(Good)*`).
+- **Core Web Vitals Scorecard**: Clean status-badged tables with official 2026 targets (`🟢 Good`, `🟡 Needs Improvement`, `🔴 Poor`).
+- **README Shield Badges**: Direct copy-paste markdown badges for your repository (`[![PageSpeed Score](https://img.shields.io/badge/PageSpeed-95%2F100-success?style=flat-square&logo=lighthouse)](https://pagespeed.web.dev)`).
+- **Modernized Mermaid Architecture Maps**: High-contrast, dark-mode friendly flowcharts with color-coded nodes.
 
 ## Development
 

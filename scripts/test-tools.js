@@ -52,9 +52,9 @@ rl.on('line', (line) => {
       // Check if result has expected structure
       if (json.result.content && Array.isArray(json.result.content)) {
         const hasText = json.result.content.some(c => c.type === 'text');
-        const hasResource = json.result.content.some(c => c.type === 'resource');
+        const hasStructured = Boolean(json.result.structuredContent);
         console.log(`   - Text content: ${hasText ? '✓' : '✗'}`);
-        console.log(`   - JSON resource: ${hasResource ? '✓' : '✗'}`);
+        console.log(`   - Structured content: ${hasStructured ? '✓' : '✗'}`);
       }
       
       testResults.push({ ...currentTest, success: true });

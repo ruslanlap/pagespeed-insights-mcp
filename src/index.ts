@@ -5,6 +5,10 @@ import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js"
 import {
   CallToolRequestSchema,
   ListToolsRequestSchema,
+  ListPromptsRequestSchema,
+  GetPromptRequestSchema,
+  ListResourcesRequestSchema,
+  ReadResourceRequestSchema,
 } from "@modelcontextprotocol/sdk/types.js";
 import { randomUUID } from "crypto";
 import { realpathSync } from "fs";
@@ -35,6 +39,9 @@ import type { PageSpeedInsightsResponse, CruxRecord, ComparisonResult } from "./
 import { getBaseline, saveBaseline, compareBaselines } from "./baselines.js";
 import { z } from "zod";
 import { V2_TOOLS } from "./tool-definitions.js";
+import { PROMPTS, getPrompt } from "./prompts.js";
+import { RESOURCES, readResource } from "./resources.js";
+import { renderScoreBar, getScoreRating, renderShieldBadge, evaluateMetric, renderCwvTable } from "./formatters.js";
 
 const pkg = createRequire(import.meta.url)("../package.json") as { version: string };
 const CHARACTER_LIMIT = 25_000;
@@ -58,6 +65,8 @@ export class PageSpeedInsightsServer {
       {
         capabilities: {
           tools: {},
+          prompts: {},
+          resources: {},
         },
       }
     );
@@ -65,6 +74,30 @@ export class PageSpeedInsightsServer {
     this.client = new PageSpeedClient();
     this.recommendationsEngine = new PerformanceRecommendationsEngine();
     this.setupTools();
+    this.setupPrompts();
+    this.setupResources();
+  }
+
+  private setupPrompts() {
+    this.server.setRequestHandler(ListPromptsRequestSchema, async () => {
+      return { prompts: PROMPTS };
+    });
+
+    this.server.setRequestHandler(GetPromptRequestSchema, async (request) => {
+      const { name, arguments: args } = request.params;
+      return getPrompt(name, args as Record<string, string> | undefined);
+    });
+  }
+
+  private setupResources() {
+    this.server.setRequestHandler(ListResourcesRequestSchema, async () => {
+      return { resources: RESOURCES };
+    });
+
+    this.server.setRequestHandler(ReadResourceRequestSchema, async (request) => {
+      const { uri } = request.params;
+      return readResource(uri);
+    });
   }
 
   private setupTools() {
@@ -379,7 +412,13 @@ export class PageSpeedInsightsServer {
 
     // Style nodes by status
     map += "\n";
-    const styleMap: Record<string, string> = { good: "#4CAF50", mediocre: "#FF9800", poor: "#F44336" };
+    map += "  classDef scoreNode fill:#0F172A,stroke:#3B82F6,stroke-width:2px,color:#F8FAFC\n";
+    map += "  class Score scoreNode\n";
+    const styleMap: Record<string, string> = {
+      good: "#10B981,stroke:#059669,stroke-width:2px,color:#fff",
+      mediocre: "#F59E0B,stroke:#D97706,stroke-width:2px,color:#fff",
+      poor: "#EF4444,stroke:#DC2626,stroke-width:2px,color:#fff",
+    };
     const nodesByClass: Record<string, string[]> = { good: [], mediocre: [], poor: [] };
     cwvConfigs.forEach(v => {
       if (audits[v.id]?.numericValue != null) {
@@ -390,7 +429,7 @@ export class PageSpeedInsightsServer {
     });
     (Object.keys(nodesByClass) as Array<keyof typeof nodesByClass>).forEach(cls => {
       if (nodesByClass[cls].length > 0) {
-        map += `  classDef ${cls} fill:${styleMap[cls]},color:#fff\n`;
+        map += `  classDef ${cls} fill:${styleMap[cls]}\n`;
         map += `  class ${nodesByClass[cls].join(",")} ${cls}\n`;
       }
     });
@@ -784,7 +823,12 @@ export class PageSpeedInsightsServer {
     }
 
     if (performance) {
-      report += `## Performance Score: ${Math.round(performance.score * 100)}/100\n\n`;
+      const score = Math.round(performance.score * 100);
+      const rating = getScoreRating(score);
+      const bar = renderScoreBar(score, 18);
+      report += `## Performance Score: ${score}/100\n\n`;
+      report += `\`${bar}\` **${score}/100** ${rating.emoji} *(${rating.label})*\n\n`;
+      report += `> ${renderShieldBadge(score, input.url)}\n\n`;
     }
 
     const desktop = data.desktopResult;
@@ -793,9 +837,13 @@ export class PageSpeedInsightsServer {
       const dMr = (desktop as any).multirun;
       report += `## Desktop\n\n`;
       if (dMr?.stats) {
-        report += `> ${dMr.stats.analyses}/${dMr.stats.requested} distinct analyses; median performance ${Math.round(dMr.scores["performance"]?.median ?? (dPerf ? dPerf.score * 100 : 0))}/100 (min ${Math.round(dMr.scores["performance"]?.min ?? 0)}, max ${Math.round(dMr.scores["performance"]?.max ?? 0)})\n\n`;
+        const dScore = Math.round(dMr.scores["performance"]?.median ?? (dPerf ? dPerf.score * 100 : 0));
+        const dBar = renderScoreBar(dScore, 14);
+        report += `> \`${dBar}\` **${dScore}/100** (${dMr.stats.analyses}/${dMr.stats.requested} distinct analyses; min ${Math.round(dMr.scores["performance"]?.min ?? 0)}, max ${Math.round(dMr.scores["performance"]?.max ?? 0)})\n\n`;
       } else if (dPerf) {
-        report += `**Performance Score:** ${Math.round(dPerf.score * 100)}/100\n\n`;
+        const dScore = Math.round(dPerf.score * 100);
+        const dBar = renderScoreBar(dScore, 14);
+        report += `**Performance Score:** ${dScore}/100\n\n\`${dBar}\` **${dScore}/100**\n\n`;
       }
     }
 
@@ -816,6 +864,30 @@ export class PageSpeedInsightsServer {
         report += `- **${audit.title}**: ${audit.displayValue}\n`;
       }
     });
+
+    const cwvTableMetrics: Array<{ name: string; id: string; display: string; value?: number; target: string }> = [];
+    const metricConfigs = [
+      { name: "Largest Contentful Paint", id: "largest-contentful-paint", target: "≤ 2.5 s" },
+      { name: "First Contentful Paint", id: "first-contentful-paint", target: "≤ 1.8 s" },
+      { name: "Total Blocking Time", id: "total-blocking-time", target: "≤ 200 ms" },
+      { name: "Cumulative Layout Shift", id: "cumulative-layout-shift", target: "≤ 0.1" },
+      { name: "Speed Index", id: "speed-index", target: "≤ 3.4 s" },
+    ];
+    metricConfigs.forEach(m => {
+      const audit = audits?.[m.id];
+      if (audit && audit.displayValue) {
+        cwvTableMetrics.push({
+          name: m.name,
+          id: m.id,
+          display: audit.displayValue,
+          value: audit.numericValue,
+          target: m.target,
+        });
+      }
+    });
+    if (cwvTableMetrics.length > 0) {
+      report += `\n` + renderCwvTable(cwvTableMetrics) + `\n`;
+    }
 
     if (performance?.auditRefs) {
       const opportunities = performance.auditRefs
@@ -894,7 +966,8 @@ export class PageSpeedInsightsServer {
     Object.entries(cwvMetrics).forEach(([key, title]) => {
       const metric = record.metrics?.[key];
       if (metric) {
-        summary += `- **${title}**: ${metric.percentiles.p75}${key === "cumulative_layout_shift" ? "" : "ms"} (p75)\n`;
+        const evaluation = evaluateMetric(key, metric.percentiles.p75);
+        summary += `- **${title}**: ${metric.percentiles.p75}${key === "cumulative_layout_shift" ? "" : "ms"} (p75) ${evaluation.badge}\n`;
       }
     });
 

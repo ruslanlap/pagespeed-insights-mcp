@@ -62,7 +62,7 @@ API Key: [redacted]
 Testing pagespeed_analyze_page - concise Lighthouse analysis...
 ✅ pagespeed_analyze_page: SUCCESS
    - Text content: ✓
-   - JSON resource: ✓
+   - Structured content: ✓
 
 ... (tests for all tools) ...
 

@@ -1,4 +1,5 @@
 import type { PageSpeedInsightsResponse } from "./types.js";
+import { renderScoreBar, getScoreRating } from "./formatters.js";
 
 export interface Recommendation {
   id: string;
@@ -415,13 +416,19 @@ export class PerformanceRecommendationsEngine {
   }
 
   formatRecommendations(report: RecommendationReport): string {
+    const scoreNum = Math.round(report.overallScore);
+    const rating = getScoreRating(scoreNum);
+    const bar = renderScoreBar(scoreNum, 16);
+
     let output = `# 🚀 Performance Recommendations\n\n`;
     output += `**URL:** ${report.url}\n`;
     output += `**Current Score:** ${report.overallScore}/100\n`;
+    output += `\`${bar}\` **${report.overallScore}/100** ${rating.emoji} *(${rating.label})*\n`;
     output += `**Device:** ${report.strategy}\n\n`;
 
     // Summary
     output += `## 📊 Summary\n`;
+    output += `> 🔴 **${report.summary.highPriority}** High &nbsp;|&nbsp; 🟡 **${report.summary.mediumPriority}** Medium &nbsp;|&nbsp; 🟢 **${report.summary.lowPriority}** Low &nbsp;|&nbsp; **Impact:** ${report.summary.estimatedImpact}\n\n`;
     output += `- **Total Recommendations:** ${report.summary.totalRecommendations}\n`;
     output += `- **High Priority:** ${report.summary.highPriority} 🔴\n`;
     output += `- **Medium Priority:** ${report.summary.mediumPriority} 🟡\n`;

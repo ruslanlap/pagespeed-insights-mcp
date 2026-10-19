@@ -11,14 +11,14 @@ import type { MetricSpread } from "./multirun.js";
  * reports improvements that are just the instrument moving.
  */
 
-interface Snapshot {
+export interface Snapshot {
   recorded: string;
   lighthouseVersion?: string;
   scores: Record<string, MetricSpread>;
   metrics: Record<string, MetricSpread>;
 }
 
-interface Baselines {
+export interface Baselines {
   [key: string]: Snapshot;
 }
 
@@ -43,6 +43,10 @@ function saveAll(b: Baselines): void {
 
 export function getBaseline(url: string, strategy: string): Snapshot | null {
   return load()[`${url}|${strategy}`] ?? null;
+}
+
+export function getAllBaselines(): Baselines {
+  return load();
 }
 
 export function saveBaseline(
