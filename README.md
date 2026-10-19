@@ -196,9 +196,33 @@ We have comprehensive documentation available online.
 
 Current release: see the version badges at the top of this README.
 
-Recent highlights:
+### Latest Highlights:
 
-- **v2** — six workflow-oriented `pagespeed_*` tools replace the 19 v1 endpoint-shaped tools; all data tools support Markdown or JSON with structured results.
+- **✨ Rich Aesthetic & Visual Formatters**:
+  - **Unicode Score Bars**: Gauge progress visualization (`█████████████░░░ 85/100 🟢 Good`) for instant visual feedback.
+  - **Core Web Vitals Scorecards**: Clean markdown tables classified with official Google 2026 guidelines (`🟢 Good`, `🟡 Needs Improvement`, `🔴 Poor`).
+  - **GitHub Shield Badges**: Direct copy-paste markdown badges for repository READMEs with direct web.dev analysis links.
+  - **Modernized Mermaid Architecture Maps**: High-contrast, dark-mode friendly flowcharts with color-coded nodes.
+  - **Recommendation Callouts**: Visual priority summary callout cards (`🔴 High | 🟡 Medium | 🟢 Low | Impact: High`).
+
+- **💬 Native MCP Prompts (Slash Commands)**:
+  - Interactive prompts exposed to Claude Desktop, Cursor, and Cline slash menus:
+    - `/performance-audit`: Guided 4-step performance triage with prioritized remediation.
+    - `/release-comparison`: Staging vs production delta verification with a clear **GO / NO-GO** decision.
+    - `/core-web-vitals-deepdive`: Deep-dive contrasting real-user CrUX field data with synthetic Lighthouse lab simulations.
+
+- **📚 Native MCP Resources**:
+  - Direct context URIs without tool executions:
+    - `pagespeed://web-vitals-guide`: 2026 Core Web Vitals thresholds and optimization playbooks.
+    - `pagespeed://baselines`: Locally recorded performance baselines for regression tracking.
+
+- **🧪 Enterprise-Grade Test Suite & Resilience**:
+  - Expanded test coverage across **21 test suites** and **304 tests** (100% passing).
+  - High coverage standards: **96.43% statements**, **85.82% branch coverage** (`100%` on formatters, resources, and baselines).
+  - Clean, single-run execution across CI and `prepublishOnly` (`lint`, `typecheck`, `test`, `build`).
+
+- **v2 Core Architecture**:
+  - Six workflow-oriented `pagespeed_*` tools replace the former 19 v1 endpoint-shaped tools; all data tools support Markdown or JSON with structured results.
 
 > The badges at the top of this README update **automatically** on every release (npm version, GitHub package version, downloads). No manual edits needed.
 
