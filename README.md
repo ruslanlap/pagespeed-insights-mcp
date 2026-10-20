@@ -65,6 +65,9 @@ Most PageSpeed MCP servers wrap **one** tool: "run PSI on a URL." This server sh
 - [⚙️ Claude Desktop Configuration](#-claude-desktop-configuration)
 - [💻 Usage](#-usage)
 - [Available Tools](#available-tools)
+- [MCP Prompts (Slash Commands)](#mcp-prompts-slash-commands)
+- [MCP Resources](#mcp-resources)
+- [✨ Rich Visual & Aesthetic Outputs](#-rich-visual--aesthetic-outputs)
 - [Development](#development)
 - [Troubleshooting](#troubleshooting)
 - [Requirements](#requirements)
@@ -193,9 +196,33 @@ We have comprehensive documentation available online.
 
 Current release: see the version badges at the top of this README.
 
-Recent highlights:
+### Latest Highlights:
 
-- **v2** — six workflow-oriented `pagespeed_*` tools replace the 19 v1 endpoint-shaped tools; all data tools support Markdown or JSON with structured results.
+- **✨ Rich Aesthetic & Visual Formatters**:
+  - **Unicode Score Bars**: Gauge progress visualization (`█████████████░░░ 85/100 🟢 Good`) for instant visual feedback.
+  - **Core Web Vitals Scorecards**: Clean markdown tables classified with official Google 2026 guidelines (`🟢 Good`, `🟡 Needs Improvement`, `🔴 Poor`).
+  - **GitHub Shield Badges**: Direct copy-paste markdown badges for repository READMEs with direct web.dev analysis links.
+  - **Modernized Mermaid Architecture Maps**: High-contrast, dark-mode friendly flowcharts with color-coded nodes.
+  - **Recommendation Callouts**: Visual priority summary callout cards (`🔴 High | 🟡 Medium | 🟢 Low | Impact: High`).
+
+- **💬 Native MCP Prompts (Slash Commands)**:
+  - Interactive prompts exposed to Claude Desktop, Cursor, and Cline slash menus:
+    - `/performance-audit`: Guided 4-step performance triage with prioritized remediation.
+    - `/release-comparison`: Staging vs production delta verification with a clear **GO / NO-GO** decision.
+    - `/core-web-vitals-deepdive`: Deep-dive contrasting real-user CrUX field data with synthetic Lighthouse lab simulations.
+
+- **📚 Native MCP Resources**:
+  - Direct context URIs without tool executions:
+    - `pagespeed://web-vitals-guide`: 2026 Core Web Vitals thresholds and optimization playbooks.
+    - `pagespeed://baselines`: Locally recorded performance baselines for regression tracking.
+
+- **🧪 Enterprise-Grade Test Suite & Resilience**:
+  - Expanded test coverage across **21 test suites** and **304 tests** (100% passing).
+  - High coverage standards: **96.43% statements**, **85.82% branch coverage** (`100%` on formatters, resources, and baselines).
+  - Clean, single-run execution across CI and `prepublishOnly` (`lint`, `typecheck`, `test`, `build`).
+
+- **v2 Core Architecture**:
+  - Six workflow-oriented `pagespeed_*` tools replace the former 19 v1 endpoint-shaped tools; all data tools support Markdown or JSON with structured results.
 
 > The badges at the top of this README update **automatically** on every release (npm version, GitHub package version, downloads). No manual edits needed.
 
@@ -509,6 +536,34 @@ Version 2 replaces the former 19 endpoint-shaped tools with six workflow tools. 
 ### Example
 
 answer example from Claude Desktop with pagespeed-insights-mcp 🔥🔥🔥
+
+## MCP Prompts (Slash Commands)
+
+This server exposes built-in **MCP Prompts** that appear automatically in the prompt / slash menu (`/`) in Claude Desktop, Cursor, and Cline:
+
+| Prompt | Description | Arguments |
+|---|---|---|
+| `performance-audit` | Guided 4-step performance triage: Lighthouse summary, CrUX field data, targeted diagnostic, and prioritized fix ticket. | `url` (required), `strategy` (`mobile` / `desktop`) |
+| `release-comparison` | Automated pre-release comparison: staging vs production with directional metrics and a clear **GO / NO-GO** release recommendation. | `productionUrl` (required), `stagingUrl` (required), `strategy` |
+| `core-web-vitals-deepdive` | Root-cause investigation into real-user CrUX metrics vs synthetic Lighthouse lab scores for LCP, INP, and CLS. | `url` (required), `scope` (`page` / `origin`) |
+
+## MCP Resources
+
+Access reference guides and local state directly through standard MCP resource URIs:
+
+| Resource URI | MIME Type | Content |
+|---|---|---|
+| `pagespeed://web-vitals-guide` | `text/markdown` | Official 2026 Core Web Vitals thresholds (Good / Needs Improvement / Poor) for LCP, INP, CLS, FCP, TTFB, and TBT. |
+| `pagespeed://baselines` | `application/json` | Locally stored performance baselines recorded by `pagespeed_compare_pages`. |
+
+## ✨ Rich Visual & Aesthetic Outputs
+
+Outputs returned to Claude Desktop, Cursor, and Cline feature rich aesthetic formatting:
+
+- **Unicode Score Bars**: Gauge progress visualization (e.g. `\`█████████████░░░\` **85/100** 🟢 *(Good)*`).
+- **Core Web Vitals Scorecard**: Clean status-badged tables with official 2026 targets (`🟢 Good`, `🟡 Needs Improvement`, `🔴 Poor`).
+- **README Shield Badges**: Direct copy-paste markdown badges for your repository (`[![PageSpeed Score](https://img.shields.io/badge/PageSpeed-95%2F100-success?style=flat-square&logo=lighthouse)](https://pagespeed.web.dev)`).
+- **Modernized Mermaid Architecture Maps**: High-contrast, dark-mode friendly flowcharts with color-coded nodes.
 
 ## Development
 

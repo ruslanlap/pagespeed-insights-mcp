@@ -1,5 +1,17 @@
 # Unreleased
 
+### Features
+
+* **prompts:** implement native MCP Prompts (`/performance-audit`, `/release-comparison`, `/core-web-vitals-deepdive`) surfacing directly in Claude, Cursor, and Cline slash command menus.
+* **resources:** implement native MCP Resources (`pagespeed://web-vitals-guide`, `pagespeed://baselines`) for zero-tool-call access to 2026 Core Web Vitals guidelines and persistent local performance baselines.
+* **formatters:** introduce aesthetic visual formatters including Unicode score progress bars (`████████░░ 85/100`), Google 2026 Core Web Vitals scorecards (`🟢 Good`, `🟡 Needs Improvement`, `🔴 Poor`), ready-to-paste Shields.io badges, modernized Mermaid diagrams, and priority callout blocks.
+* **demo:** showcase MCP slash prompts, real-time score bars, and Core Web Vitals telemetry in the interactive landing page.
+
+### Testing
+
+* **coverage:** expand test suite with 6 new suites and 53 new tests (304 passing tests across 21 test files, 100% pass rate) with 96.43% statement and 85.82% branch coverage.
+* **ci:** modernize test scripts to non-interactive `vitest run` mode, ensuring clean single-run execution across CI and `prepublishOnly` gates.
+
 ### Changed
 
 * **tools:** remove obsolete v1 implementation paths after v2.0.0. The public API remains the six `pagespeed_*` workflow tools.

@@ -2,6 +2,27 @@
 
 This guide explains how to test all the features of the PageSpeed Insights MCP server.
 
+## Automated regression suite (no API key required)
+
+```bash
+npm ci
+npm test -- --run
+npm run test:coverage -- --run
+npm run lint
+npm run typecheck
+npm run build
+```
+
+The automated suite uses test-only credentials and intercepts Google HTTP requests.
+It does not prove that a real API key, Google quota, or a target website is available.
+Protocol integration tests connect a real MCP SDK client to the server in memory,
+then verify tool discovery, input validation, reports, diagnostics, field data,
+comparison, partial batch failures, and cache invalidation.
+
+The manual methods below contact Google and consume the configured project's quota.
+Never paste a real key into a command argument, test fixture, issue, or test output;
+provide it through `GOOGLE_API_KEY` instead.
+
 ## Prerequisites
 
 1. Build the project first:
@@ -21,11 +42,7 @@ This guide explains how to test all the features of the PageSpeed Insights MCP s
 Run the automated test script that tests all tools:
 
 ```bash
-# Pass API key as argument
-node scripts/test-tools.js YOUR_GOOGLE_API_KEY
-
-# Or use environment variable
-export GOOGLE_API_KEY=your-api-key
+# Set GOOGLE_API_KEY securely in your environment first.
 node scripts/test-tools.js
 ```
 
@@ -39,13 +56,13 @@ Expected output:
 ```
 🧪 Testing PageSpeed Insights MCP Tools
 =====================================
-API Key: AIzaSyD7mU...
+API Key: [redacted]
 ✅ Server started successfully
 
 Testing pagespeed_analyze_page - concise Lighthouse analysis...
 ✅ pagespeed_analyze_page: SUCCESS
    - Text content: ✓
-   - JSON resource: ✓
+   - Structured content: ✓
 
 ... (tests for all tools) ...
 

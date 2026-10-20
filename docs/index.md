@@ -1,25 +1,26 @@
-# Welcome to PageSpeed Insights MCP!!!!
+# Welcome to PageSpeed Insights MCP
 
-**PageSpeed Insights MCP** is a Model Context Protocol (MCP) server that enables Large Language Models (LLMs) like Claude to directly interact with the Google PageSpeed Insights API. This allows you to analyze web performance, get detailed reports, and receive smart recommendations directly within your chat interface.
+**PageSpeed Insights MCP** is a Model Context Protocol (MCP) server providing six workflow-oriented tools for the Google PageSpeed Insights and Chrome UX Report (CrUX) APIs. It enables Large Language Models (LLMs) and AI coding assistants (Claude, Cursor, Codex, Grok, etc.) to analyze web performance, inspect diagnostics, monitor real-user field metrics, and track regressions directly within chat or agent workflows.
 
 ## 🚀 Key Features
 
-*   **Comprehensive Analysis**: Run full Google PageSpeed Insights analysis including Lighthouse metrics.
-*   **Multi-Platform**: Support for both Mobile and Desktop analysis strategies.
-*   **Core Web Vitals**: detailed reporting on LCP, CLS, and INP.
-*   **Smart Recommendations**: Get prioritized, actionable advice to improve your site's performance.
-*   **Visual Analysis**: Retrieve screenshots and visual loading timelines.
-*   **Deep Dives**: Analyze specific aspects like Network requests, JavaScript execution, and Third-party scripts.
-*   **Comparison**: Compare performance metrics between two different URLs.
+*   **Six Workflow Tools**: Purpose-built tools covering the complete performance engineering cycle instead of 19 disparate endpoint wrappers.
+*   **Lighthouse Lab Audits**: Run single or multi-run (1–5 iterations with median/spread) audits across Mobile and Desktop device profiles.
+*   **Real-User Field Data (CrUX)**: Access 75th percentile Chrome UX Report Core Web Vitals (LCP, CLS, INP) at both URL and origin-wide scopes.
+*   **Targeted Diagnostics**: Pinpoint issues through focused lenses: `visual`, `elements`, `network`, `javascript`, `images`, `render-blocking`, and `third-parties`.
+*   **Comparisons & Regression Baselines**: Compare two pages side-by-side or record a persistent local baseline to detect regressions.
+*   **Smart Recommendations**: Prioritized, actionable advice with estimated savings and clear remediation steps.
+*   **Dual Response Formats**: Concise, readable Markdown reports by default, or structured JSON for programmatic consumption.
 
 ## 📚 Documentation Overview
 
-*   **[Getting Started](getting-started.md)**: Learn how to install, configure, and connect the server to Claude Desktop.
-*   **[Features](features/index.md)**: Explore the capabilities of the application in detail.
-*   **[Tools Reference](features/tools.md)**: A complete reference of all available tools and their parameters.
+*   **[Getting Started](getting-started.md)**: Learn how to install, configure, and connect the server to Claude Desktop, Cursor, and other MCP clients.
+*   **[Features](features/index.md)**: Explore the core capabilities, workflows, and diagnostic lenses.
+*   **[Tools Reference](features/tools.md)**: Comprehensive reference for all six v2 tools with input parameters, defaults, and examples.
 *   **[Concepts](concepts/mcp.md)**: Understand the Model Context Protocol (MCP) and how this server fits into the ecosystem.
-*   **[Developers](developers/architecture.md)**: Architectural overview and contribution guidelines for open-source contributors.
+*   **[Developers](developers/architecture.md)**: Codebase architecture, data flows, and contribution guidelines.
 
 ## 🤝 Open Source
 
 This project is open source and available on [GitHub](https://github.com/ruslanlap/pagespeed-insights-mcp). Contributions are welcome!
+

@@ -20,7 +20,7 @@ jobs:
     name: Dual-publish to Registries
     runs-on: ubuntu-latest
     permissions:
-      contents: read
+      contents: write
       packages: write
     env:
       GITHUB_TOKEN: ${{ github.token }}
@@ -79,4 +79,10 @@ jobs:
           gh release upload "$TAG" "$ASSET" "${ASSET}.sha256" --clobber
           INFO=$(gh api "repos/${GITHUB_REPOSITORY}/releases/tags/${TAG}")
           [ "$(echo "$INFO" | jq '.assets | length')" -ge 2 ] || { echo "Release assets missing"; exit 1; }
-          [ "$(npm view pagespeed-insights-mcp@latest version)" = "${TAG#v}" ] || { echo "npm latest does not match $TAG"; exit 1; }
+          EXPECTED="${TAG#v}"
+          for i in 1 2 3 4 5; do
+            NPM_VER=$(npm view pagespeed-insights-mcp@latest version 2>/dev/null || echo "none")
+            [ "$NPM_VER" = "$EXPECTED" ] && break
+            echo "npm latest is '$NPM_VER', expected '$EXPECTED' — retry $i/5"; sleep 30
+          done
+          [ "$NPM_VER" = "$EXPECTED" ] || { echo "npm latest does not match $TAG"; exit 1; }

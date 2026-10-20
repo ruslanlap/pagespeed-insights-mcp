@@ -1,4 +1,5 @@
 import type { PageSpeedInsightsResponse } from "./types.js";
+import { renderScoreBar, getScoreRating } from "./formatters.js";
 
 export interface Recommendation {
   id: string;
@@ -298,7 +299,9 @@ export class PerformanceRecommendationsEngine {
       for (const auditId of Object.keys(audits)) {
         failedInAllRuns.set(auditId, runs.every((r) => {
           const runAudit = (r?.lighthouseResult?.audits ?? r?.audits)?.[auditId];
-          return runAudit?.score !== null && runAudit?.score < 0.9;
+          if (runAudit?.score === 1) return false;
+          if (auditId.endsWith('-insight') && (runAudit?.details?.items?.length ?? 0) > 0) return true;
+          return runAudit?.score != null && runAudit.score < 0.9;
         }));
       }
     }
@@ -312,7 +315,7 @@ export class PerformanceRecommendationsEngine {
       const isInsightWithItems =
         auditId.endsWith('-insight') && (audit.details?.items?.length ?? 0) > 0;
       if (audit.score === 1) return; // score 1 = pass, skip regardless
-      if (!isInsightWithItems && audit.score === null) return;
+      if (!isInsightWithItems && audit.score == null) return;
       if (failedInAllRuns.get(auditId) === false) return;
 
       const baseRecommendation = this.auditMappings.get(auditId);
@@ -413,13 +416,19 @@ export class PerformanceRecommendationsEngine {
   }
 
   formatRecommendations(report: RecommendationReport): string {
+    const scoreNum = Math.round(report.overallScore);
+    const rating = getScoreRating(scoreNum);
+    const bar = renderScoreBar(scoreNum, 16);
+
     let output = `# 🚀 Performance Recommendations\n\n`;
     output += `**URL:** ${report.url}\n`;
     output += `**Current Score:** ${report.overallScore}/100\n`;
+    output += `\`${bar}\` **${report.overallScore}/100** ${rating.emoji} *(${rating.label})*\n`;
     output += `**Device:** ${report.strategy}\n\n`;
 
     // Summary
     output += `## 📊 Summary\n`;
+    output += `> 🔴 **${report.summary.highPriority}** High &nbsp;|&nbsp; 🟡 **${report.summary.mediumPriority}** Medium &nbsp;|&nbsp; 🟢 **${report.summary.lowPriority}** Low &nbsp;|&nbsp; **Impact:** ${report.summary.estimatedImpact}\n\n`;
     output += `- **Total Recommendations:** ${report.summary.totalRecommendations}\n`;
     output += `- **High Priority:** ${report.summary.highPriority} 🔴\n`;
     output += `- **Medium Priority:** ${report.summary.mediumPriority} 🟡\n`;

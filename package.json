@@ -12,8 +12,9 @@
     "lint:fix": "eslint src/**/*.ts --fix",
     "format": "prettier --write src/**/*.ts",
     "typecheck": "tsc --noEmit",
-    "test": "vitest",
-    "test:coverage": "vitest --coverage",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:coverage": "vitest run --coverage",
     "prepublishOnly": "npm run lint && npm run typecheck && npm run test && npm run build"
   },
   "bin": {
@@ -94,7 +95,9 @@
   },
   "mcpName": "io.github.ruslanlap/pagespeed-insights-mcp",
   "overrides": {
-    "fast-uri": "^3.1.7",
+    "fast-copy": "^4.1.2",
+    "fast-uri": "^3.1.8",
+    "proxy-addr": "^2.0.8",
     "qs": "^6.16.0"
   }
 }

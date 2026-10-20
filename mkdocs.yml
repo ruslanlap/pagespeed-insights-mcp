@@ -8,22 +8,32 @@ theme:
     - navigation.tabs
     - navigation.sections
     - navigation.footer
+    - navigation.top
     - search.suggest
     - search.highlight
     - content.code.copy
   palette:
-    - scheme: default
-      primary: green
-      accent: green
-      toggle:
-        icon: material/brightness-7
-        name: Switch to dark mode
-    - scheme: slate
-      primary: green
-      accent: green
-      toggle:
-        icon: material/brightness-4
-        name: Switch to light mode
+    scheme: slate
+    primary: indigo
+    accent: cyan
+
+plugins:
+  - search
+  - minify:
+      minify_html: true
+      minify_js: true
+  - glightbox:
+      touchNavigation: true
+      loop: false
+      effect: zoom
+      width: 100%
+      height: auto
+      zoomable: true
+      draggable: true
+  - git-revision-date-localized:
+      enable_creation_date: false
+      type: timeago
+      fallback_to_build_date: true
 
 nav:
   - Home: index.md
@@ -36,7 +46,7 @@ nav:
   - Developers:
     - Architecture: developers/architecture.md
     - Contributing: developers/contributing.md
-# Custom CSS - Catppuccin Macchiato (#24273a)
+# Custom CSS - Tokyo Night Storm (Flat #24283b)
 extra_css:
   - stylesheets/extra.css   # ← now included
 markdown_extensions:
@@ -48,4 +58,4 @@ markdown_extensions:
   - pymdownx.inlinehilite
   - pymdownx.snippets
   - attr_list
-copyright: Copyright &copy; 2025 ruslanlap
+copyright: Copyright &copy; 2025–2026 ruslanlap

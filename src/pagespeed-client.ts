@@ -93,6 +93,9 @@ export class PageSpeedClient {
           }
           
           const data = await response.json();
+          if (!data?.lighthouseResult || typeof data.lighthouseResult !== "object" || Array.isArray(data.lighthouseResult)) {
+            throw new Error("Invalid PSI API response: missing Lighthouse result");
+          }
           if (data?.lighthouseResult?.runtimeError) {
             throw new Error(`Lighthouse could not analyze this page: ${data.lighthouseResult.runtimeError.message || data.lighthouseResult.runtimeError.code || "unknown runtime error"}`);
           }
@@ -144,6 +147,7 @@ export class PageSpeedClient {
     const runs = Math.max(1, Math.min(5, input.runs ?? 1));
     
     return this.limiter(async () => {
+      if (this.requestSignals.getStore()?.aborted) throw this.cancelledError();
       const cacheKey = createPSICacheKey(
         input.url,
         input.strategy,
@@ -187,11 +191,16 @@ export class PageSpeedClient {
       for (let i = 1; i < runs; i++) {
         await new Promise<void>((resolve, reject) => {
           const signal = this.requestSignals.getStore();
-          const timer = setTimeout(resolve, 65_000);
-          signal?.addEventListener("abort", () => {
+          if (signal?.aborted) return reject(this.cancelledError());
+          const onAbort = () => {
             clearTimeout(timer);
             reject(this.cancelledError());
-          }, { once: true });
+          };
+          const timer = setTimeout(() => {
+            signal?.removeEventListener("abort", onAbort);
+            resolve();
+          }, 65_000);
+          signal?.addEventListener("abort", onAbort, { once: true });
         });
         try {
           all.push(await this.makeRequest(url.toString(), correlationId) as PageSpeedInsightsResponse);
@@ -201,8 +210,9 @@ export class PageSpeedClient {
           logger.warn({ run: i + 1, error: e instanceof Error ? e.message : String(e) }, "Run failed, continuing with fewer");
         }
       }
-      (all[0] as any).multirun = summariseMultirun(all);
-      return all[0];
+      const multirun = summariseMultirun(all);
+      multirun.stats.requested = runs;
+      return { ...all[0], multirun };
     });
   }
 
