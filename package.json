@@ -79,7 +79,7 @@
     "@typescript-eslint/parser": "^8.66.0",
     "@vitest/coverage-v8": "^5.0.0",
     "eslint": "^10.9.1",
-    "nock": "^14.0.17",
+    "nock": "^15.0.5",
     "prettier": "^3.9.6",
     "semantic-release": "^25.0.9",
     "tsx": "^4.23.12",
