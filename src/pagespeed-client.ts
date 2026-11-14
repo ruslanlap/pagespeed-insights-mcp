@@ -1,4 +1,4 @@
-import pRetry from "p-retry";
+import pRetry, { AbortError } from "p-retry";
 import pLimit from "p-limit";
 import { createRequire } from "module";
 import { AsyncLocalStorage } from "async_hooks";
@@ -56,9 +56,9 @@ export class PageSpeedClient {
   }
 
   private cancelledError(): Error {
-    const error = new Error("Request cancelled by the MCP client.");
-    error.name = "AbortError";
-    return error;
+    // p-retry v9 aborts only on `instanceof AbortError`; a plain Error named
+    // "AbortError" would be retried until the budget is exhausted.
+    return new AbortError("Request cancelled by the MCP client.");
   }
 
   private async makeRequest(url: string, correlationId: string): Promise<any> {
@@ -110,6 +110,11 @@ export class PageSpeedClient {
           const sanitized = this.sanitizedError(error);
           const errorMessage = sanitized.message;
           logger.warn({ attempt, error: this.redact(errorMessage) }, "PSI request failed");
+          // p-retry v9: stop retrying 4xx/cancellations by throwing AbortError;
+          // pRetry unwraps it and rejects with `sanitized` (name preserved).
+          if (sanitized.name === "ClientError" || sanitized.name === "AbortError") {
+            throw new AbortError(sanitized);
+          }
           throw sanitized;
         } finally {
           clearTimeout(timeoutId);
@@ -117,11 +122,6 @@ export class PageSpeedClient {
       },
       {
         retries: this.retryAttempts,
-        onFailedAttempt: (error) => {
-          if (error.name === "ClientError" || error.name === "AbortError") {
-            throw error; // Don't retry client errors
-          }
-        },
         factor: 2,
         minTimeout: 1000,
         maxTimeout: 10000,
@@ -246,6 +246,9 @@ export class PageSpeedClient {
             const sanitized = this.sanitizedError(error);
             const msg = sanitized.message;
             logger.warn({ error: this.redact(msg) }, `${label} failed`);
+            if (sanitized.name === "ClientError" || sanitized.name === "AbortError") {
+              throw new AbortError(sanitized); // p-retry v9: no retry for 4xx/cancellations
+            }
             throw sanitized;
           } finally {
             clearTimeout(timeoutId);
@@ -253,7 +256,6 @@ export class PageSpeedClient {
         },
         {
           retries: this.retryAttempts,
-          onFailedAttempt: (error) => { if (error.name === "ClientError" || error.name === "AbortError") throw error; },
           factor: 2, minTimeout: 1000, maxTimeout: 10000,
         }
       );
