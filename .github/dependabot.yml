@@ -53,6 +53,11 @@ updates:
     ignore:
       - dependency-name: "nock"
         update-types: ["version-update:semver-major"]
+      # TypeScript 7 (native compiler) exceeds the typescript-eslint 8.x peer
+      # range (typescript <6.1.0); npm ci fails with ERESOLVE. Unignore once
+      # typescript-eslint ships a TS7-compatible major.
+      - dependency-name: "typescript"
+        update-types: ["version-update:semver-major"]
 
   # GitHub Actions
   - package-ecosystem: "github-actions"
