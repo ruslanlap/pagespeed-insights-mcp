@@ -47,6 +47,12 @@ updates:
       types:
         patterns:
           - "@types/*"
+    # nock >= 15 routes through @mswjs/interceptors and requires Node >= 22;
+    # this package still supports Node 20 (engines: >=20.19.0), so nock major
+    # bumps are deferred until Node 20 support is dropped.
+    ignore:
+      - dependency-name: "nock"
+        update-types: ["version-update:semver-major"]
 
   # GitHub Actions
   - package-ecosystem: "github-actions"
