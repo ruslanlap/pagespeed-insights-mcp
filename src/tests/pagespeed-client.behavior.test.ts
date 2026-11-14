@@ -119,7 +119,7 @@ describe("PageSpeedClient HTTP behavior", () => {
     client = new PageSpeedClient();
     vi.useFakeTimers({ toFake: ["setTimeout", "clearTimeout"] });
     let started = false;
-    (kind === "psi" ? psi() : crux()).delay(500).reply(() => { started = true; return [200, response()]; });
+    (kind === "psi" ? psi() : crux()).reply(() => { started = true; return new Promise(() => {}); }); // hang until the client timeout aborts (nock ≥15 delay() trips Node abort asserts under fake timers)
     const request = kind === "psi" ? client.analyzePageSpeed(input, "timeout") : client.getCruxData({ url: input.url }, "timeout");
     const assertion = expect(request).rejects.toMatchObject({ name: "AbortError" });
     await until(() => started);
