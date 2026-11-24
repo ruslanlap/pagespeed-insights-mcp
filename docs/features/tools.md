@@ -1,6 +1,6 @@
 # Tools Reference (v2)
 
-This reference documents the six workflow-oriented tools in PageSpeed Insights MCP v2. All data tools accept `responseFormat`: `"markdown"` (default) or `"json"`, and return structured MCP content.
+This reference documents the six PageSpeed workflow tools (from the upstream project) and the four WebPageTest tools added by Switas. All data tools accept `responseFormat`: `"markdown"` (default) or `"json"`, and return structured MCP content.
 
 ---
 
@@ -175,3 +175,67 @@ In v2, the 19 endpoint-shaped v1 tools were consolidated into 6 workflow tools:
 | `clear_cache` | `pagespeed_clear_cache` |
 | `full_report` | Split into explicit lab (`pagespeed_analyze_page`) and field (`pagespeed_get_field_data`) calls |
 
+---
+
+## WebPageTest tools (Switas)
+
+These tools require `WPT_API_KEY`. Each test run uses WebPageTest test balance.
+
+Shared test settings:
+
+| Parameter | Type | Default | Description |
+| :--- | :--- | :--- | :--- |
+| `location` | string | `"FRA_DE_02"` | Location id; see `wpt_list_locations`. |
+| `connectivity` | string | `"4G"` | `4G`, `3GFast`, `3G`, `LTE`, `Cable`, `DSL`, `FIOS`, `Native`. |
+| `device` | string | `"mobile"` | `mobile` (emulated mid-range Android) or `desktop`. |
+| `runs` | integer | `1` | 1–5; the median run is reported. |
+
+### `wpt_run_test`
+
+Run a test and, by default, wait for the result.
+
+| Parameter | Type | Required | Default | Description |
+| :--- | :--- | :--- | :--- | :--- |
+| `url` | string | **Yes** | — | Public HTTP/HTTPS URL. |
+| `repeatView` | boolean | No | `false` | Also measure a warm-cache second visit. |
+| `blockDomains` | array | No | — | Hostnames to block. |
+| `script` | string | No | — | WebPageTest script for multi-step flows. |
+| `label` | string | No | — | Label in the WebPageTest UI. |
+| `wait` | boolean | No | `true` | `false` returns the `testId` immediately. |
+| `maxWaitSeconds` | integer | No | `300` | 30–600. |
+
+Returns core metrics (TTFB, start render, FCP, LCP, CLS, TBT, Speed Index, fully loaded, requests, bytes), automatic findings and links to the result page, filmstrip and waterfall.
+
+### `wpt_get_result`
+
+| Parameter | Type | Required | Default | Description |
+| :--- | :--- | :--- | :--- | :--- |
+| `testId` | string | **Yes** | — | Test id returned by `wpt_run_test`. |
+| `view` | string | No | `"summary"` | `summary`, `lcp`, `cls`, `long-tasks`, `requests`, `third-parties`, `cache`, `technologies`. |
+
+- `lcp`: LCP element (with a lazy-loading flag), resource and phase breakdown (TTFB, load delay, load time, render delay).
+- `cls`: layout shifts by score with time and affected area.
+- `long-tasks`: TBT, long task count and the longest tasks.
+- `requests`: bytes by type, largest, slowest and failing requests, possibly render-blocking requests.
+- `third-parties`: bytes and requests per domain, first-party flag, CDN.
+- `cache`: HTML CDN cache status and cache-control, static assets cached for less than a day.
+- `technologies`: detected platform, frameworks, analytics and A/B testing tools.
+
+### `wpt_what_if`
+
+| Parameter | Type | Required | Default | Description |
+| :--- | :--- | :--- | :--- | :--- |
+| `url` | string | **Yes** | — | Public HTTP/HTTPS URL. |
+| `blockDomains` | array | **Yes** | — | Hostnames to block in the experiment run. |
+| `runs` | integer | No | `2` | Runs per variant (uses `2 × runs` balance). |
+| `maxWaitSeconds` | integer | No | `420` | 60–600. |
+
+Returns a baseline vs blocked table with absolute and percentage change, and a filmstrip comparison link.
+
+### `wpt_list_locations`
+
+| Parameter | Type | Required | Description |
+| :--- | :--- | :--- | :--- |
+| `region` | string | No | Filter such as `Europe` or `Middle East`. |
+
+Returns location ids and the remaining test balance.

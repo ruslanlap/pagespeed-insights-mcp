@@ -1,14 +1,18 @@
 {
   "mcpServers": {
-    "pagespeed-insights": {
+    "web-performance": {
       "command": "docker",
       "args": [
-        "run", 
-        "--rm", 
-        "-i",
-        "--env", "GOOGLE_API_KEY=your-google-api-key-here",
-        "pagespeed-insights-mcp"
-      ]
+        "run", "--rm", "-i",
+        "--env", "GOOGLE_API_KEY",
+        "--env", "WPT_API_KEY",
+        "--env", "REQUEST_TIMEOUT=60000",
+        "web-performance-mcp"
+      ],
+      "env": {
+        "GOOGLE_API_KEY": "your-google-api-key",
+        "WPT_API_KEY": "your-webpagetest-api-key"
+      }
     }
   }
 }

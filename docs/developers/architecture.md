@@ -1,6 +1,6 @@
 # Architecture Overview
 
-This document provides a high-level overview of the PageSpeed Insights MCP Server codebase. It is intended for developers who wish to contribute to the project or understand its internal workings.
+This document provides a high-level overview of the Switas Web Performance MCP server codebase. It is intended for developers who wish to contribute to the project or understand its internal workings.
 
 ## Project Structure
 

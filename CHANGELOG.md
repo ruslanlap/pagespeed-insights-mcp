@@ -1,3 +1,32 @@
+# Changelog
+
+## Switas Web Performance MCP 1.0.0 (2026-11-25)
+
+First release of the Switas fork, based on upstream `pagespeed-insights-mcp` master (package version 2.0.2).
+
+### Added
+
+* **WebPageTest tools:** `wpt_run_test`, `wpt_get_result`, `wpt_what_if`, `wpt_list_locations`.
+* **Analysis views:** LCP element and phase breakdown, layout shifts, long tasks, requests, third parties, caching (HTML CDN status, short-lived assets) and detected technologies.
+* **Automatic findings** for slow TTFB / CDN bypass, lazy-loaded LCP, late LCP render, A/B testing scripts, CLS, main-thread blocking, render-blocking requests, JavaScript weight, third parties and caching.
+* **Configuration:** optional `WPT_API_KEY`.
+* **NOTICE** file and modification notices for Apache-2.0 compliance.
+
+### Changed
+
+* Package, server and User-Agent renamed to `web-performance-mcp`.
+* README, docs and examples rewritten for source installation.
+
+### Removed
+
+* Upstream npm, GitHub Packages and MCP Registry publishing (workflows, scripts, `.npmrc`, `.releaserc.json`, `server.json`) and the demo page.
+
+---
+
+## Upstream history (ruslanlap/pagespeed-insights-mcp)
+
+The entries below are the original project's changelog, kept for reference.
+
 # Unreleased
 
 ### Features

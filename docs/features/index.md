@@ -1,6 +1,6 @@
 # Features Overview
 
-The PageSpeed Insights MCP server provides six workflow-oriented tools designed to help developers and AI assistants analyze, diagnose, compare, and optimize web performance.
+The Switas Web Performance MCP server provides six workflow-oriented tools designed to help developers and AI assistants analyze, diagnose, compare, and optimize web performance.
 
 ## 📊 Performance Analysis (`pagespeed_analyze_page`)
 

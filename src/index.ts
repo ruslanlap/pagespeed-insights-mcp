@@ -1,4 +1,11 @@
 #!/usr/bin/env node
+/*
+ * Copyright 2025-2026 ruslanlap (original pagespeed-insights-mcp)
+ * Modifications Copyright 2026 Switas
+ *
+ * Licensed under the Apache License, Version 2.0. See LICENSE and NOTICE.
+ * Modified by Switas: server renamed; WebPageTest tools (wpt_*) registered and dispatched.
+ */
 
 import { Server } from "@modelcontextprotocol/sdk/server/index.js";
 import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
@@ -14,7 +21,9 @@ import { randomUUID } from "crypto";
 import { realpathSync } from "fs";
 import { createRequire } from "module";
 import { fileURLToPath } from "url";
-import { validateEnv } from "./env.js";
+import { validateEnv, getEnv } from "./env.js";
+import { WptClient } from "./wpt-client.js";
+import { WptTools, WPT_TOOLS, WPT_TOOL_NAMES } from "./wpt-tools.js";
 import { getLogger, createRequestLogger } from "./logger.js";
 import { PageSpeedClient } from "./pagespeed-client.js";
 import { cache } from "./cache.js";
@@ -50,6 +59,7 @@ export class PageSpeedInsightsServer {
   private server: Server;
   private client: PageSpeedClient;
   private recommendationsEngine: PerformanceRecommendationsEngine;
+  private wpt: WptTools;
   private logger = getLogger();
   private readonly disconnectController = new AbortController();
 
@@ -59,7 +69,7 @@ export class PageSpeedInsightsServer {
     
     this.server = new Server(
       {
-        name: "pagespeed-insights-mcp",
+        name: "web-performance-mcp",
         version: pkg.version,
       },
       {
@@ -73,6 +83,7 @@ export class PageSpeedInsightsServer {
 
     this.client = new PageSpeedClient();
     this.recommendationsEngine = new PerformanceRecommendationsEngine();
+    this.wpt = new WptTools(new WptClient(getEnv().WPT_API_KEY, getEnv().REQUEST_TIMEOUT));
     this.setupTools();
     this.setupPrompts();
     this.setupResources();
@@ -103,7 +114,7 @@ export class PageSpeedInsightsServer {
   private setupTools() {
     this.server.setRequestHandler(ListToolsRequestSchema, async () => {
       return {
-        tools: V2_TOOLS,
+        tools: [...V2_TOOLS, ...WPT_TOOLS],
       };
     });
 
@@ -150,6 +161,12 @@ export class PageSpeedInsightsServer {
     const raw = (args && typeof args === "object" ? args : {}) as Record<string, unknown>;
     const { responseFormat = "markdown", ...inputArgs } = raw;
     let result: any;
+
+    if (WPT_TOOL_NAMES.has(name)) {
+      const tick = (globalThis as any).__psiProgress as (() => void) | undefined;
+      const wptResult = await this.wpt.dispatch(name, inputArgs, tick, this.disconnectController.signal);
+      return wptResult.isError ? wptResult : this.toV2Result(name, wptResult, responseFormat);
+    }
 
     switch (name) {
       case "pagespeed_analyze_page": {
@@ -1678,7 +1695,7 @@ export class PageSpeedInsightsServer {
     process.stdin.once("close", abort);
     const transport = new StdioServerTransport();
     await this.server.connect(transport);
-    this.logger.info("PageSpeed Insights MCP server started");
+    this.logger.info("Switas Web Performance MCP server started");
   }
 }
 

@@ -1,3 +1,10 @@
+/*
+ * Copyright 2025-2026 ruslanlap (original pagespeed-insights-mcp)
+ * Modifications Copyright 2026 Switas
+ *
+ * Licensed under the Apache License, Version 2.0. See LICENSE and NOTICE.
+ * Modified by Switas: User-Agent renamed to web-performance-mcp.
+ */
 import pRetry, { AbortError } from "p-retry";
 import pLimit from "p-limit";
 import { createRequire } from "module";
@@ -14,7 +21,7 @@ import type {
 import type { PageSpeedInsightsResponse } from "./types.js";
 
 const pkg = createRequire(import.meta.url)("../package.json") as { version: string };
-const USER_AGENT = `pagespeed-insights-mcp/${pkg.version}`;
+const USER_AGENT = `web-performance-mcp/${pkg.version}`;
 
 export class PageSpeedClient {
   private readonly apiKey: string;

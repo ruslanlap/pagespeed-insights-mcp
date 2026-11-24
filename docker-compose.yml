@@ -1,14 +1,10 @@
-version: '3.8'
-
 services:
-  pagespeed-mcp:
+  web-performance-mcp:
     build: .
-    container_name: pagespeed-insights-mcp
+    image: web-performance-mcp
+    container_name: web-performance-mcp
     environment:
       - GOOGLE_API_KEY=${GOOGLE_API_KEY}
+      - WPT_API_KEY=${WPT_API_KEY}
+      - REQUEST_TIMEOUT=60000
     stdin_open: true
-    tty: true
-    restart: unless-stopped
-    # Mount for communication with Claude Desktop
-    volumes:
-      - /tmp:/tmp

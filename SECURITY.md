@@ -6,17 +6,15 @@ Only the latest minor release line receives security updates.
 
 | Version | Supported |
 |---------|-----------|
-| 1.1.x   | ✅        |
-| < 1.1   | ❌        |
+| 1.x     | ✅        |
 
 ## Reporting a Vulnerability
 
 **Please do not open a public GitHub issue for security problems.**
 
-If you believe you have found a security vulnerability in `pagespeed-insights-mcp`, report it privately via one of:
+If you believe you have found a security vulnerability in `web-performance-mcp`, report it privately via one of:
 
-- GitHub's [Private Vulnerability Reporting](https://github.com/ruslanlap/pagespeed-insights-mcp/security/advisories/new) for this repository (preferred).
-- Email the maintainer listed in `package.json` / GitHub profile.
+- GitHub's [Private Vulnerability Reporting](https://github.com/switaslabs/web-performance-mcp/security/advisories/new) for this repository (preferred).
 
 Please include:
 
@@ -35,15 +33,14 @@ We will credit reporters in the release notes unless anonymity is requested.
 
 ## Out of Scope
 
-This project is an MCP server that calls the Google PageSpeed Insights and Chrome UX Report APIs. The following are **not** considered in scope:
+This project is an MCP server that calls the Google PageSpeed Insights, Chrome UX Report and WebPageTest APIs. The following are **not** considered in scope:
 
-- Vulnerabilities in Google's APIs themselves.
+- Vulnerabilities in Google's or WebPageTest's APIs themselves.
 - Issues that require attacker-controlled `GOOGLE_API_KEY` to exploit (the key is a secret managed by the operator).
 - Denial of service caused by Google API quota exhaustion.
-- Findings against the demo HTML page hosted on GitHub Pages.
 
 ## Hardening Notes for Operators
 
-- Treat `GOOGLE_API_KEY` as a secret. Never commit it to source control. Use `.env`, your shell, or your MCP client's secret store.
+- Treat `GOOGLE_API_KEY` and `WPT_API_KEY` as secrets. Never commit it to source control. Use `.env`, your shell, or your MCP client's secret store.
 - The server is designed for `stdio` transport; do not expose its standard streams over the network without your own authentication layer.
 - Restrict your Google API key to the PageSpeed Insights and Chrome UX Report APIs in the Google Cloud Console.

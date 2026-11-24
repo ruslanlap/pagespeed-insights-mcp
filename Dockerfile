@@ -24,10 +24,10 @@ COPY --from=build /app/dist/ ./dist/
 
 # Create non-root user
 RUN addgroup -g 1001 -S nodejs && \
-    adduser -S nextjs -u 1001 && \
-    chown -R nextjs:nodejs /app
+    adduser -S mcp -u 1001 && \
+    chown -R mcp:nodejs /app
 
-USER nextjs
+USER mcp
 
 # Set default command
 CMD ["node", "dist/index.js"]

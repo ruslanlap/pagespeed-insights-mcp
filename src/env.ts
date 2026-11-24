@@ -1,7 +1,15 @@
+/*
+ * Copyright 2025-2026 ruslanlap (original pagespeed-insights-mcp)
+ * Modifications Copyright 2026 Switas
+ *
+ * Licensed under the Apache License, Version 2.0. See LICENSE and NOTICE.
+ * Modified by Switas: optional WPT_API_KEY for WebPageTest tools.
+ */
 import { z } from "zod";
 
 const EnvSchema = z.object({
   GOOGLE_API_KEY: z.string().min(1, "Google API key is required"),
+  WPT_API_KEY: z.string().min(1).optional(),
   LOG_LEVEL: z.enum(["trace", "debug", "info", "warn", "error", "fatal"]).default("info"),
   MAX_CONCURRENCY: z.coerce.number().min(1).max(10).default(3),
   REQUEST_TIMEOUT: z.coerce.number().min(1000).max(60000).default(30000),

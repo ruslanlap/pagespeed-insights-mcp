@@ -1,10 +1,12 @@
 {
   "mcpServers": {
-    "pagespeed-insights": {
-      "command": "npx",
-      "args": ["pagespeed-insights-mcp"],
+    "web-performance": {
+      "command": "node",
+      "args": ["/absolute/path/to/web-performance-mcp/dist/index.js"],
       "env": {
-        "GOOGLE_API_KEY": "your-google-api-key-here"
+        "GOOGLE_API_KEY": "your-google-api-key",
+        "WPT_API_KEY": "your-webpagetest-api-key",
+        "REQUEST_TIMEOUT": "60000"
       }
     }
   }

@@ -1,13 +1,13 @@
 # Contributing Guide
 
-Thank you for your interest in contributing to the PageSpeed Insights MCP Server! We welcome contributions from the community.
+Thank you for your interest in contributing to the Switas Web Performance MCP server! We welcome contributions from the community.
 
 ## Development Setup
 
 1.  **Clone the repository**:
     ```bash
-    git clone https://github.com/ruslanlap/pagespeed-insights-mcp.git
-    cd pagespeed-insights-mcp
+    git clone https://github.com/switaslabs/web-performance-mcp.git
+    cd web-performance-mcp
     ```
 
 2.  **Install dependencies**:

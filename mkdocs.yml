@@ -1,7 +1,7 @@
-site_name: PageSpeed Insights MCP
-site_description: User documentation for the PageSpeed Insights MCP Server
-repo_url: https://github.com/ruslanlap/pagespeed-insights-mcp
-repo_name: ruslanlap/pagespeed-insights-mcp
+site_name: Switas Web Performance MCP
+site_description: Documentation for Switas Web Performance MCP
+repo_url: https://github.com/switaslabs/web-performance-mcp
+repo_name: switaslabs/web-performance-mcp
 theme:
   name: material
   features:
@@ -58,4 +58,4 @@ markdown_extensions:
   - pymdownx.inlinehilite
   - pymdownx.snippets
   - attr_list
-copyright: Copyright &copy; 2025–2026 ruslanlap
+copyright: Copyright &copy; 2025–2026 ruslanlap (original work), 2026 Switas (modifications)

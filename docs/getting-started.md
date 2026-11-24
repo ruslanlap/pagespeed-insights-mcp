@@ -1,6 +1,6 @@
 # Getting Started
 
-This guide will help you set up the PageSpeed Insights MCP server and connect it to your MCP client (Claude Desktop, Cursor, Codex, Grok, etc.).
+This guide will help you set up the Switas Web Performance MCP server and connect it to your MCP client (Claude Desktop, Cursor, Codex, Grok, etc.).
 
 ## Prerequisites
 
@@ -11,7 +11,7 @@ Before you begin, ensure you have the following:
 
 ### Obtaining a Google API Key
 
-To use the PageSpeed Insights MCP server, you need a Google API key with the PageSpeed Insights API enabled.
+To use the Switas Web Performance MCP server, you need a Google API key with the PageSpeed Insights API enabled.
 
 !!! tip "⚡ Quick Setup Link"
     You can go directly to the **[Google Cloud Credentials Setup Page](https://console.cloud.google.com/apis/credentials/key/)** to quickly create or manage API keys in your project.
@@ -28,41 +28,21 @@ To use the PageSpeed Insights MCP server, you need a Google API key with the Pag
 
 ![Google Cloud Console API Key Setup](assets/3.png)
 
-## Installation & Running
+## Installation
 
-You can run the server using `npx` (recommended), install it globally via `npm`, or use Docker.
-
-### Option 1: Using `npx` (Recommended)
-
-You can run the server directly without manual installation:
+Clone and build from source:
 
 ```bash
-export GOOGLE_API_KEY=your-google-api-key
-npx -y -p pino-pretty -p pagespeed-insights-mcp pagespeed-insights-mcp
+git clone https://github.com/switaslabs/web-performance-mcp.git
+cd web-performance-mcp
+npm ci
+npm run build
 ```
 
-### Option 2: Global Installation
-
-Install the package globally using npm:
+Or build the Docker image:
 
 ```bash
-npm install -g pagespeed-insights-mcp
-```
-
-Then run it:
-
-```bash
-export GOOGLE_API_KEY=your-google-api-key
-pagespeed-insights-mcp
-```
-
-### Option 3: Docker
-
-Build and run the container:
-
-```bash
-docker build -t pagespeed-insights-mcp .
-docker run -e GOOGLE_API_KEY=your-key pagespeed-insights-mcp
+docker build -t web-performance-mcp .
 ```
 
 ## Configuration
@@ -72,6 +52,7 @@ The server is configured via environment variables.
 | Variable | Description | Required | Default | Valid Values |
 | :--- | :--- | :--- | :--- | :--- |
 | `GOOGLE_API_KEY` | Your Google PageSpeed Insights API Key | **Yes** | — | Non-empty string |
+| `WPT_API_KEY` | WebPageTest API key for the `wpt_*` tools | No | — | Non-empty string |
 | `LOG_LEVEL` | Logging level | No | `info` | `trace`, `debug`, `info`, `warn`, `error`, `fatal` |
 | `MAX_CONCURRENCY` | Maximum concurrent requests | No | `3` | `1` – `10` |
 | `REQUEST_TIMEOUT` | HTTP request timeout in milliseconds | No | `30000` | `1000` – `60000` |
@@ -92,59 +73,34 @@ Edit your `claude_desktop_config.json`:
 ```json
 {
   "mcpServers": {
-    "pagespeed-insights": {
-      "command": "npx",
-      "args": [
-        "-y",
-        "-p",
-        "pino-pretty",
-        "-p",
-        "pagespeed-insights-mcp",
-        "pagespeed-insights-mcp"
-      ],
+    "web-performance": {
+      "command": "node",
+      "args": ["/absolute/path/to/web-performance-mcp/dist/index.js"],
       "env": {
-        "GOOGLE_API_KEY": "your-google-api-key-here"
+        "GOOGLE_API_KEY": "your-google-api-key",
+        "WPT_API_KEY": "your-webpagetest-api-key",
+        "REQUEST_TIMEOUT": "60000"
       }
     }
   }
 }
 ```
 
-### Codex / OpenAI / Cursor
+### Claude Code
 
-Add to your MCP configuration (TOML):
-
-```toml
-[mcp_servers.pagespeed-insights]
-command = "npx"
-args = [
-  "-y",
-  "-p",
-  "pino-pretty",
-  "-p",
-  "pagespeed-insights-mcp",
-  "pagespeed-insights-mcp"
-]
-env = { GOOGLE_API_KEY = "your-google-api-key-here" }
+```bash
+claude mcp add web-performance -s user -e GOOGLE_API_KEY=your-google-api-key -e WPT_API_KEY=your-webpagetest-api-key -e REQUEST_TIMEOUT=60000 -- node /absolute/path/to/web-performance-mcp/dist/index.js
 ```
 
-### Grok Build (`config.toml`)
+### Codex / Cursor / other clients
 
-Add to `~/.grok/config.toml` (global) or `<repo>/.grok/config.toml` (project-scoped):
+Use the same command (`node`), argument (`/absolute/path/to/web-performance-mcp/dist/index.js`) and environment variables in your client's MCP configuration.
 
-```toml
-[mcp_servers.pagespeed-insights]
-command = "npx"
-args = ["-y", "-p", "pino-pretty", "-p", "pagespeed-insights-mcp", "pagespeed-insights-mcp"]
-env = { GOOGLE_API_KEY = "${GOOGLE_API_KEY}" }
-enabled = true
-```
-
-After updating the configuration, restart your client. The PageSpeed Insights tools will now be available in your sessions.
+After updating the configuration, restart your client. The tools will now be available in your sessions.
 
 ## Usage Examples
 
-Once connected, your AI client has access to the six v2 tools:
+Once connected, your AI client has access to the PageSpeed and WebPageTest tools:
 
 *   **Audit a site:**  
     `"Analyze https://example.com and show the top recommendations for mobile."`  
@@ -161,4 +117,9 @@ Once connected, your AI client has access to the six v2 tools:
 *   **Track regression against baseline:**  
     `"Record a baseline for https://example.com with 3 runs, then verify if our new changes caused a regression."`  
     *(Calls `pagespeed_compare_pages` with `mode="baseline"`)*
-
+*   **Real-browser test with LCP phases:**  
+    `"Run a WebPageTest test on https://example.com on mobile 4G and explain the LCP phases."`  
+    *(Calls `wpt_run_test`, then `wpt_get_result` with `view="lcp"`)*
+*   **Measure a third party's cost:**  
+    `"How much faster is https://example.com without the chat widget? Use 3 runs."`  
+    *(Calls `wpt_what_if`)*

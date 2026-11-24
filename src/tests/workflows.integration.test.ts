@@ -1,3 +1,10 @@
+/*
+ * Copyright 2025-2026 ruslanlap (original pagespeed-insights-mcp)
+ * Modifications Copyright 2026 Switas
+ *
+ * Licensed under the Apache License, Version 2.0. See LICENSE and NOTICE.
+ * Modified by Switas: tool list contract extended with the four WebPageTest tools.
+ */
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { setTimeout as pause } from "node:timers/promises";
 import { Client } from "@modelcontextprotocol/sdk/client/index.js";
@@ -133,10 +140,10 @@ afterEach(async () => {
 });
 
 describe("public MCP workflow contract", () => {
-  it("negotiates capabilities and lists exactly six executable workflow schemas", async () => {
+  it("negotiates capabilities and lists the six PageSpeed workflows plus the four WebPageTest tools", async () => {
     expect(client.getServerCapabilities()?.tools).toEqual({});
     const { tools } = await client.listTools();
-    expect(tools.map(t => t.name)).toEqual(["pagespeed_analyze_page", "pagespeed_diagnose_page", "pagespeed_get_field_data", "pagespeed_compare_pages", "pagespeed_analyze_batch", "pagespeed_clear_cache"]);
+    expect(tools.map(t => t.name)).toEqual(["pagespeed_analyze_page", "pagespeed_diagnose_page", "pagespeed_get_field_data", "pagespeed_compare_pages", "pagespeed_analyze_batch", "pagespeed_clear_cache", "wpt_run_test", "wpt_get_result", "wpt_what_if", "wpt_list_locations"]);
     expect(tools[0].inputSchema.properties?.report).toMatchObject({ enum: reports });
     expect(tools[1].inputSchema.properties?.focus).toMatchObject({ enum: focuses });
     for (const tool of tools) {
@@ -238,7 +245,7 @@ describe("public MCP workflow contract", () => {
     expect(text(result)).toContain("403");
     expect(text(result)).toContain("permission denied");
     expect(text(result)).not.toContain("workflow-test-only");
-    expect((await client.listTools()).tools).toHaveLength(6);
+    expect((await client.listTools()).tools).toHaveLength(10);
   });
 
   it.each(["page", "origin"])("scope=%s preserves p75 milliseconds and unitless CLS", async scope => {

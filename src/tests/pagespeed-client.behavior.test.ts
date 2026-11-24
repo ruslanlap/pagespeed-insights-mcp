@@ -1,3 +1,10 @@
+/*
+ * Copyright 2025-2026 ruslanlap (original pagespeed-insights-mcp)
+ * Modifications Copyright 2026 Switas
+ *
+ * Licensed under the Apache License, Version 2.0. See LICENSE and NOTICE.
+ * Modified by Switas: expected User-Agent renamed to web-performance-mcp.
+ */
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { setTimeout as pause } from "node:timers/promises";
 import nock from "nock";
@@ -36,7 +43,7 @@ describe("PageSpeedClient HTTP behavior", () => {
   });
 
   it("sends exact encoded PSI query, repeated categories and versioned user agent", async () => {
-    const scope = nock("https://www.googleapis.com", { reqheaders: { "user-agent": /^pagespeed-insights-mcp\/\d/ } })
+    const scope = nock("https://www.googleapis.com", { reqheaders: { "user-agent": /^web-performance-mcp\/\d/ } })
       .get("/pagespeedonline/v5/runPagespeed")
       .query({ url: input.url, key: config.GOOGLE_API_KEY, strategy: "desktop", locale: "uk", category: ["accessibility", "performance"] })
       .reply(200, response());

@@ -33,7 +33,7 @@ graph LR
 
 ## How This Project Fits In
 
-**PageSpeed Insights MCP** is an **MCP Server**.
+**Switas Web Performance MCP** is an **MCP Server**.
 
 *   It connects to the **Google PageSpeed Insights API**.
 *   It translates the API's complex JSON responses into **Tools** that the AI can understand and use.

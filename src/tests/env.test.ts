@@ -1,8 +1,15 @@
+/*
+ * Copyright 2025-2026 ruslanlap (original pagespeed-insights-mcp)
+ * Modifications Copyright 2026 Switas
+ *
+ * Licensed under the Apache License, Version 2.0. See LICENSE and NOTICE.
+ * Modified by Switas: WPT_API_KEY is cleared before each test.
+ */
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
 const settings = [
   'GOOGLE_API_KEY', 'LOG_LEVEL', 'MAX_CONCURRENCY', 'REQUEST_TIMEOUT',
-  'RETRY_ATTEMPTS', 'CACHE_TTL', 'NODE_ENV',
+  'RETRY_ATTEMPTS', 'CACHE_TTL', 'NODE_ENV', 'WPT_API_KEY',
 ];
 
 beforeEach(() => {

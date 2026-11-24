@@ -1,0 +1,29 @@
+Switas Web Performance MCP
+Copyright 2026 Switas (https://switas.com)
+
+This product is a derivative work of pagespeed-insights-mcp
+(https://github.com/ruslanlap/pagespeed-insights-mcp),
+Copyright 2025-2026 ruslanlap and PageSpeed Insights MCP Contributors,
+licensed under the Apache License, Version 2.0.
+The original work is used and redistributed under the terms of that license;
+see LICENSE for the full text.
+
+Modifications by Switas (2026), summarized:
+  - Added WebPageTest integration: src/wpt-client.ts and src/wpt-tools.ts
+    (tools wpt_run_test, wpt_get_result, wpt_what_if, wpt_list_locations),
+    including LCP phase breakdown, layout shift, long task, request,
+    third-party, caching and technology analysis, automatic findings and
+    request-blocking "what-if" experiments.
+  - Registered the WebPageTest tools in src/index.ts and added the optional
+    WPT_API_KEY setting in src/env.ts.
+  - Renamed the server, package and User-Agent to web-performance-mcp.
+  - Removed the original project's npm / GitHub Packages / MCP Registry
+    publishing workflows, scripts and configuration.
+  - Rewrote README, examples and documentation for this distribution.
+
+Files modified by Switas carry a notice stating so at the top of the file.
+
+"PageSpeed Insights", "Chrome UX Report" and "Lighthouse" are trademarks of
+Google LLC. "WebPageTest" is a trademark of Catchpoint Systems, Inc. This
+project is not affiliated with or endorsed by Google, Catchpoint or the
+original author.
