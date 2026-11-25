@@ -37,6 +37,8 @@ Run a Lighthouse performance audit for a single public web page.
 
 Investigate one specific performance bottleneck using focused diagnostics instead of dumping full audit trees.
 
+Use `focus: "elements"` to see the LCP element and, when Lighthouse reports it, a breakdown of the time spent in each LCP phase. Unavailable timings are omitted, not shown as zero.
+
 ### Parameters
 
 | Parameter | Type | Required | Default | Description |

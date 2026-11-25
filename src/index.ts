@@ -1093,6 +1093,7 @@ export class PageSpeedInsightsServer {
       }, correlationId);
       
       const elementData = ResponseParser.extractElementData(result);
+      const lcpBreakdown = ResponseParser.extractLcpBreakdown(result);
       
       let report = `# Element-Level Performance Analysis\n\n`;
       report += `**URL:** ${input.url}\n`;
@@ -1110,6 +1111,14 @@ export class PageSpeedInsightsServer {
         report += `\n`;
       }
       
+      if (lcpBreakdown.length > 0) {
+        report += `## LCP Breakdown\n`;
+        for (const { label, duration } of lcpBreakdown) {
+          report += `- ${label}: ${duration} ms\n`;
+        }
+        report += `\n`;
+      }
+
       if (elementData.clsElements.length > 0) {
         report += `## Layout Shift Elements (CLS)\n`;
         report += `Found ${elementData.clsElements.length} elements causing layout shifts:\n\n`;

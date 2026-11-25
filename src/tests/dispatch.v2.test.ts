@@ -154,6 +154,48 @@ describe("v2 dispatchTool routing (public tool surface)", () => {
     expect(result.content[0].text).toContain("https://example.com");
   });
 
+  it("reports measured Lighthouse LCP phases without inventing missing timings", async () => {
+    const response = mockPsiResponse();
+    Object.assign(response.lighthouseResult.audits, {
+      "lcp-breakdown-insight": {
+        details: { type: "list", items: [{ type: "table", items: [
+          { subpart: "timeToFirstByte", duration: 240.5 },
+          { subpart: "resourceLoadDelay", duration: 0 },
+          { subpart: "resourceLoadDuration", duration: "unknown" },
+          { subpart: "elementRenderDelay", duration: 420 },
+          { subpart: "unrecognizedPhase", duration: 10 },
+        ] }] },
+      },
+    });
+    nock("https://www.googleapis.com").get("/pagespeedonline/v5/runPagespeed")
+      .query(true).reply(200, response);
+
+    const result = await callDispatch(server, "pagespeed_diagnose_page", {
+      url: "https://example.com", focus: "elements",
+    });
+
+    expect(result.isError).toBeFalsy();
+    const text = result.content[0].text;
+    expect(text).toContain("## LCP Breakdown");
+    expect(text).toContain("Time to First Byte: 240.5 ms");
+    expect(text).toContain("Resource Load Delay: 0 ms");
+    expect(text).toContain("Element Render Delay: 420 ms");
+    expect(text).not.toContain("Resource Load Duration");
+    expect(text).not.toContain("unrecognizedPhase");
+  });
+
+  it("omits LCP breakdown when Lighthouse does not report it", async () => {
+    nock("https://www.googleapis.com").get("/pagespeedonline/v5/runPagespeed")
+      .query(true).reply(200, mockPsiResponse());
+
+    const result = await callDispatch(server, "pagespeed_diagnose_page", {
+      url: "https://example.com", focus: "elements",
+    });
+
+    expect(result.isError).toBeFalsy();
+    expect(result.content[0].text).not.toContain("## LCP Breakdown");
+  });
+
   it("routes pagespeed_get_field_data scope=page to CrUX page summary", async () => {
     nock("https://chromeuxreport.googleapis.com")
       .post("/v1/records:queryRecord")
