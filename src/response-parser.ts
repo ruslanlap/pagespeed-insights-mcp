@@ -140,6 +140,28 @@ export class ResponseParser {
     return elementData;
   }
 
+  static extractLcpBreakdown(response: PageSpeedInsightsResponse) {
+    const details = response.lighthouseResult?.audits?.['lcp-breakdown-insight']?.details;
+    const items = details?.items;
+    if (!details || !Array.isArray(items)) return [];
+
+    const rows = details.type === 'table' ? items : items.flatMap((item) =>
+      item?.type === 'table' && Array.isArray(item.items) ? item.items : [],
+    );
+    const phases = [
+      ['timeToFirstByte', 'Time to First Byte'],
+      ['resourceLoadDelay', 'Resource Load Delay'],
+      ['resourceLoadDuration', 'Resource Load Duration'],
+      ['elementRenderDelay', 'Element Render Delay'],
+    ];
+    return phases.flatMap(([subpart, label]) => {
+      const duration: unknown = rows.find((row) => row?.subpart === subpart)?.duration;
+      return typeof duration === 'number' && Number.isFinite(duration) && duration >= 0
+        ? [{ label, duration }]
+        : [];
+    });
+  }
+
   /**
    * Extract network waterfall and resource data
    */
